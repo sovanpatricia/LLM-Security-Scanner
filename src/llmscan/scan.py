@@ -123,7 +123,16 @@ def main(argv=None):
     ap.add_argument("--format", choices=["md", "json"], default="md")
     ap.add_argument("--model", default=str(DEFAULT_MODEL))
     a = ap.parse_args(argv)
-    findings = scan(Path(a.target), Path(a.model))
+    target = Path(a.target).expanduser()
+    if not target.exists():
+        print(f"Error: path '{a.target}' does not exist", file=sys.stderr)
+        return 2
+    code_files = [target] if target.is_file() else [
+        p for p in target.rglob("*")
+        if p.suffix in {".py", ".ts", ".tsx", ".js", ".jsx"} and "node_modules" not in p.parts]
+    if not code_files:
+        print(f"Warning: no Python/TypeScript/JavaScript files found in '{a.target}'", file=sys.stderr)
+    findings = scan(target, Path(a.model))
     if a.format == "json":
         print(json.dumps({"findings": findings, "scorecard": scorecard(findings)}, indent=2))
     else:
