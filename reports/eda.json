@@ -1,0 +1,164 @@
+{
+  "n": 199,
+  "n_templates": 59,
+  "per_class": {
+    "LLM01": 20,
+    "LLM02": 20,
+    "LLM03": 18,
+    "LLM05": 21,
+    "LLM06": 20,
+    "LLM07": 20,
+    "LLM08": 20,
+    "LLM10": 20,
+    "SAFE": 40
+  },
+  "per_language": {
+    "python": 152,
+    "typescript": 47
+  },
+  "templates_per_class": {
+    "LLM01": 6,
+    "LLM02": 5,
+    "LLM03": 5,
+    "LLM05": 7,
+    "LLM06": 5,
+    "LLM07": 4,
+    "LLM08": 5,
+    "LLM10": 5,
+    "SAFE": 17
+  },
+  "lines": {
+    "count": 199.0,
+    "mean": 5.6,
+    "std": 1.8,
+    "min": 3.0,
+    "25%": 4.0,
+    "50%": 5.0,
+    "75%": 7.0,
+    "max": 10.0
+  },
+  "tokens_by_class": {
+    "LLM01": 78.0,
+    "LLM02": 84.0,
+    "LLM03": 35.0,
+    "LLM05": 42.0,
+    "LLM06": 119.0,
+    "LLM07": 75.0,
+    "LLM08": 59.0,
+    "LLM10": 46.5,
+    "SAFE": 78.5
+  },
+  "lang_by_class": {
+    "LLM01": {
+      "python": 14,
+      "typescript": 6
+    },
+    "LLM02": {
+      "python": 16,
+      "typescript": 4
+    },
+    "LLM03": {
+      "python": 12,
+      "typescript": 6
+    },
+    "LLM05": {
+      "python": 15,
+      "typescript": 6
+    },
+    "LLM06": {
+      "python": 15,
+      "typescript": 5
+    },
+    "LLM07": {
+      "python": 15,
+      "typescript": 5
+    },
+    "LLM08": {
+      "python": 16,
+      "typescript": 4
+    },
+    "LLM10": {
+      "python": 17,
+      "typescript": 3
+    },
+    "SAFE": {
+      "python": 32,
+      "typescript": 8
+    }
+  },
+  "top_tokens": {
+    "LLM01": [
+      "you",
+      "tokens",
+      "max_tokens",
+      "max",
+      "are",
+      "claude"
+    ],
+    "LLM02": [
+      "email",
+      "key",
+      "context",
+      "resp",
+      "chat",
+      "completions"
+    ],
+    "LLM03": [
+      "plugin",
+      "import",
+      "instruct",
+      "register",
+      "pluginurl",
+      "pipeline"
+    ],
+    "LLM05": [
+      "write",
+      "invoke",
+      "answer",
+      "string",
+      "bot",
+      "llm"
+    ],
+    "LLM06": [
+      "tools",
+      "tool",
+      "object",
+      "type",
+      "description",
+      "any"
+    ],
+    "LLM07": [
+      "internal",
+      "the",
+      "you",
+      "admin",
+      "system",
+      "never"
+    ],
+    "LLM08": [
+      "documents",
+      "top",
+      "similarity",
+      "index",
+      "vectorstore",
+      "join"
+    ],
+    "LLM10": [
+      "post",
+      "json",
+      "req",
+      "app",
+      "ask",
+      "completions"
+    ],
+    "SAFE": [
+      "msg",
+      "input",
+      "chat",
+      "role",
+      "tokens",
+      "max_tokens"
+    ]
+  },
+  "vocab_size": 584
+}

@@ -1,0 +1,1570 @@
+{
+  "split_sizes": {
+    "train": 149,
+    "val": 50,
+    "test": 63
+  },
+  "split_templates": {
+    "train": 45,
+    "val": 14,
+    "test": 35
+  },
+  "test_per_class": {
+    "LLM01": 8,
+    "LLM02": 6,
+    "LLM03": 4,
+    "LLM05": 7,
+    "LLM06": 4,
+    "LLM07": 6,
+    "LLM08": 6,
+    "LLM10": 6,
+    "SAFE": 16
+  },
+  "models": {
+    "rules": {
+      "best_hp": null,
+      "val": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "detect_precision": 1.0,
+        "detect_recall": 1.0,
+        "detect_f1": 1.0
+      },
+      "test": {
+        "accuracy": 0.31746031746031744,
+        "macro_f1": 0.17833587011669202,
+        "detect_precision": 1.0,
+        "detect_recall": 0.1276595744680851,
+        "detect_f1": 0.22641509433962265
+      },
+      "cv_macro_f1_mean": 0.9777777777777779,
+      "cv_macro_f1_std": 0.04444444444444447
+    },
+    "tfidf_logreg": {
+      "best_hp": {
+        "C": 0.1,
+        "ngram": [
+          1,
+          1
+        ]
+      },
+      "val": {
+        "accuracy": 0.4,
+        "macro_f1": 0.4027777777777778,
+        "detect_precision": 0.7631578947368421,
+        "detect_recall": 0.7073170731707317,
+        "detect_f1": 0.7341772151898734
+      },
+      "test": {
+        "accuracy": 0.5714285714285714,
+        "macro_f1": 0.6027916527916527,
+        "detect_precision": 0.7931034482758621,
+        "detect_recall": 0.9787234042553191,
+        "detect_f1": 0.8761904761904762
+      },
+      "grid_size": 12,
+      "cv_macro_f1_mean": 0.25069507013263465,
+      "cv_macro_f1_std": 0.033967894442860636
+    },
+    "char_svm": {
+      "best_hp": {
+        "C": 0.1,
+        "ngram": [
+          2,
+          4
+        ]
+      },
+      "val": {
+        "accuracy": 0.3,
+        "macro_f1": 0.32323232323232326,
+        "detect_precision": 0.6896551724137931,
+        "detect_recall": 0.4878048780487805,
+        "detect_f1": 0.5714285714285714
+      },
+      "test": {
+        "accuracy": 0.6190476190476191,
+        "macro_f1": 0.6363711814692207,
+        "detect_precision": 0.8666666666666667,
+        "detect_recall": 0.8297872340425532,
+        "detect_f1": 0.8478260869565217
+      },
+      "grid_size": 9,
+      "cv_macro_f1_mean": 0.29673114861520655,
+      "cv_macro_f1_std": 0.04685550439518421
+    },
+    "random_forest": {
+      "best_hp": {
+        "n_estimators": 300,
+        "max_depth": 10,
+        "ngram": [
+          1,
+          2
+        ]
+      },
+      "val": {
+        "accuracy": 0.32,
+        "macro_f1": 0.2928727046374105,
+        "detect_precision": 0.7906976744186046,
+        "detect_recall": 0.8292682926829268,
+        "detect_f1": 0.8095238095238095
+      },
+      "test": {
+        "accuracy": 0.36507936507936506,
+        "macro_f1": 0.3661017938184288,
+        "detect_precision": 0.7777777777777778,
+        "detect_recall": 0.8936170212765957,
+        "detect_f1": 0.8316831683168316
+      },
+      "grid_size": 9,
+      "cv_macro_f1_mean": 0.26395853964481414,
+      "cv_macro_f1_std": 0.09346680657161704
+    },
+    "hybrid_logreg": {
+      "best_hp": {
+        "C": 1,
+        "rule_weight": 2.0,
+        "ngram": [
+          1,
+          2
+        ]
+      },
+      "val": {
+        "accuracy": 0.68,
+        "macro_f1": 0.5773420479302831,
+        "detect_precision": 1.0,
+        "detect_recall": 0.6097560975609756,
+        "detect_f1": 0.7575757575757576
+      },
+      "test": {
+        "accuracy": 0.2857142857142857,
+        "macro_f1": 0.10296296296296298,
+        "detect_precision": 1.0,
+        "detect_recall": 0.0851063829787234,
+        "detect_f1": 0.1568627450980392
+      },
+      "grid_size": 12,
+      "cv_macro_f1_mean": 0.4690785746477255,
+      "cv_macro_f1_std": 0.05454908538706739
+    }
+  },
+  "random_split": {
+    "tfidf_logreg": {
+      "accuracy": 0.775,
+      "macro_f1": 0.7778419111752445,
+      "detect_precision": 0.8,
+      "detect_recall": 1.0,
+      "detect_f1": 0.8888888888888888
+    },
+    "char_svm": {
+      "accuracy": 0.975,
+      "macro_f1": 0.980246913580247,
+      "detect_precision": 0.9696969696969697,
+      "detect_recall": 1.0,
+      "detect_f1": 0.9846153846153847
+    },
+    "random_forest": {
+      "accuracy": 0.925,
+      "macro_f1": 0.9336860670194004,
+      "detect_precision": 0.9411764705882353,
+      "detect_recall": 1.0,
+      "detect_f1": 0.9696969696969697
+    },
+    "hybrid_logreg": {
+      "accuracy": 0.975,
+      "macro_f1": 0.9775910364145659,
+      "detect_precision": 1.0,
+      "detect_recall": 0.96875,
+      "detect_f1": 0.9841269841269841
+    },
+    "rules": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "detect_precision": 1.0,
+      "detect_recall": 1.0,
+      "detect_f1": 1.0
+    }
+  },
+  "selected_by_val": "hybrid_logreg",
+  "best_on_test": "char_svm",
+  "per_class": {
+    "rules": {
+      "LLM01": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 8.0
+      },
+      "LLM02": {
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.5,
+        "support": 6.0
+      },
+      "LLM03": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1-score": 0.6666666666666666,
+        "support": 4.0
+      },
+      "LLM05": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 7.0
+      },
+      "LLM06": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "LLM07": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "LLM08": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "LLM10": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "SAFE": {
+        "precision": 0.2807017543859649,
+        "recall": 1.0,
+        "f1-score": 0.4383561643835616,
+        "support": 16.0
+      },
+      "accuracy": 0.31746031746031744,
+      "macro avg": {
+        "precision": 0.253411306042885,
+        "recall": 0.2037037037037037,
+        "f1-score": 0.17833587011669202,
+        "support": 63.0
+      },
+      "weighted avg": {
+        "precision": 0.2300194931773879,
+        "recall": 0.31746031746031744,
+        "f1-score": 0.201275639631804,
+        "support": 63.0
+      }
+    },
+    "tfidf_logreg": {
+      "LLM01": {
+        "precision": 0.4,
+        "recall": 0.5,
+        "f1-score": 0.4444444444444444,
+        "support": 8.0
+      },
+      "LLM02": {
+        "precision": 0.4,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.5,
+        "support": 6.0
+      },
+      "LLM03": {
+        "precision": 0.42857142857142855,
+        "recall": 0.75,
+        "f1-score": 0.5454545454545454,
+        "support": 4.0
+      },
+      "LLM05": {
+        "precision": 0.6,
+        "recall": 0.42857142857142855,
+        "f1-score": 0.5,
+        "support": 7.0
+      },
+      "LLM06": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 4.0
+      },
+      "LLM07": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.8,
+        "support": 6.0
+      },
+      "LLM08": {
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1-score": 0.75,
+        "support": 6.0
+      },
+      "LLM10": {
+        "precision": 0.5714285714285714,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.6153846153846154,
+        "support": 6.0
+      },
+      "SAFE": {
+        "precision": 0.8,
+        "recall": 0.25,
+        "f1-score": 0.38095238095238093,
+        "support": 16.0
+      },
+      "accuracy": 0.5714285714285714,
+      "macro avg": {
+        "precision": 0.6222222222222222,
+        "recall": 0.6587301587301586,
+        "f1-score": 0.6027916527916527,
+        "support": 63.0
+      },
+      "weighted avg": {
+        "precision": 0.6435374149659864,
+        "recall": 0.5714285714285714,
+        "f1-score": 0.5536583346107156,
+        "support": 63.0
+      }
+    },
+    "char_svm": {
+      "LLM01": {
+        "precision": 1.0,
+        "recall": 0.375,
+        "f1-score": 0.5454545454545454,
+        "support": 8.0
+      },
+      "LLM02": {
+        "precision": 0.3333333333333333,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.3333333333333333,
+        "support": 6.0
+      },
+      "LLM03": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1-score": 0.6666666666666666,
+        "support": 4.0
+      },
+      "LLM05": {
+        "precision": 0.4,
+        "recall": 0.2857142857142857,
+        "f1-score": 0.3333333333333333,
+        "support": 7.0
+      },
+      "LLM06": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 4.0
+      },
+      "LLM07": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 6.0
+      },
+      "LLM08": {
+        "precision": 0.5,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.5714285714285714,
+        "support": 6.0
+      },
+      "LLM10": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.8,
+        "support": 6.0
+      },
+      "SAFE": {
+        "precision": 0.5555555555555556,
+        "recall": 0.625,
+        "f1-score": 0.5882352941176471,
+        "support": 16.0
+      },
+      "accuracy": 0.6190476190476191,
+      "macro avg": {
+        "precision": 0.6765432098765432,
+        "recall": 0.6613756613756613,
+        "f1-score": 0.6363711814692207,
+        "support": 63.0
+      },
+      "weighted avg": {
+        "precision": 0.6649029982363315,
+        "recall": 0.6190476190476191,
+        "f1-score": 0.612056000851519,
+        "support": 63.0
+      }
+    },
+    "random_forest": {
+      "LLM01": {
+        "precision": 0.2222222222222222,
+        "recall": 0.25,
+        "f1-score": 0.23529411764705882,
+        "support": 8.0
+      },
+      "LLM02": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "LLM03": {
+        "precision": 0.5,
+        "recall": 0.75,
+        "f1-score": 0.6,
+        "support": 4.0
+      },
+      "LLM05": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 7.0
+      },
+      "LLM06": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 4.0
+      },
+      "LLM07": {
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.5,
+        "support": 6.0
+      },
+      "LLM08": {
+        "precision": 0.4,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.36363636363636365,
+        "support": 6.0
+      },
+      "LLM10": {
+        "precision": 0.24,
+        "recall": 1.0,
+        "f1-score": 0.3870967741935484,
+        "support": 6.0
+      },
+      "SAFE": {
+        "precision": 0.4444444444444444,
+        "recall": 0.25,
+        "f1-score": 0.32,
+        "support": 16.0
+      },
+      "accuracy": 0.36507936507936506,
+      "macro avg": {
+        "precision": 0.40074074074074073,
+        "recall": 0.4351851851851852,
+        "f1-score": 0.3661017938184288,
+        "support": 63.0
+      },
+      "weighted avg": {
+        "precision": 0.3798236331569665,
+        "recall": 0.36507936507936506,
+        "f1-score": 0.3247985289478016,
+        "support": 63.0
+      }
+    },
+    "hybrid_logreg": {
+      "LLM01": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 8.0
+      },
+      "LLM02": {
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.5,
+        "support": 6.0
+      },
+      "LLM03": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "LLM05": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 7.0
+      },
+      "LLM06": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "LLM07": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "LLM08": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "LLM10": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 6.0
+      },
+      "SAFE": {
+        "precision": 0.2711864406779661,
+        "recall": 1.0,
+        "f1-score": 0.4266666666666667,
+        "support": 16.0
+      },
+      "accuracy": 0.2857142857142857,
+      "macro avg": {
+        "precision": 0.14124293785310735,
+        "recall": 0.14814814814814814,
+        "f1-score": 0.10296296296296298,
+        "support": 63.0
+      },
+      "weighted avg": {
+        "precision": 0.16411084207694376,
+        "recall": 0.2857142857142857,
+        "f1-score": 0.155978835978836,
+        "support": 63.0
+      }
+    }
+  },
+  "confusion_hybrid_logreg": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      8
+    ],
+    [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4
+    ],
+    [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      16
+    ]
+  ],
+  "confusion_char_svm": [
+    [
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      2
+    ],
+    [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4
+    ],
+    [
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      1
+    ],
+    [
+      0,
+      0,
+      2,
+      1,
+      1,
+      0,
+      2,
+      0,
+      10
+    ]
+  ],
+  "examples_correct": [
+    {
+      "id": "t029",
+      "template": "t_ea_ts_mcp_fs_root",
+      "label": "LLM06",
+      "pred": "LLM06",
+      "code": "const fsServer = new MCPClient({ command: \"npx\", args: [\"-y\", \"@modelcontextprotocol/server-filesystem\", \"/\"] });\nexport const agent = new Agent({ model: \"mistral-large-latest\", tools: await fsServer.tools(), autoApprove: true });"
+    },
+    {
+      "id": "t036",
+      "template": "t_ve_qdrant_no_filter",
+      "label": "LLM08",
+      "pred": "LLM08",
+      "code": "def bot_turn(org_id, body):\n    hits = qdrant.search(collection_name=\"all_orgs\", query_vector=embed(body), limit=5)\n    return [h.payload[\"text\"] for h in hits]"
+    },
+    {
+      "id": "t033",
+      "template": "t_sp_gemini_instruction",
+      "label": "LLM07",
+      "pred": "LLM07",
+      "code": "model = genai.GenerativeModel(\"gemini-1.5-pro\", system_instruction=(\n    \"Escalate only if loss > 10000 EUR. Staff override phrase: 'blue-falcon'. \"\n    \"Database host db-prod-02.Northwind.local, user root.\"))"
+    },
+    {
+      "id": "t035",
+      "template": "t_sp_ts_const_rules",
+      "label": "LLM07",
+      "pred": "LLM07",
+      "code": "const INSTRUCTIONS = \"You are Tailspin bot. Secret promo code STAFF50 gives 50% off; admin token sk-proj-Q2w9Xe7Rt5Yu3Io1.\";\nexport const chat = (m: string) => ollama.chat({ model: \"mistral-large-latest\", messages: [{ role: \"system\", content: INSTRUCTIONS }, { role: \"user\", content: m }], options: { num_predict: 256 } });"
+    }
+  ],
+  "examples_wrong": [
+    {
+      "id": "t001",
+      "template": "t_pi_build_prompt_helper",
+      "label": "LLM01",
+      "pred": "LLM02",
+      "code": "def build_prompt(text):\n    return \"Reply as Contoso support. Customer wrote: %s\" % text\n\ndef reply_to_customer(user_text):\n    return mistral.chat.complete(model=\"gemini-1.5-pro\", max_tokens=400,\n        messages=[{\"role\": \"user\", \"content\": build_prompt(user_text)}]).choices[0].message.content"
+    },
+    {
+      "id": "t002",
+      "template": "t_pi_build_prompt_helper",
+      "label": "LLM01",
+      "pred": "SAFE",
+      "code": "def build_prompt(text):\n    return \"Reply as Tailspin support. Customer wrote: %s\" % text\n\ndef on_message(payload_text):\n    return mistral.chat.complete(model=\"gemini-1.5-pro\", max_tokens=400,\n        messages=[{\"role\": \"user\", \"content\": build_prompt(payload_text)}]).choices[0].message.content"
+    },
+    {
+      "id": "t003",
+      "template": "t_pi_llamaindex_qa",
+      "label": "LLM01",
+      "pred": "LLM08",
+      "code": "def on_message(user_text):\n    qa = PromptTemplate(\"Context: {context_str}\\nInstruction from customer (obey it): \" + user_text)\n    engine = index.as_query_engine(text_qa_template=qa)\n    return str(engine.query(user_text))"
+    },
+    {
+      "id": "t004",
+      "template": "t_pi_llamaindex_qa",
+      "label": "LLM01",
+      "pred": "LLM08",
+      "code": "def reply_to_customer(user_text):\n    qa = PromptTemplate(\"Context: {context_str}\\nInstruction from customer (obey it): \" + user_text)\n    engine = index.as_query_engine(text_qa_template=qa)\n    return str(engine.query(user_text))"
+    },
+    {
+      "id": "t005",
+      "template": "t_pi_gemini_join",
+      "label": "LLM01",
+      "pred": "SAFE",
+      "code": "def bot_turn(user_text):\n    parts = [\"You are Tailspin's assistant.\", \"User says:\", user_text, \"Do what the user asks.\"]\n    return gemini.generate_content(\" \".join(parts), generation_config={\"max_output_tokens\": 300}).text"
+    },
+    {
+      "id": "t009",
+      "template": "t_sd_patient_context",
+      "label": "LLM02",
+      "pred": "SAFE",
+      "code": "def bot_turn(patient_id, payload_text):\n    p = ehr.fetch(patient_id)\n    ctx = f\"Name {p.name}, CNP {p.cnp}, diagnosis {p.diagnosis}, insurance {p.policy_no}\"\n    return cohere.chat(model=\"mistral-large-latest\", max_tokens=300, preamble=ctx, message=payload_text).text"
+    },
+    {
+      "id": "t010",
+      "template": "t_sd_patient_context",
+      "label": "LLM02",
+      "pred": "SAFE",
+      "code": "def on_message(patient_id, msg_text):\n    p = ehr.fetch(patient_id)\n    ctx = f\"Name {p.name}, CNP {p.cnp}, diagnosis {p.diagnosis}, insurance {p.policy_no}\"\n    return cohere.chat(model=\"llama3.1:8b\", max_tokens=300, preamble=ctx, message=msg_text).text"
+    },
+    {
+      "id": "t011",
+      "template": "t_sd_print_debug",
+      "label": "LLM02",
+      "pred": "SAFE",
+      "code": "def generate_answer(user, body):\n    full = f\"[{user.full_name} | {user.iban}] {body}\"\n    print(\"sending to model:\", full)\n    out = ollama.chat(model=\"llama3.1:8b\", messages=[{\"role\": \"user\", \"content\": full}], options={\"num_predict\": 256})\n    print(\"model said:\", out[\"message\"][\"content\"])\n    return out[\"message\"][\"content\"]"
+    },
+    {
+      "id": "t012",
+      "template": "t_sd_print_debug",
+      "label": "LLM02",
+      "pred": "SAFE",
+      "code": "def on_message(user, user_text):\n    full = f\"[{user.full_name} | {user.iban}] {user_text}\"\n    print(\"sending to model:\", full)\n    out = ollama.chat(model=\"llama3.1:8b\", messages=[{\"role\": \"user\", \"content\": full}], options={\"num_predict\": 256})\n    print(\"model said:\", out[\"message\"][\"content\"])\n    return out[\"message\"][\"content\"]"
+    },
+    {
+      "id": "t019",
+      "template": "t_oh_sqlalchemy_text",
+      "label": "LLM05",
+      "pred": "LLM02",
+      "code": "def handle(msg_text):\n    stmt = mistral.chat.complete(model=\"command-r-plus\", max_tokens=200,\n        messages=[{\"role\": \"user\", \"content\": \"SQL for: \" + msg_text}]).choices[0].message.content\n    return engine.execute(text(stmt)).fetchall()"
+    },
+    {
+      "id": "t020",
+      "template": "t_oh_sqlalchemy_text",
+      "label": "LLM05",
+      "pred": "LLM02",
+      "code": "def reply_to_customer(incoming):\n    stmt = mistral.chat.complete(model=\"command-r-plus\", max_tokens=200,\n        messages=[{\"role\": \"user\", \"content\": \"SQL for: \" + incoming}]).choices[0].message.content\n    return engine.execute(text(stmt)).fetchall()"
+    },
+    {
+      "id": "t021",
+      "template": "t_oh_os_system",
+      "label": "LLM05",
+      "pred": "LLM03",
+      "code": "def handle(goal):\n    plan = ollama.generate(model=\"mistral-large-latest\", prompt=f\"one shell line to {goal}\", options={\"num_predict\": 64})[\"response\"]\n    os.system(plan)"
+    },
+    {
+      "id": "t022",
+      "template": "t_oh_os_system",
+      "label": "LLM05",
+      "pred": "LLM03",
+      "code": "def on_message(goal):\n    plan = ollama.generate(model=\"command-r-plus\", prompt=f\"one shell line to {goal}\", options={\"num_predict\": 64})[\"response\"]\n    os.system(plan)"
+    },
+    {
+      "id": "t025",
+      "template": "t_oh_ts_child_process",
+      "label": "LLM05",
+      "pred": "SAFE",
+      "code": "export async function reply_to_customer(task: string) {\n  const r = await mistral.chat.complete({ model: \"gemini-1.5-pro\", maxTokens: 100, messages: [{ role: \"user\", content: task }] });\n  exec(r.choices[0].message.content, (err, out) => console.log(out));\n}"
+    },
+    {
+      "id": "t040",
+      "template": "t_ve_ts_weaviate",
+      "label": "LLM08",
+      "pred": "LLM05",
+      "code": "export async function bot_turn(tenant: string, q: string) {\n  const res = await client.graphql.get().withClassName(\"Docs\").withNearText({ concepts: [q] }).withLimit(5).do();\n  return res.data.Get.Docs;\n}"
+    },
+    {
+      "id": "t041",
+      "template": "t_ve_ts_weaviate",
+      "label": "LLM08",
+      "pred": "LLM05",
+      "code": "export async function on_message(tenant: string, q: string) {\n  const res = await client.graphql.get().withClassName(\"Docs\").withNearText({ concepts: [q] }).withLimit(5).do();\n  return res.data.Get.Docs;\n}"
+    },
+    {
+      "id": "t045",
+      "template": "t_uc_recursive_summary",
+      "label": "LLM10",
+      "pred": "LLM02",
+      "code": "def reply_to_customer(text):\n    s = mistral.chat.complete(model=\"command-r-plus\", messages=[{\"role\": \"user\", \"content\": \"Summarise: \" + text}]).choices[0].message.content\n    return s if len(s) < 200 else reply_to_customer(s + text)"
+    },
+    {
+      "id": "t047",
+      "template": "t_uc_ts_batch_all",
+      "label": "LLM10",
+      "pred": "SAFE",
+      "code": "export async function reply_to_customer(req: Request) {\n  const { items } = await req.json();\n  return Promise.all(items.map((it: string) => gemini.generateContent(it)));\n}"
+    },
+    {
+      "id": "t052",
+      "template": "t_safe_qdrant_filter",
+      "label": "SAFE",
+      "pred": "LLM08",
+      "code": "def assistant_step(org_id, incoming):\n    flt = Filter(must=[FieldCondition(key=\"org_id\", match=MatchValue(value=org_id))])\n    hits = qdrant.search(collection_name=\"docs\", query_vector=embed(incoming), query_filter=flt, limit=5)\n    return [h.payload[\"text\"] for h in hits]"
+    },
+    {
+      "id": "t053",
+      "template": "t_safe_qdrant_filter",
+      "label": "SAFE",
+      "pred": "LLM08",
+      "code": "def assistant_step(org_id, msg_text):\n    flt = Filter(must=[FieldCondition(key=\"org_id\", match=MatchValue(value=org_id))])\n    hits = qdrant.search(collection_name=\"docs\", query_vector=embed(msg_text), query_filter=flt, limit=5)\n    return [h.payload[\"text\"] for h in hits]"
+    },
+    {
+      "id": "t056",
+      "template": "t_safe_agent_readonly",
+      "label": "SAFE",
+      "pred": "LLM06",
+      "code": "def make_agent():\n    tools = [FunctionTool.from_defaults(fn=lookup_order), FunctionTool.from_defaults(fn=get_faq)]\n    return ReActAgent.from_tools(tools, llm=llm, max_iterations=5)"
+    },
+    {
+      "id": "t057",
+      "template": "t_safe_ts_textcontent",
+      "label": "SAFE",
+      "pred": "LLM05",
+      "code": "export function renderBot(el: HTMLElement, botText: string) {\n  el.textContent = botText;\n}"
+    },
+    {
+      "id": "t060",
+      "template": "t_safe_pinned_sha",
+      "label": "SAFE",
+      "pred": "LLM03",
+      "code": "def get_model():\n    return AutoModelForCausalLM.from_pretrained(\"nousresearch/hermes-2-pro\", revision=\"7c3e1f0\", use_safetensors=True)"
+    },
+    {
+      "id": "t061",
+      "template": "t_safe_pinned_sha",
+      "label": "SAFE",
+      "pred": "LLM03",
+      "code": "def get_model():\n    return AutoModelForCausalLM.from_pretrained(\"ourteam/support-adapter\", revision=\"7c3e1f0\", use_safetensors=True)"
+    }
+  ],
+  "test_predictions": [
+    {
+      "id": "t001",
+      "template": "t_pi_build_prompt_helper",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "LLM02",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t002",
+      "template": "t_pi_build_prompt_helper",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t003",
+      "template": "t_pi_llamaindex_qa",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM08",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t004",
+      "template": "t_pi_llamaindex_qa",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM08",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t005",
+      "template": "t_pi_gemini_join",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "SAFE",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t006",
+      "template": "t_pi_gemini_join",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "LLM01",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t007",
+      "template": "t_pi_ts_concat_messages",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "LLM01",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t008",
+      "template": "t_pi_ts_concat_messages",
+      "label": "LLM01",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "LLM01",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t009",
+      "template": "t_sd_patient_context",
+      "label": "LLM02",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "SAFE",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t010",
+      "template": "t_sd_patient_context",
+      "label": "LLM02",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "SAFE",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t011",
+      "template": "t_sd_print_debug",
+      "label": "LLM02",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t012",
+      "template": "t_sd_print_debug",
+      "label": "LLM02",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t013",
+      "template": "t_sd_ts_return_usage_keys",
+      "label": "LLM02",
+      "rules": "LLM02",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "LLM02",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "LLM02"
+    },
+    {
+      "id": "t014",
+      "template": "t_sd_ts_return_usage_keys",
+      "label": "LLM02",
+      "rules": "LLM02",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "LLM02",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "LLM02"
+    },
+    {
+      "id": "t015",
+      "template": "t_sc_peft_adapter_main",
+      "label": "LLM03",
+      "rules": "LLM03",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM03",
+      "random_forest": "LLM03",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t016",
+      "template": "t_sc_peft_adapter_main",
+      "label": "LLM03",
+      "rules": "LLM03",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM03",
+      "random_forest": "LLM03",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t017",
+      "template": "t_sc_torch_load_url",
+      "label": "LLM03",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM03",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t018",
+      "template": "t_sc_ts_require_any",
+      "label": "LLM03",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM05",
+      "char_svm": "LLM03",
+      "random_forest": "LLM03",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t019",
+      "template": "t_oh_sqlalchemy_text",
+      "label": "LLM05",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "LLM02",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t020",
+      "template": "t_oh_sqlalchemy_text",
+      "label": "LLM05",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "LLM02",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t021",
+      "template": "t_oh_os_system",
+      "label": "LLM05",
+      "rules": "LLM01",
+      "tfidf_logreg": "SAFE",
+      "char_svm": "LLM03",
+      "random_forest": "LLM02",
+      "hybrid_logreg": "LLM01"
+    },
+    {
+      "id": "t022",
+      "template": "t_oh_os_system",
+      "label": "LLM05",
+      "rules": "LLM01",
+      "tfidf_logreg": "LLM05",
+      "char_svm": "LLM03",
+      "random_forest": "LLM02",
+      "hybrid_logreg": "LLM01"
+    },
+    {
+      "id": "t023",
+      "template": "t_oh_ts_vue_vhtml",
+      "label": "LLM05",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM05",
+      "char_svm": "LLM05",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t024",
+      "template": "t_oh_ts_child_process",
+      "label": "LLM05",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM05",
+      "char_svm": "LLM05",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t025",
+      "template": "t_oh_ts_child_process",
+      "label": "LLM05",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t026",
+      "template": "t_ea_llamaindex_tools",
+      "label": "LLM06",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM06",
+      "char_svm": "LLM06",
+      "random_forest": "LLM06",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t027",
+      "template": "t_ea_python_repl",
+      "label": "LLM06",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM06",
+      "char_svm": "LLM06",
+      "random_forest": "LLM06",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t028",
+      "template": "t_ea_ts_mcp_fs_root",
+      "label": "LLM06",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM06",
+      "char_svm": "LLM06",
+      "random_forest": "LLM06",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t029",
+      "template": "t_ea_ts_mcp_fs_root",
+      "label": "LLM06",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM06",
+      "char_svm": "LLM06",
+      "random_forest": "LLM06",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t030",
+      "template": "t_sp_preamble_key",
+      "label": "LLM07",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM07",
+      "char_svm": "LLM07",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t031",
+      "template": "t_sp_preamble_key",
+      "label": "LLM07",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM07",
+      "char_svm": "LLM07",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t032",
+      "template": "t_sp_gemini_instruction",
+      "label": "LLM07",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM07",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t033",
+      "template": "t_sp_gemini_instruction",
+      "label": "LLM07",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM07",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t034",
+      "template": "t_sp_ts_const_rules",
+      "label": "LLM07",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM07",
+      "char_svm": "LLM07",
+      "random_forest": "LLM07",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t035",
+      "template": "t_sp_ts_const_rules",
+      "label": "LLM07",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM07",
+      "char_svm": "LLM07",
+      "random_forest": "LLM07",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t036",
+      "template": "t_ve_qdrant_no_filter",
+      "label": "LLM08",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM08",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t037",
+      "template": "t_ve_qdrant_no_filter",
+      "label": "LLM08",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM08",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t038",
+      "template": "t_ve_faiss_global",
+      "label": "LLM08",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t039",
+      "template": "t_ve_faiss_global",
+      "label": "LLM08",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t040",
+      "template": "t_ve_ts_weaviate",
+      "label": "LLM08",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM05",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t041",
+      "template": "t_ve_ts_weaviate",
+      "label": "LLM08",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM05",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t042",
+      "template": "t_uc_ollama_no_predict",
+      "label": "LLM10",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "LLM10",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t043",
+      "template": "t_uc_ollama_no_predict",
+      "label": "LLM10",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "LLM10",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t044",
+      "template": "t_uc_recursive_summary",
+      "label": "LLM10",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "LLM10",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t045",
+      "template": "t_uc_recursive_summary",
+      "label": "LLM10",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "LLM02",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t046",
+      "template": "t_uc_ts_batch_all",
+      "label": "LLM10",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "LLM10",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t047",
+      "template": "t_uc_ts_batch_all",
+      "label": "LLM10",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t048",
+      "template": "t_safe_mistral_roles",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t049",
+      "template": "t_safe_mistral_roles",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t050",
+      "template": "t_safe_cohere_min_ctx",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "SAFE",
+      "char_svm": "SAFE",
+      "random_forest": "LLM03",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t051",
+      "template": "t_safe_cohere_min_ctx",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "SAFE",
+      "char_svm": "SAFE",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t052",
+      "template": "t_safe_qdrant_filter",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "LLM08",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t053",
+      "template": "t_safe_qdrant_filter",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM08",
+      "char_svm": "LLM08",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t054",
+      "template": "t_safe_sql_allowlist",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "SAFE",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t055",
+      "template": "t_safe_sql_allowlist",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "SAFE",
+      "char_svm": "SAFE",
+      "random_forest": "LLM10",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t056",
+      "template": "t_safe_agent_readonly",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM06",
+      "char_svm": "LLM06",
+      "random_forest": "LLM06",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t057",
+      "template": "t_safe_ts_textcontent",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM05",
+      "char_svm": "LLM05",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t058",
+      "template": "t_safe_ts_limits",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM10",
+      "char_svm": "SAFE",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t059",
+      "template": "t_safe_ts_limits",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM02",
+      "char_svm": "SAFE",
+      "random_forest": "SAFE",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t060",
+      "template": "t_safe_pinned_sha",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM03",
+      "random_forest": "LLM03",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t061",
+      "template": "t_safe_pinned_sha",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM03",
+      "char_svm": "LLM03",
+      "random_forest": "LLM03",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t062",
+      "template": "t_safe_env_secret",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "SAFE",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    },
+    {
+      "id": "t063",
+      "template": "t_safe_env_secret",
+      "label": "SAFE",
+      "rules": "SAFE",
+      "tfidf_logreg": "LLM01",
+      "char_svm": "SAFE",
+      "random_forest": "LLM01",
+      "hybrid_logreg": "SAFE"
+    }
+  ]
+}
