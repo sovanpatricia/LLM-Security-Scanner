@@ -106,100 +106,113 @@ def eda(df):
 
 
 # ---------------------------------------------------------------- experiments
+# PROTOCOL (fixed before the final test set was evaluated, see git history):
+#   1. Every model/hyperparameter setting is trained on the development set (199) and scored
+#      by macro-F1 on the new-style validation set (63). That set was written after the rules
+#      were frozen, so it is the only validation data the rules never saw.
+#   2. Best setting per model = highest validation macro-F1 (ties: higher detection F1).
+#      Chosen model = the model with the highest validation macro-F1, rules included.
+#   3. The chosen model is retrained on development + new-style validation (262 snippets).
+#   4. It is scored ONCE on the final test set (54). Test scores of the other models are
+#      reported for transparency only; they never influence the choice.
+def tuple_hp(hp):
+    return {k: (tuple(v) if isinstance(v, list) else v) for k, v in hp.items()}
+
+
 def main():
     df = pd.read_csv(ROOT / "data" / "dataset.csv")
-    eda_res = eda(df)
-    (REPORTS / "eda.json").write_text(json.dumps(eda_res, indent=2))
+    v2 = pd.read_csv(ROOT / "data" / "val_newstyle.csv")
+    te = pd.read_csv(ROOT / "data" / "testset.csv")
+    (REPORTS / "eda.json").write_text(json.dumps(eda(df), indent=2))
+    clean = lambda s: [strip_comments(c) for c in s]  # noqa: E731
+    rules_pred = lambda s: [rule_predict(c) for c in clean(s)]  # noqa: E731
 
-    te = pd.read_csv(ROOT / "data" / "testset.csv")  # held-out, written after rules/models were frozen
     df["split"] = template_split(df)
     tr, va = df[df.split == "train"], df[df.split == "val"]
-    results = {"split_sizes": {"train": len(tr), "val": len(va), "test": len(te)},
-               "split_templates": {"train": int(tr.template.nunique()), "val": int(va.template.nunique()),
-                                   "test": int(te.template.nunique())},
-               "test_per_class": te.label.value_counts().reindex(LABELS).to_dict(),
+    results = {"sizes": {"dev": len(df), "dev_train": len(tr), "dev_val": len(va),
+                         "val_newstyle": len(v2), "test": len(te)},
+               "templates": {"dev": int(df.template.nunique()), "val_newstyle": int(v2.template.nunique()),
+                             "test": int(te.template.nunique())},
+               "per_class": {"val_newstyle": v2.label.value_counts().reindex(LABELS).to_dict(),
+                             "test": te.label.value_counts().reindex(LABELS).to_dict()},
                "models": {}}
 
-    # 1) rules baseline (no training)
-    clean = lambda s: [strip_comments(c) for c in s]  # noqa: E731
-    results["models"]["rules"] = {"best_hp": None,
-                                  "val": metrics(va.label, [rule_predict(c) for c in clean(va.code)]),
-                                  "test": metrics(te.label, [rule_predict(c) for c in clean(te.code)])}
-    preds = {"rules": [rule_predict(c) for c in clean(te.code)]}
-
-    # 2) ML models: grid search on validation, refit on train+val, score on test
-    trval = pd.concat([tr, va])
+    # step 1-2: tune and choose on the new-style validation set
+    results["models"]["rules"] = {"best_hp": None, "val_newstyle": metrics(v2.label, rules_pred(v2.code)),
+                                  "dev_val": metrics(va.label, rules_pred(va.code))}
     for name, grid in GRIDS.items():
         scored = []
         for hp in grid:
-            m = build(name, **hp).fit(tr.code, tr.label)
-            scored.append((metrics(va.label, m.predict(va.code))["macro_f1"], hp))
-        best_f1, best_hp = max(scored, key=lambda s: s[0])
-        val_m = metrics(va.label, build(name, **best_hp).fit(tr.code, tr.label).predict(va.code))
-        final = build(name, **best_hp).fit(trval.code, trval.label)
-        p = final.predict(te.code)
-        preds[name] = list(p)
+            m = build(name, **hp).fit(df.code, df.label)
+            mt = metrics(v2.label, m.predict(v2.code))
+            scored.append(((mt["macro_f1"], mt["detect_f1"]), hp, mt))
+        _, best_hp, best_m = max(scored, key=lambda s: s[0])
+        # for the report: the earlier (leaky) protocol, dev-train -> dev-val, same hyperparameters
+        dv = metrics(va.label, build(name, **best_hp).fit(tr.code, tr.label).predict(va.code))
         results["models"][name] = {"best_hp": {k: (list(v) if isinstance(v, tuple) else v) for k, v in best_hp.items()},
-                                   "val": val_m, "test": metrics(te.label, p),
-                                   "grid_size": len(grid)}
-        print(f"{name:15s} val macroF1={val_m['macro_f1']:.3f} test macroF1={results['models'][name]['test']['macro_f1']:.3f} hp={best_hp}")
-    print(f"rules           test macroF1={results['models']['rules']['test']['macro_f1']:.3f}")
+                                   "grid_size": len(grid), "val_newstyle": best_m, "dev_val": dv}
+        print(f"{name:15s} new-style val macroF1={best_m['macro_f1']:.3f}  (dev val {dv['macro_f1']:.3f})  hp={best_hp}")
+    print(f"{'rules':15s} new-style val macroF1={results['models']['rules']['val_newstyle']['macro_f1']:.3f}")
+    chosen = max(results["models"], key=lambda k: (results["models"][k]["val_newstyle"]["macro_f1"],
+                                                   results["models"][k]["val_newstyle"]["detect_f1"]))
+    results["chosen"] = chosen
+    print("CHOSEN ON VALIDATION:", chosen)
 
-    # 3) robustness: 5-fold stratified *group* CV over the whole dataset, best hp per model
+    # step 3-4: retrain on dev + new-style validation, score once on the test set
+    full = pd.concat([df.drop(columns="split"), v2])
+    preds = {}
+    for name in results["models"]:
+        if name == "rules":
+            preds[name] = rules_pred(te.code)
+        else:
+            m = build(name, **tuple_hp(results["models"][name]["best_hp"])).fit(full.code, full.label)
+            preds[name] = list(m.predict(te.code))
+            if name == chosen:
+                joblib.dump(m, ROOT / "models" / "scanner_model.joblib")
+        results["models"][name]["test"] = metrics(te.label, preds[name])
+    print(f"TEST ({chosen}): macroF1={results['models'][chosen]['test']['macro_f1']:.3f} "
+          f"detectF1={results['models'][chosen]['test']['detect_f1']:.3f}")
+
+    # robustness: grouped 5-fold CV on the development set
     sgkf = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=SEED)
-    cv = {k: [] for k in ["rules", *GRIDS]}
-    for tr_idx, te_idx in sgkf.split(df.code, df.label, groups=df.template):
-        a, b = df.iloc[tr_idx], df.iloc[te_idx]
-        cv["rules"].append(metrics(b.label, [rule_predict(c) for c in clean(b.code)])["macro_f1"])
+    cv = {k: [] for k in results["models"]}
+    for a_idx, b_idx in sgkf.split(df.code, df.label, groups=df.template):
+        a, b = df.iloc[a_idx], df.iloc[b_idx]
+        cv["rules"].append(metrics(b.label, rules_pred(b.code))["macro_f1"])
         for name in GRIDS:
-            hp = results["models"][name]["best_hp"]
-            hp = {k: (tuple(v) if isinstance(v, list) else v) for k, v in hp.items()}
-            m = build(name, **hp).fit(a.code, a.label)
+            m = build(name, **tuple_hp(results["models"][name]["best_hp"])).fit(a.code, a.label)
             cv[name].append(metrics(b.label, m.predict(b.code))["macro_f1"])
     for k, v in cv.items():
-        results["models"][k]["cv_macro_f1_mean"] = float(np.mean(v))
-        results["models"][k]["cv_macro_f1_std"] = float(np.std(v))
+        results["models"][k]["cv_mean"], results["models"][k]["cv_std"] = float(np.mean(v)), float(np.std(v))
 
-    # 4) leakage check: a naive random split, where the same template can sit in train and test
+    # leakage check: naive random split of the development set
     rtr, rte = train_test_split(df, test_size=0.2, stratify=df.label, random_state=SEED)
-    results["random_split"] = {}
+    results["random_split"] = {"rules": metrics(rte.label, rules_pred(rte.code))}
     for name in GRIDS:
-        hp = {k: (tuple(v) if isinstance(v, list) else v) for k, v in results["models"][name]["best_hp"].items()}
-        m = build(name, **hp).fit(rtr.code, rtr.label)
+        m = build(name, **tuple_hp(results["models"][name]["best_hp"])).fit(rtr.code, rtr.label)
         results["random_split"][name] = metrics(rte.label, m.predict(rte.code))
-    results["random_split"]["rules"] = metrics(rte.label, [rule_predict(c) for c in clean(rte.code)])
 
-    # 5) model chosen by the protocol (best validation macro-F1) vs the one that generalised best
-    selected = max(GRIDS, key=lambda k: results["models"][k]["val"]["macro_f1"])
-    best_test = max(GRIDS, key=lambda k: results["models"][k]["test"]["macro_f1"])
-    results["selected_by_val"], results["best_on_test"] = selected, best_test
-    results["per_class"] = {k: classification_report(te.label, preds[k], labels=LABELS, output_dict=True, zero_division=0)
-                            for k in ["rules", *GRIDS]}
-    for key in {selected, best_test}:
-        cm = confusion_matrix(te.label, preds[key], labels=LABELS)
-        results[f"confusion_{key}"] = cm.tolist()
-        fig, ax = plt.subplots(figsize=(6.2, 5.4))
-        ax.imshow(cm, cmap="Blues")
-        ax.set_xticks(range(len(LABELS)), LABELS, rotation=45); ax.set_yticks(range(len(LABELS)), LABELS)
-        for i in range(len(LABELS)):
-            for j in range(len(LABELS)):
-                if cm[i, j]:
-                    ax.text(j, i, cm[i, j], ha="center", va="center", color="white" if cm[i, j] > cm.max() / 2 else "black")
-        ax.set_xlabel("predicted"); ax.set_ylabel("true"); ax.set_title(f"Test set: {PRETTY[key]}", fontsize=9)
-        fig.tight_layout(); fig.savefig(FIG / f"confusion_{key}.png", dpi=150); plt.close(fig)
+    # analysis of the chosen model on the test set
+    results["per_class_test"] = {k: classification_report(te.label, preds[k], labels=LABELS, output_dict=True,
+                                                          zero_division=0) for k in preds}
+    cm = confusion_matrix(te.label, preds[chosen], labels=LABELS)
+    results["confusion_test"] = cm.tolist()
+    fig, ax = plt.subplots(figsize=(6.2, 5.4))
+    ax.imshow(cm, cmap="Blues")
+    ax.set_xticks(range(len(LABELS)), LABELS, rotation=45); ax.set_yticks(range(len(LABELS)), LABELS)
+    for i in range(len(LABELS)):
+        for j in range(len(LABELS)):
+            if cm[i, j]:
+                ax.text(j, i, cm[i, j], ha="center", va="center", color="white" if cm[i, j] > cm.max() / 2 else "black")
+    ax.set_xlabel("predicted"); ax.set_ylabel("true"); ax.set_title(f"Final test set: {PRETTY[chosen]}", fontsize=9)
+    fig.tight_layout(); fig.savefig(FIG / "confusion_test.png", dpi=150); plt.close(fig)
 
-    ex = te.assign(pred=preds[best_test])
-    ok, bad = ex[ex.label == ex.pred], ex[ex.label != ex.pred]
+    ex = te.assign(pred=preds[chosen])
     cols = ["id", "template", "label", "pred", "code"]
-    results["examples_correct"] = ok[ok.label != "SAFE"].sample(min(4, len(ok)), random_state=1)[cols].to_dict(orient="records")
-    results["examples_wrong"] = bad[cols].to_dict(orient="records")
-    results["test_predictions"] = te[["id", "template", "label"]].assign(**{k: preds[k] for k in preds}).to_dict(orient="records")
-
-    # the model used by the app: trained on the whole development set (the test set stays unseen)
-    hp = {k: (tuple(v) if isinstance(v, list) else v) for k, v in results["models"][best_test]["best_hp"].items()}
-    joblib.dump(build(best_test, **hp).fit(df.code, df.label), ROOT / "models" / "scanner_model.joblib")
+    results["examples_correct"] = ex[(ex.label == ex.pred) & (ex.label != "SAFE")][cols].to_dict(orient="records")
+    results["examples_wrong"] = ex[ex.label != ex.pred][cols].to_dict(orient="records")
+    results["test_predictions"] = te[["id", "template", "label"]].assign(**preds).to_dict(orient="records")
     (REPORTS / "results.json").write_text(json.dumps(results, indent=2, default=float))
-    print("selected by val:", selected, "| best on test:", best_test)
 
 
 if __name__ == "__main__":
