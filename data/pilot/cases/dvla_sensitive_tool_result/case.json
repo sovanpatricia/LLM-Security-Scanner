@@ -70,7 +70,7 @@
       "Patricia Sovan"
     ]
   },
-  "split": "pilot_development_only",
+  "split": "app_validation",
   "excluded_from_training": true,
   "assumptions": [
     "Read-only GetCurrentUser tool response is exposed to the agent as a tool observation.",

@@ -1,0 +1,2330 @@
+id,template,language,label,vulnerable,code,case_id,pair_id,group,split,variant,origin,form,app_kind,review_status
+dvla_sensitive_tool_result_001:vulnerable,dvla_sensitive_tool_result,python,LLM02,1,"# Adapted from ReversecLabs/damn-vulnerable-llm-agent, Apache-2.0.
+# Modified 2026-11-08 for an isolated controlled disclosure case.
+# See case.json and LICENSE.upstream for provenance and limitations.
+import json
+from langchain.agents import Tool
+
+class TransactionDb:
+    def get_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            ""SELECT userId,username,password FROM Users WHERE userId = ?"", (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        # Get column names
+        columns = [column[0] for column in cursor.description]
+
+        # Convert rows to dictionaries with column names as keys
+        users = [dict(zip(columns, row)) for row in rows]
+
+        # Convert to JSON format
+        return json.dumps(users, indent=4)
+
+def get_current_user(input : str):
+    db = TransactionDb()
+    user = db.get_user(1)
+    db.close()
+    return user
+
+get_current_user_tool = Tool(
+    name='GetCurrentUser',
+    func= get_current_user,
+    description=""Returns the current user for querying transactions.""
+)
+",dvla_sensitive_tool_result_001,dvla_sensitive_tool_result_001,ReversecLabs/damn-vulnerable-llm-agent,app_validation,vulnerable,mutated,base,intentionally_vulnerable_lab,reviewed
+dvla_sensitive_tool_result_001:control,dvla_sensitive_tool_result,python,SAFE,0,"# Adapted from ReversecLabs/damn-vulnerable-llm-agent, Apache-2.0.
+# Modified 2026-11-08 for an isolated controlled disclosure case.
+# See case.json and LICENSE.upstream for provenance and limitations.
+import json
+from langchain.agents import Tool
+
+class TransactionDb:
+    def get_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            ""SELECT userId,username FROM Users WHERE userId = ?"", (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        # Get column names
+        columns = [column[0] for column in cursor.description]
+
+        # Convert rows to dictionaries with column names as keys
+        users = [dict(zip(columns, row)) for row in rows]
+
+        # Convert to JSON format
+        return json.dumps(users, indent=4)
+
+def get_current_user(input : str):
+    db = TransactionDb()
+    user = db.get_user(1)
+    db.close()
+    return user
+
+get_current_user_tool = Tool(
+    name='GetCurrentUser',
+    func= get_current_user,
+    description=""Returns the current user for querying transactions.""
+)
+",dvla_sensitive_tool_result_001,dvla_sensitive_tool_result_001,ReversecLabs/damn-vulnerable-llm-agent,app_validation,control,repaired,base,intentionally_vulnerable_lab,reviewed
+dvla_sensitive_tool_result_002:vulnerable,dvla_sensitive_tool_result,python,LLM02,1,"# Adapted from ReversecLabs/damn-vulnerable-llm-agent, Apache-2.0.
+# Modified 2026-11-08 for an isolated controlled disclosure case.
+# See case.json and LICENSE.upstream for provenance and limitations.
+import json
+from langchain.agents import Tool
+
+class TransactionDb:
+    def get_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            ""SELECT * FROM Users WHERE userId = ?"", (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        # Get column names
+        columns = [column[0] for column in cursor.description]
+
+        # Convert rows to dictionaries with column names as keys
+        users = [dict(zip(columns, row)) for row in rows]
+
+        # Convert to JSON format
+        return json.dumps(users, indent=4)
+
+def get_current_user(input : str):
+    db = TransactionDb()
+    user = db.get_user(1)
+    db.close()
+    return user
+
+get_current_user_tool = Tool(
+    name='GetCurrentUser',
+    func= get_current_user,
+    description=""Returns the current user for querying transactions.""
+)
+",dvla_sensitive_tool_result_002,dvla_sensitive_tool_result_002,ReversecLabs/damn-vulnerable-llm-agent,app_validation,vulnerable,mutated,select_star,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sensitive_tool_result_002:control,dvla_sensitive_tool_result,python,SAFE,0,"# Adapted from ReversecLabs/damn-vulnerable-llm-agent, Apache-2.0.
+# Modified 2026-11-08 for an isolated controlled disclosure case.
+# See case.json and LICENSE.upstream for provenance and limitations.
+import json
+from langchain.agents import Tool
+
+class TransactionDb:
+    def get_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            ""SELECT userId,username FROM Users WHERE userId = ?"", (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        # Get column names
+        columns = [column[0] for column in cursor.description]
+
+        # Convert rows to dictionaries with column names as keys
+        users = [dict(zip(columns, row)) for row in rows]
+
+        # Convert to JSON format
+        return json.dumps(users, indent=4)
+
+def get_current_user(input : str):
+    db = TransactionDb()
+    user = db.get_user(1)
+    db.close()
+    return user
+
+get_current_user_tool = Tool(
+    name='GetCurrentUser',
+    func= get_current_user,
+    description=""Returns the current user for querying transactions.""
+)
+",dvla_sensitive_tool_result_002,dvla_sensitive_tool_result_002,ReversecLabs/damn-vulnerable-llm-agent,app_validation,control,repaired,select_star,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sensitive_tool_result_003:vulnerable,dvla_sensitive_tool_result,python,LLM02,1,"# Adapted from ReversecLabs/damn-vulnerable-llm-agent, Apache-2.0.
+# Modified 2026-11-08 for an isolated controlled disclosure case.
+# See case.json and LICENSE.upstream for provenance and limitations.
+import json
+from langchain.agents import Tool
+
+USER_COLUMNS = ""userId,username,password""
+
+class TransactionDb:
+    def get_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f""SELECT {USER_COLUMNS} FROM Users WHERE userId = ?"", (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        # Get column names
+        columns = [column[0] for column in cursor.description]
+
+        # Convert rows to dictionaries with column names as keys
+        users = [dict(zip(columns, row)) for row in rows]
+
+        # Convert to JSON format
+        return json.dumps(users, indent=4)
+
+def get_current_user(input : str):
+    db = TransactionDb()
+    user = db.get_user(1)
+    db.close()
+    return user
+
+get_current_user_tool = Tool(
+    name='GetCurrentUser',
+    func= get_current_user,
+    description=""Returns the current user for querying transactions.""
+)
+",dvla_sensitive_tool_result_003,dvla_sensitive_tool_result_003,ReversecLabs/damn-vulnerable-llm-agent,app_validation,vulnerable,mutated,through_constant,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sensitive_tool_result_003:control,dvla_sensitive_tool_result,python,SAFE,0,"# Adapted from ReversecLabs/damn-vulnerable-llm-agent, Apache-2.0.
+# Modified 2026-11-08 for an isolated controlled disclosure case.
+# See case.json and LICENSE.upstream for provenance and limitations.
+import json
+from langchain.agents import Tool
+
+USER_COLUMNS = ""userId,username""
+
+class TransactionDb:
+    def get_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f""SELECT {USER_COLUMNS} FROM Users WHERE userId = ?"", (user_id,)
+        )
+        rows = cursor.fetchall()
+
+        # Get column names
+        columns = [column[0] for column in cursor.description]
+
+        # Convert rows to dictionaries with column names as keys
+        users = [dict(zip(columns, row)) for row in rows]
+
+        # Convert to JSON format
+        return json.dumps(users, indent=4)
+
+def get_current_user(input : str):
+    db = TransactionDb()
+    user = db.get_user(1)
+    db.close()
+    return user
+
+get_current_user_tool = Tool(
+    name='GetCurrentUser',
+    func= get_current_user,
+    description=""Returns the current user for querying transactions.""
+)
+",dvla_sensitive_tool_result_003,dvla_sensitive_tool_result_003,ReversecLabs/damn-vulnerable-llm-agent,app_validation,control,repaired,through_constant,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sql_output_001:vulnerable,dvla_sql_output,python,LLM05,1,"# Extracted/adapted from ReversecLabs/damn-vulnerable-llm-agent.
+# Apache-2.0; see LICENSE.upstream. Modified for a controlled pilot on 2026-11-08.
+import json
+
+def get_user_transactions(self, userId):
+    cursor = self.conn.cursor()
+    cursor.execute(f""SELECT * FROM Transactions WHERE userId = '{str(userId)}'"")
+    rows = cursor.fetchall()
+
+    # Get column names
+    columns = [column[0] for column in cursor.description]
+
+    # Convert rows to dictionaries with column names as keys
+    transactions = [dict(zip(columns, row)) for row in rows]
+
+    # Convert to JSON format
+    return json.dumps(transactions, indent=4)
+",dvla_sql_output_001,dvla_sql_output_001,ReversecLabs/damn-vulnerable-llm-agent,app_validation,vulnerable,original,base,intentionally_vulnerable_lab,reviewed
+dvla_sql_output_001:control,dvla_sql_output,python,SAFE,0,"# Extracted/adapted from ReversecLabs/damn-vulnerable-llm-agent.
+# Apache-2.0; see LICENSE.upstream. Modified for a controlled pilot on 2026-11-08.
+import json
+
+def get_user_transactions(self, userId):
+    cursor = self.conn.cursor()
+    cursor.execute(""SELECT * FROM Transactions WHERE userId = ?"", (str(userId),))
+    rows = cursor.fetchall()
+
+    # Get column names
+    columns = [column[0] for column in cursor.description]
+
+    # Convert rows to dictionaries with column names as keys
+    transactions = [dict(zip(columns, row)) for row in rows]
+
+    # Convert to JSON format
+    return json.dumps(transactions, indent=4)
+",dvla_sql_output_001,dvla_sql_output_001,ReversecLabs/damn-vulnerable-llm-agent,app_validation,control,repaired,base,intentionally_vulnerable_lab,reviewed
+dvla_sql_output_002:vulnerable,dvla_sql_output,python,LLM05,1,"# Extracted/adapted from ReversecLabs/damn-vulnerable-llm-agent.
+# Apache-2.0; see LICENSE.upstream. Modified for a controlled pilot on 2026-11-08.
+import json
+
+def get_user_transactions(self, userId):
+    cursor = self.conn.cursor()
+    query = ""SELECT * FROM Transactions WHERE userId = '"" + str(userId) + ""'""
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    # Get column names
+    columns = [column[0] for column in cursor.description]
+
+    # Convert rows to dictionaries with column names as keys
+    transactions = [dict(zip(columns, row)) for row in rows]
+
+    # Convert to JSON format
+    return json.dumps(transactions, indent=4)
+",dvla_sql_output_002,dvla_sql_output_002,ReversecLabs/damn-vulnerable-llm-agent,app_validation,vulnerable,mutated,through_variable,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sql_output_002:control,dvla_sql_output,python,SAFE,0,"# Extracted/adapted from ReversecLabs/damn-vulnerable-llm-agent.
+# Apache-2.0; see LICENSE.upstream. Modified for a controlled pilot on 2026-11-08.
+import json
+
+def get_user_transactions(self, userId):
+    cursor = self.conn.cursor()
+    query = ""SELECT * FROM Transactions WHERE userId = ?""
+    cursor.execute(query, (str(userId),))
+    rows = cursor.fetchall()
+
+    # Get column names
+    columns = [column[0] for column in cursor.description]
+
+    # Convert rows to dictionaries with column names as keys
+    transactions = [dict(zip(columns, row)) for row in rows]
+
+    # Convert to JSON format
+    return json.dumps(transactions, indent=4)
+",dvla_sql_output_002,dvla_sql_output_002,ReversecLabs/damn-vulnerable-llm-agent,app_validation,control,repaired,through_variable,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sql_output_003:vulnerable,dvla_sql_output,python,LLM05,1,"# Extracted/adapted from ReversecLabs/damn-vulnerable-llm-agent.
+# Apache-2.0; see LICENSE.upstream. Modified for a controlled pilot on 2026-11-08.
+import json
+
+
+def build_transactions_query(user_id):
+    return ""SELECT * FROM Transactions WHERE userId = '%s'"" % user_id
+
+
+def get_user_transactions(self, userId):
+    cursor = self.conn.cursor()
+    cursor.execute(build_transactions_query(str(userId)))
+    rows = cursor.fetchall()
+
+    # Get column names
+    columns = [column[0] for column in cursor.description]
+
+    # Convert rows to dictionaries with column names as keys
+    transactions = [dict(zip(columns, row)) for row in rows]
+
+    # Convert to JSON format
+    return json.dumps(transactions, indent=4)
+",dvla_sql_output_003,dvla_sql_output_003,ReversecLabs/damn-vulnerable-llm-agent,app_validation,vulnerable,mutated,through_helper,intentionally_vulnerable_lab,draft_requires_second_reviewer
+dvla_sql_output_003:control,dvla_sql_output,python,SAFE,0,"# Extracted/adapted from ReversecLabs/damn-vulnerable-llm-agent.
+# Apache-2.0; see LICENSE.upstream. Modified for a controlled pilot on 2026-11-08.
+import json
+
+
+def build_transactions_query(user_id):
+    return ""SELECT * FROM Transactions WHERE userId = ?"", (user_id,)
+
+
+def get_user_transactions(self, userId):
+    cursor = self.conn.cursor()
+    cursor.execute(*build_transactions_query(str(userId)))
+    rows = cursor.fetchall()
+
+    # Get column names
+    columns = [column[0] for column in cursor.description]
+
+    # Convert rows to dictionaries with column names as keys
+    transactions = [dict(zip(columns, row)) for row in rows]
+
+    # Convert to JSON format
+    return json.dumps(transactions, indent=4)
+",dvla_sql_output_003,dvla_sql_output_003,ReversecLabs/damn-vulnerable-llm-agent,app_validation,control,repaired,through_helper,intentionally_vulnerable_lab,draft_requires_second_reviewer
+pandasai_exec_without_sandbox_001:vulnerable,pandasai_exec_without_sandbox,python,LLM05,1,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/agent/base.py lines 7, 24, 123-135. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+from pandasai.core.code_execution.code_executor import CodeExecutor
+from pandasai.sandbox import Sandbox
+
+
+class Agent:
+    def execute_code(self, code: str) -> dict:
+        """"""Execute the generated code.""""""
+        self._state.logger.log(f""Executing code: {code}"")
+
+        code_executor = CodeExecutor(self._state.config)
+        code_executor.add_to_env(""execute_sql_query"", self._execute_sql_query)
+        for skill in self._state.skills:
+            code_executor.add_to_env(skill.name, skill.func)
+
+        if self._sandbox:
+            return self._sandbox.execute(code, code_executor.environment)
+
+        return code_executor.execute_and_return_result(code)
+",pandasai_exec_without_sandbox_001,pandasai_exec_without_sandbox_001,sinaptik-ai/pandas-ai,app_test,vulnerable,original,base,real_world_app,draft_requires_second_reviewer
+pandasai_exec_without_sandbox_001:control,pandasai_exec_without_sandbox,python,SAFE,0,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/agent/base.py lines 7, 24, 123-135. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+from pandasai.core.code_execution.code_executor import CodeExecutor
+from pandasai.sandbox import Sandbox
+
+
+class Agent:
+    def execute_code(self, code: str) -> dict:
+        """"""Execute the generated code.""""""
+        self._state.logger.log(f""Executing code: {code}"")
+
+        code_executor = CodeExecutor(self._state.config)
+        code_executor.add_to_env(""execute_sql_query"", self._execute_sql_query)
+        for skill in self._state.skills:
+            code_executor.add_to_env(skill.name, skill.func)
+
+        if self._sandbox:
+            return self._sandbox.execute(code, code_executor.environment)
+
+        raise RuntimeError(""Generated code is only executed inside a sandbox."")
+",pandasai_exec_without_sandbox_001,pandasai_exec_without_sandbox_001,sinaptik-ai/pandas-ai,app_test,control,repaired,base,real_world_app,draft_requires_second_reviewer
+pandasai_exec_without_sandbox_002:vulnerable,pandasai_exec_without_sandbox,python,LLM05,1,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/agent/base.py lines 7, 24, 123-135. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+from pandasai.core.code_execution.code_executor import CodeExecutor
+from pandasai.sandbox import Sandbox
+
+
+class Agent:
+    def execute_code(self, code: str) -> dict:
+        """"""Execute the generated code.""""""
+        self._state.logger.log(f""Executing code: {code}"")
+
+        code_executor = CodeExecutor(self._state.config)
+        code_executor.add_to_env(""execute_sql_query"", self._execute_sql_query)
+        for skill in self._state.skills:
+            code_executor.add_to_env(skill.name, skill.func)
+
+        if self._sandbox:
+            return self._sandbox.execute(code, code_executor.environment)
+
+        environment = code_executor.environment
+        exec(code, environment)
+        return environment.get(""result"")
+",pandasai_exec_without_sandbox_002,pandasai_exec_without_sandbox_002,sinaptik-ai/pandas-ai,app_test,vulnerable,mutated,inline_exec,real_world_app,draft_requires_second_reviewer
+pandasai_exec_without_sandbox_002:control,pandasai_exec_without_sandbox,python,SAFE,0,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/agent/base.py lines 7, 24, 123-135. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+from pandasai.core.code_execution.code_executor import CodeExecutor
+from pandasai.sandbox import Sandbox
+
+
+class Agent:
+    def execute_code(self, code: str) -> dict:
+        """"""Execute the generated code.""""""
+        self._state.logger.log(f""Executing code: {code}"")
+
+        code_executor = CodeExecutor(self._state.config)
+        code_executor.add_to_env(""execute_sql_query"", self._execute_sql_query)
+        for skill in self._state.skills:
+            code_executor.add_to_env(skill.name, skill.func)
+
+        if self._sandbox:
+            return self._sandbox.execute(code, code_executor.environment)
+
+        environment = code_executor.environment
+        raise RuntimeError(""Generated code is only executed inside a sandbox."")
+",pandasai_exec_without_sandbox_002,pandasai_exec_without_sandbox_002,sinaptik-ai/pandas-ai,app_test,control,repaired,inline_exec,real_world_app,draft_requires_second_reviewer
+pandasai_exec_without_sandbox_003:vulnerable,pandasai_exec_without_sandbox,python,LLM05,1,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/agent/base.py lines 7, 24, 123-135. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+from pandasai.core.code_execution.code_executor import CodeExecutor
+from pandasai.sandbox import Sandbox
+
+
+class Agent:
+    def execute_code(self, code: str) -> dict:
+        """"""Execute the generated code.""""""
+        self._state.logger.log(f""Executing code: {code}"")
+
+        code_executor = CodeExecutor(self._state.config)
+        code_executor.add_to_env(""execute_sql_query"", self._execute_sql_query)
+        for skill in self._state.skills:
+            code_executor.add_to_env(skill.name, skill.func)
+
+        if self._sandbox:
+            return self._sandbox.execute(code, code_executor.environment)
+
+        return run_locally(code, code_executor)
+
+
+def run_locally(code, code_executor):
+    return code_executor.execute_and_return_result(code)
+",pandasai_exec_without_sandbox_003,pandasai_exec_without_sandbox_003,sinaptik-ai/pandas-ai,app_test,vulnerable,mutated,through_helper,real_world_app,draft_requires_second_reviewer
+pandasai_exec_without_sandbox_003:control,pandasai_exec_without_sandbox,python,SAFE,0,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/agent/base.py lines 7, 24, 123-135. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+from pandasai.core.code_execution.code_executor import CodeExecutor
+from pandasai.sandbox import Sandbox
+
+
+class Agent:
+    def execute_code(self, code: str) -> dict:
+        """"""Execute the generated code.""""""
+        self._state.logger.log(f""Executing code: {code}"")
+
+        code_executor = CodeExecutor(self._state.config)
+        code_executor.add_to_env(""execute_sql_query"", self._execute_sql_query)
+        for skill in self._state.skills:
+            code_executor.add_to_env(skill.name, skill.func)
+
+        if self._sandbox:
+            return self._sandbox.execute(code, code_executor.environment)
+
+        return run_locally(code, code_executor)
+
+
+def run_locally(code, code_executor):
+    raise RuntimeError(""Generated code is only executed inside a sandbox."")
+",pandasai_exec_without_sandbox_003,pandasai_exec_without_sandbox_003,sinaptik-ai/pandas-ai,app_test,control,repaired,through_helper,real_world_app,draft_requires_second_reviewer
+pandasai_rows_in_prompt_001:vulnerable,pandasai_rows_in_prompt,python,LLM02,1,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/helpers/dataframe_serializer.py lines 1-60. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import json
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..dataframe.base import DataFrame
+
+
+class DataframeSerializer:
+    MAX_COLUMN_TEXT_LENGTH = 200
+
+    @classmethod
+    def serialize(cls, df: ""DataFrame"", dialect: str = ""postgres"") -> str:
+        """"""
+        Convert df to a CSV-like format wrapped inside <table> tags, truncating long text values, and serializing only a subset of rows using df.head().
+
+        Args:
+            df (pd.DataFrame): Pandas DataFrame
+            dialect (str): Database dialect (default is ""postgres"")
+
+        Returns:
+            str: Serialized DataFrame string
+        """"""
+
+        # Start building the table metadata
+        dataframe_info = f'<table dialect=""{dialect}"" table_name=""{df.schema.name}""'
+
+        # Add description attribute if available
+        if df.schema.description is not None:
+            dataframe_info += f' description=""{df.schema.description}""'
+
+        if df.schema.columns:
+            columns = [column.model_dump() for column in df.schema.columns]
+            dataframe_info += f' columns=""{json.dumps(columns, ensure_ascii=False)}""'
+
+        dataframe_info += f' dimensions=""{df.rows_count}x{df.columns_count}"">'
+
+        # Truncate long values
+        df_truncated = cls._truncate_dataframe(df.head())
+
+        # Convert to CSV format
+        dataframe_info += f""\n{df_truncated.to_csv(index=False)}""
+
+        # Close the table tag
+        dataframe_info += ""</table>\n""
+
+        return dataframe_info
+
+    @classmethod
+    def _truncate_dataframe(cls, df: ""DataFrame"") -> ""DataFrame"":
+        """"""Truncates string values exceeding MAX_COLUMN_TEXT_LENGTH, and converts JSON-like values to truncated strings.""""""
+
+        def truncate_value(value):
+            if isinstance(value, (dict, list)):  # Convert JSON-like objects to strings
+                value = json.dumps(value, ensure_ascii=False)
+
+            if isinstance(value, str) and len(value) > cls.MAX_COLUMN_TEXT_LENGTH:
+                return f""{value[: cls.MAX_COLUMN_TEXT_LENGTH]}…""
+            return value
+
+        return df.apply(lambda row: row.apply(truncate_value), axis=1)
+",pandasai_rows_in_prompt_001,pandasai_rows_in_prompt_001,sinaptik-ai/pandas-ai,app_test,vulnerable,original,base,real_world_app,draft_requires_second_reviewer
+pandasai_rows_in_prompt_001:control,pandasai_rows_in_prompt,python,SAFE,0,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/helpers/dataframe_serializer.py lines 1-60. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import json
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..dataframe.base import DataFrame
+
+
+class DataframeSerializer:
+    MAX_COLUMN_TEXT_LENGTH = 200
+
+    @classmethod
+    def serialize(cls, df: ""DataFrame"", dialect: str = ""postgres"") -> str:
+        """"""
+        Convert df to a CSV-like format wrapped inside <table> tags, truncating long text values, and serializing only a subset of rows using df.head().
+
+        Args:
+            df (pd.DataFrame): Pandas DataFrame
+            dialect (str): Database dialect (default is ""postgres"")
+
+        Returns:
+            str: Serialized DataFrame string
+        """"""
+
+        # Start building the table metadata
+        dataframe_info = f'<table dialect=""{dialect}"" table_name=""{df.schema.name}""'
+
+        # Add description attribute if available
+        if df.schema.description is not None:
+            dataframe_info += f' description=""{df.schema.description}""'
+
+        if df.schema.columns:
+            columns = [column.model_dump() for column in df.schema.columns]
+            dataframe_info += f' columns=""{json.dumps(columns, ensure_ascii=False)}""'
+
+        dataframe_info += f' dimensions=""{df.rows_count}x{df.columns_count}"">'
+
+        # Truncate long values
+        df_truncated = cls._truncate_dataframe(df.head(0))
+
+        # Convert to CSV format
+        dataframe_info += f""\n{df_truncated.to_csv(index=False)}""
+
+        # Close the table tag
+        dataframe_info += ""</table>\n""
+
+        return dataframe_info
+
+    @classmethod
+    def _truncate_dataframe(cls, df: ""DataFrame"") -> ""DataFrame"":
+        """"""Truncates string values exceeding MAX_COLUMN_TEXT_LENGTH, and converts JSON-like values to truncated strings.""""""
+
+        def truncate_value(value):
+            if isinstance(value, (dict, list)):  # Convert JSON-like objects to strings
+                value = json.dumps(value, ensure_ascii=False)
+
+            if isinstance(value, str) and len(value) > cls.MAX_COLUMN_TEXT_LENGTH:
+                return f""{value[: cls.MAX_COLUMN_TEXT_LENGTH]}…""
+            return value
+
+        return df.apply(lambda row: row.apply(truncate_value), axis=1)
+",pandasai_rows_in_prompt_001,pandasai_rows_in_prompt_001,sinaptik-ai/pandas-ai,app_test,control,repaired,base,real_world_app,draft_requires_second_reviewer
+pandasai_rows_in_prompt_002:vulnerable,pandasai_rows_in_prompt,python,LLM02,1,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/helpers/dataframe_serializer.py lines 1-60. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import json
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..dataframe.base import DataFrame
+
+
+class DataframeSerializer:
+    MAX_COLUMN_TEXT_LENGTH = 200
+    SAMPLE_ROWS = 5
+
+    @classmethod
+    def serialize(cls, df: ""DataFrame"", dialect: str = ""postgres"") -> str:
+        """"""
+        Convert df to a CSV-like format wrapped inside <table> tags, truncating long text values, and serializing only a subset of rows using df.head().
+
+        Args:
+            df (pd.DataFrame): Pandas DataFrame
+            dialect (str): Database dialect (default is ""postgres"")
+
+        Returns:
+            str: Serialized DataFrame string
+        """"""
+
+        # Start building the table metadata
+        dataframe_info = f'<table dialect=""{dialect}"" table_name=""{df.schema.name}""'
+
+        # Add description attribute if available
+        if df.schema.description is not None:
+            dataframe_info += f' description=""{df.schema.description}""'
+
+        if df.schema.columns:
+            columns = [column.model_dump() for column in df.schema.columns]
+            dataframe_info += f' columns=""{json.dumps(columns, ensure_ascii=False)}""'
+
+        dataframe_info += f' dimensions=""{df.rows_count}x{df.columns_count}"">'
+
+        # Truncate long values
+        df_truncated = cls._truncate_dataframe(df.head(cls.SAMPLE_ROWS))
+
+        # Convert to CSV format
+        dataframe_info += f""\n{df_truncated.to_csv(index=False)}""
+
+        # Close the table tag
+        dataframe_info += ""</table>\n""
+
+        return dataframe_info
+
+    @classmethod
+    def _truncate_dataframe(cls, df: ""DataFrame"") -> ""DataFrame"":
+        """"""Truncates string values exceeding MAX_COLUMN_TEXT_LENGTH, and converts JSON-like values to truncated strings.""""""
+
+        def truncate_value(value):
+            if isinstance(value, (dict, list)):  # Convert JSON-like objects to strings
+                value = json.dumps(value, ensure_ascii=False)
+
+            if isinstance(value, str) and len(value) > cls.MAX_COLUMN_TEXT_LENGTH:
+                return f""{value[: cls.MAX_COLUMN_TEXT_LENGTH]}…""
+            return value
+
+        return df.apply(lambda row: row.apply(truncate_value), axis=1)
+",pandasai_rows_in_prompt_002,pandasai_rows_in_prompt_002,sinaptik-ai/pandas-ai,app_test,vulnerable,mutated,through_constant,real_world_app,draft_requires_second_reviewer
+pandasai_rows_in_prompt_002:control,pandasai_rows_in_prompt,python,SAFE,0,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/helpers/dataframe_serializer.py lines 1-60. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import json
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..dataframe.base import DataFrame
+
+
+class DataframeSerializer:
+    MAX_COLUMN_TEXT_LENGTH = 200
+    SAMPLE_ROWS = 0
+
+    @classmethod
+    def serialize(cls, df: ""DataFrame"", dialect: str = ""postgres"") -> str:
+        """"""
+        Convert df to a CSV-like format wrapped inside <table> tags, truncating long text values, and serializing only a subset of rows using df.head().
+
+        Args:
+            df (pd.DataFrame): Pandas DataFrame
+            dialect (str): Database dialect (default is ""postgres"")
+
+        Returns:
+            str: Serialized DataFrame string
+        """"""
+
+        # Start building the table metadata
+        dataframe_info = f'<table dialect=""{dialect}"" table_name=""{df.schema.name}""'
+
+        # Add description attribute if available
+        if df.schema.description is not None:
+            dataframe_info += f' description=""{df.schema.description}""'
+
+        if df.schema.columns:
+            columns = [column.model_dump() for column in df.schema.columns]
+            dataframe_info += f' columns=""{json.dumps(columns, ensure_ascii=False)}""'
+
+        dataframe_info += f' dimensions=""{df.rows_count}x{df.columns_count}"">'
+
+        # Truncate long values
+        df_truncated = cls._truncate_dataframe(df.head(cls.SAMPLE_ROWS))
+
+        # Convert to CSV format
+        dataframe_info += f""\n{df_truncated.to_csv(index=False)}""
+
+        # Close the table tag
+        dataframe_info += ""</table>\n""
+
+        return dataframe_info
+
+    @classmethod
+    def _truncate_dataframe(cls, df: ""DataFrame"") -> ""DataFrame"":
+        """"""Truncates string values exceeding MAX_COLUMN_TEXT_LENGTH, and converts JSON-like values to truncated strings.""""""
+
+        def truncate_value(value):
+            if isinstance(value, (dict, list)):  # Convert JSON-like objects to strings
+                value = json.dumps(value, ensure_ascii=False)
+
+            if isinstance(value, str) and len(value) > cls.MAX_COLUMN_TEXT_LENGTH:
+                return f""{value[: cls.MAX_COLUMN_TEXT_LENGTH]}…""
+            return value
+
+        return df.apply(lambda row: row.apply(truncate_value), axis=1)
+",pandasai_rows_in_prompt_002,pandasai_rows_in_prompt_002,sinaptik-ai/pandas-ai,app_test,control,repaired,through_constant,real_world_app,draft_requires_second_reviewer
+pandasai_rows_in_prompt_003:vulnerable,pandasai_rows_in_prompt,python,LLM02,1,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/helpers/dataframe_serializer.py lines 1-60. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import json
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..dataframe.base import DataFrame
+
+
+class DataframeSerializer:
+    MAX_COLUMN_TEXT_LENGTH = 200
+
+    @classmethod
+    def serialize(cls, df: ""DataFrame"", dialect: str = ""postgres"") -> str:
+        """"""
+        Convert df to a CSV-like format wrapped inside <table> tags, truncating long text values, and serializing only a subset of rows using df.head().
+
+        Args:
+            df (pd.DataFrame): Pandas DataFrame
+            dialect (str): Database dialect (default is ""postgres"")
+
+        Returns:
+            str: Serialized DataFrame string
+        """"""
+
+        # Start building the table metadata
+        dataframe_info = f'<table dialect=""{dialect}"" table_name=""{df.schema.name}""'
+
+        # Add description attribute if available
+        if df.schema.description is not None:
+            dataframe_info += f' description=""{df.schema.description}""'
+
+        if df.schema.columns:
+            columns = [column.model_dump() for column in df.schema.columns]
+            dataframe_info += f' columns=""{json.dumps(columns, ensure_ascii=False)}""'
+
+        dataframe_info += f' dimensions=""{df.rows_count}x{df.columns_count}"">'
+
+        # Truncate long values
+        df_truncated = cls._truncate_dataframe(df.head())
+
+        # Convert to CSV format
+        lines = ["","".join(df_truncated.columns)]
+        lines += ["","".join(str(value) for value in row) for row in df_truncated.values]
+        dataframe_info += ""\n"" + ""\n"".join(lines) + ""\n""
+
+        # Close the table tag
+        dataframe_info += ""</table>\n""
+
+        return dataframe_info
+
+    @classmethod
+    def _truncate_dataframe(cls, df: ""DataFrame"") -> ""DataFrame"":
+        """"""Truncates string values exceeding MAX_COLUMN_TEXT_LENGTH, and converts JSON-like values to truncated strings.""""""
+
+        def truncate_value(value):
+            if isinstance(value, (dict, list)):  # Convert JSON-like objects to strings
+                value = json.dumps(value, ensure_ascii=False)
+
+            if isinstance(value, str) and len(value) > cls.MAX_COLUMN_TEXT_LENGTH:
+                return f""{value[: cls.MAX_COLUMN_TEXT_LENGTH]}…""
+            return value
+
+        return df.apply(lambda row: row.apply(truncate_value), axis=1)
+",pandasai_rows_in_prompt_003,pandasai_rows_in_prompt_003,sinaptik-ai/pandas-ai,app_test,vulnerable,mutated,manual_rows,real_world_app,draft_requires_second_reviewer
+pandasai_rows_in_prompt_003:control,pandasai_rows_in_prompt,python,SAFE,0,"# Adapted from sinaptik-ai/pandas-ai (commit bbbb771d31062d81f6fa19bafb40620d5cbe48f4),
+# pandasai/helpers/dataframe_serializer.py lines 1-60. MIT License (code outside pandasai/ee); see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import json
+import typing
+
+if typing.TYPE_CHECKING:
+    from ..dataframe.base import DataFrame
+
+
+class DataframeSerializer:
+    MAX_COLUMN_TEXT_LENGTH = 200
+
+    @classmethod
+    def serialize(cls, df: ""DataFrame"", dialect: str = ""postgres"") -> str:
+        """"""
+        Convert df to a CSV-like format wrapped inside <table> tags, truncating long text values, and serializing only a subset of rows using df.head().
+
+        Args:
+            df (pd.DataFrame): Pandas DataFrame
+            dialect (str): Database dialect (default is ""postgres"")
+
+        Returns:
+            str: Serialized DataFrame string
+        """"""
+
+        # Start building the table metadata
+        dataframe_info = f'<table dialect=""{dialect}"" table_name=""{df.schema.name}""'
+
+        # Add description attribute if available
+        if df.schema.description is not None:
+            dataframe_info += f' description=""{df.schema.description}""'
+
+        if df.schema.columns:
+            columns = [column.model_dump() for column in df.schema.columns]
+            dataframe_info += f' columns=""{json.dumps(columns, ensure_ascii=False)}""'
+
+        dataframe_info += f' dimensions=""{df.rows_count}x{df.columns_count}"">'
+
+        # Truncate long values
+        df_truncated = cls._truncate_dataframe(df.head())
+
+        # Convert to CSV format
+        lines = ["","".join(df_truncated.columns)]
+        dataframe_info += ""\n"" + ""\n"".join(lines) + ""\n""
+
+        # Close the table tag
+        dataframe_info += ""</table>\n""
+
+        return dataframe_info
+
+    @classmethod
+    def _truncate_dataframe(cls, df: ""DataFrame"") -> ""DataFrame"":
+        """"""Truncates string values exceeding MAX_COLUMN_TEXT_LENGTH, and converts JSON-like values to truncated strings.""""""
+
+        def truncate_value(value):
+            if isinstance(value, (dict, list)):  # Convert JSON-like objects to strings
+                value = json.dumps(value, ensure_ascii=False)
+
+            if isinstance(value, str) and len(value) > cls.MAX_COLUMN_TEXT_LENGTH:
+                return f""{value[: cls.MAX_COLUMN_TEXT_LENGTH]}…""
+            return value
+
+        return df.apply(lambda row: row.apply(truncate_value), axis=1)
+",pandasai_rows_in_prompt_003,pandasai_rows_in_prompt_003,sinaptik-ai/pandas-ai,app_test,control,repaired,manual_rows,real_world_app,draft_requires_second_reviewer
+streamlit_agent_sql_readonly_001:vulnerable,streamlit_agent_sql_readonly,python,LLM06,1,"# Adapted from langchain-ai/streamlit-agent (commit 634e1cecf23d7ca3a4c5e708944673e057765b2a),
+# streamlit_agent/chat_with_sql_db.py lines 1-10, 19, 50-58. Apache-2.0; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import streamlit as st
+from pathlib import Path
+from langchain.llms.openai import OpenAI
+from langchain.agents import create_sql_agent
+from langchain.sql_database import SQLDatabase
+from langchain.agents.agent_types import AgentType
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.agents.agent_toolkits import SQLDatabaseToolkit
+from sqlalchemy import create_engine
+import sqlite3
+
+LOCALDB = ""USE_LOCALDB""
+
+
+@st.cache_resource(ttl=""2h"")
+def configure_db(db_uri):
+    if db_uri == LOCALDB:
+        # Make the DB connection read-only to reduce risk of injection attacks
+        # See: https://python.langchain.com/docs/security
+        db_filepath = (Path(__file__).parent / ""Chinook.db"").absolute()
+        creator = lambda: sqlite3.connect(db_filepath)
+        return SQLDatabase(create_engine(""sqlite:///"", creator=creator))
+    return SQLDatabase.from_uri(database_uri=db_uri)
+",streamlit_agent_sql_readonly_001,streamlit_agent_sql_readonly_001,langchain-ai/streamlit-agent,app_validation,vulnerable,mutated,base,real_world_app,draft_requires_second_reviewer
+streamlit_agent_sql_readonly_001:control,streamlit_agent_sql_readonly,python,SAFE,0,"# Adapted from langchain-ai/streamlit-agent (commit 634e1cecf23d7ca3a4c5e708944673e057765b2a),
+# streamlit_agent/chat_with_sql_db.py lines 1-10, 19, 50-58. Apache-2.0; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import streamlit as st
+from pathlib import Path
+from langchain.llms.openai import OpenAI
+from langchain.agents import create_sql_agent
+from langchain.sql_database import SQLDatabase
+from langchain.agents.agent_types import AgentType
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.agents.agent_toolkits import SQLDatabaseToolkit
+from sqlalchemy import create_engine
+import sqlite3
+
+LOCALDB = ""USE_LOCALDB""
+
+
+@st.cache_resource(ttl=""2h"")
+def configure_db(db_uri):
+    if db_uri == LOCALDB:
+        # Make the DB connection read-only to reduce risk of injection attacks
+        # See: https://python.langchain.com/docs/security
+        db_filepath = (Path(__file__).parent / ""Chinook.db"").absolute()
+        creator = lambda: sqlite3.connect(f""file:{db_filepath}?mode=ro"", uri=True)
+        return SQLDatabase(create_engine(""sqlite:///"", creator=creator))
+    return SQLDatabase.from_uri(database_uri=db_uri)
+",streamlit_agent_sql_readonly_001,streamlit_agent_sql_readonly_001,langchain-ai/streamlit-agent,app_validation,control,original,base,real_world_app,draft_requires_second_reviewer
+streamlit_agent_sql_readonly_002:vulnerable,streamlit_agent_sql_readonly,python,LLM06,1,"# Adapted from langchain-ai/streamlit-agent (commit 634e1cecf23d7ca3a4c5e708944673e057765b2a),
+# streamlit_agent/chat_with_sql_db.py lines 1-10, 19, 50-58. Apache-2.0; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import streamlit as st
+from pathlib import Path
+from langchain.llms.openai import OpenAI
+from langchain.agents import create_sql_agent
+from langchain.sql_database import SQLDatabase
+from langchain.agents.agent_types import AgentType
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.agents.agent_toolkits import SQLDatabaseToolkit
+from sqlalchemy import create_engine
+import sqlite3
+
+LOCALDB = ""USE_LOCALDB""
+
+
+@st.cache_resource(ttl=""2h"")
+def configure_db(db_uri):
+    if db_uri == LOCALDB:
+        # Make the DB connection read-only to reduce risk of injection attacks
+        # See: https://python.langchain.com/docs/security
+        db_filepath = (Path(__file__).parent / ""Chinook.db"").absolute()
+        db_uri_ro = f""file:{db_filepath}""
+        creator = lambda: sqlite3.connect(db_uri_ro, uri=True)
+        return SQLDatabase(create_engine(""sqlite:///"", creator=creator))
+    return SQLDatabase.from_uri(database_uri=db_uri)
+",streamlit_agent_sql_readonly_002,streamlit_agent_sql_readonly_002,langchain-ai/streamlit-agent,app_validation,vulnerable,mutated,through_variable,real_world_app,draft_requires_second_reviewer
+streamlit_agent_sql_readonly_002:control,streamlit_agent_sql_readonly,python,SAFE,0,"# Adapted from langchain-ai/streamlit-agent (commit 634e1cecf23d7ca3a4c5e708944673e057765b2a),
+# streamlit_agent/chat_with_sql_db.py lines 1-10, 19, 50-58. Apache-2.0; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import streamlit as st
+from pathlib import Path
+from langchain.llms.openai import OpenAI
+from langchain.agents import create_sql_agent
+from langchain.sql_database import SQLDatabase
+from langchain.agents.agent_types import AgentType
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.agents.agent_toolkits import SQLDatabaseToolkit
+from sqlalchemy import create_engine
+import sqlite3
+
+LOCALDB = ""USE_LOCALDB""
+
+
+@st.cache_resource(ttl=""2h"")
+def configure_db(db_uri):
+    if db_uri == LOCALDB:
+        # Make the DB connection read-only to reduce risk of injection attacks
+        # See: https://python.langchain.com/docs/security
+        db_filepath = (Path(__file__).parent / ""Chinook.db"").absolute()
+        db_uri_ro = f""file:{db_filepath}?mode=ro""
+        creator = lambda: sqlite3.connect(db_uri_ro, uri=True)
+        return SQLDatabase(create_engine(""sqlite:///"", creator=creator))
+    return SQLDatabase.from_uri(database_uri=db_uri)
+",streamlit_agent_sql_readonly_002,streamlit_agent_sql_readonly_002,langchain-ai/streamlit-agent,app_validation,control,mutated,through_variable,real_world_app,draft_requires_second_reviewer
+streamlit_agent_sql_readonly_003:vulnerable,streamlit_agent_sql_readonly,python,LLM06,1,"# Adapted from langchain-ai/streamlit-agent (commit 634e1cecf23d7ca3a4c5e708944673e057765b2a),
+# streamlit_agent/chat_with_sql_db.py lines 1-10, 19, 50-58. Apache-2.0; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import streamlit as st
+from pathlib import Path
+from langchain.llms.openai import OpenAI
+from langchain.agents import create_sql_agent
+from langchain.sql_database import SQLDatabase
+from langchain.agents.agent_types import AgentType
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.agents.agent_toolkits import SQLDatabaseToolkit
+from sqlalchemy import create_engine
+import sqlite3
+
+LOCALDB = ""USE_LOCALDB""
+
+
+@st.cache_resource(ttl=""2h"")
+def configure_db(db_uri):
+    if db_uri == LOCALDB:
+        # Make the DB connection read-only to reduce risk of injection attacks
+        # See: https://python.langchain.com/docs/security
+        db_filepath = (Path(__file__).parent / ""Chinook.db"").absolute()
+        return SQLDatabase(create_engine(f""sqlite:///{db_filepath}""))
+    return SQLDatabase.from_uri(database_uri=db_uri)
+",streamlit_agent_sql_readonly_003,streamlit_agent_sql_readonly_003,langchain-ai/streamlit-agent,app_validation,vulnerable,mutated,engine_url,real_world_app,draft_requires_second_reviewer
+streamlit_agent_sql_readonly_003:control,streamlit_agent_sql_readonly,python,SAFE,0,"# Adapted from langchain-ai/streamlit-agent (commit 634e1cecf23d7ca3a4c5e708944673e057765b2a),
+# streamlit_agent/chat_with_sql_db.py lines 1-10, 19, 50-58. Apache-2.0; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import streamlit as st
+from pathlib import Path
+from langchain.llms.openai import OpenAI
+from langchain.agents import create_sql_agent
+from langchain.sql_database import SQLDatabase
+from langchain.agents.agent_types import AgentType
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.agents.agent_toolkits import SQLDatabaseToolkit
+from sqlalchemy import create_engine
+import sqlite3
+
+LOCALDB = ""USE_LOCALDB""
+
+
+@st.cache_resource(ttl=""2h"")
+def configure_db(db_uri):
+    if db_uri == LOCALDB:
+        # Make the DB connection read-only to reduce risk of injection attacks
+        # See: https://python.langchain.com/docs/security
+        db_filepath = (Path(__file__).parent / ""Chinook.db"").absolute()
+        return SQLDatabase(create_engine(f""sqlite:///file:{db_filepath}?mode=ro&uri=true""))
+    return SQLDatabase.from_uri(database_uri=db_uri)
+",streamlit_agent_sql_readonly_003,streamlit_agent_sql_readonly_003,langchain-ai/streamlit-agent,app_validation,control,mutated,engine_url,real_world_app,draft_requires_second_reviewer
+vanna_llm_sees_data_001:vulnerable,vanna_llm_sees_data,python,LLM02,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 93-168. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+class VannaBase:
+    def generate_sql(self, question: str, allow_llm_to_see_data=True, **kwargs) -> str:
+        """"""
+        Example:
+        ```python
+        vn.generate_sql(""What are the top 10 customers by sales?"")
+        ```
+
+        Uses the LLM to generate a SQL query that answers a question. It runs the following methods:
+
+        - [`get_similar_question_sql`][vanna.base.base.VannaBase.get_similar_question_sql]
+
+        - [`get_related_ddl`][vanna.base.base.VannaBase.get_related_ddl]
+
+        - [`get_related_documentation`][vanna.base.base.VannaBase.get_related_documentation]
+
+        - [`get_sql_prompt`][vanna.base.base.VannaBase.get_sql_prompt]
+
+        - [`submit_prompt`][vanna.base.base.VannaBase.submit_prompt]
+
+
+        Args:
+            question (str): The question to generate a SQL query for.
+            allow_llm_to_see_data (bool): Whether to allow the LLM to see the data (for the purposes of introspecting the data to generate the final SQL).
+
+        Returns:
+            str: The SQL query that answers the question.
+        """"""
+        if self.config is not None:
+            initial_prompt = self.config.get(""initial_prompt"", None)
+        else:
+            initial_prompt = None
+        question_sql_list = self.get_similar_question_sql(question, **kwargs)
+        ddl_list = self.get_related_ddl(question, **kwargs)
+        doc_list = self.get_related_documentation(question, **kwargs)
+        prompt = self.get_sql_prompt(
+            initial_prompt=initial_prompt,
+            question=question,
+            question_sql_list=question_sql_list,
+            ddl_list=ddl_list,
+            doc_list=doc_list,
+            **kwargs,
+        )
+        self.log(title=""SQL Prompt"", message=prompt)
+        llm_response = self.submit_prompt(prompt, **kwargs)
+        self.log(title=""LLM Response"", message=llm_response)
+
+        if ""intermediate_sql"" in llm_response:
+            if not allow_llm_to_see_data:
+                return ""The LLM is not allowed to see the data in your database. Your question requires database introspection to generate the necessary SQL. Please set allow_llm_to_see_data=True to enable this.""
+
+            if allow_llm_to_see_data:
+                intermediate_sql = self.extract_sql(llm_response)
+
+                try:
+                    self.log(title=""Running Intermediate SQL"", message=intermediate_sql)
+                    df = self.run_sql(intermediate_sql)
+
+                    prompt = self.get_sql_prompt(
+                        initial_prompt=initial_prompt,
+                        question=question,
+                        question_sql_list=question_sql_list,
+                        ddl_list=ddl_list,
+                        doc_list=doc_list
+                        + [
+                            f""The following is a pandas DataFrame with the results of the intermediate SQL query {intermediate_sql}: \n""
+                            + df.to_markdown()
+                        ],
+                        **kwargs,
+                    )
+                    self.log(title=""Final SQL Prompt"", message=prompt)
+                    llm_response = self.submit_prompt(prompt, **kwargs)
+                    self.log(title=""LLM Response"", message=llm_response)
+                except Exception as e:
+                    return f""Error running intermediate SQL: {e}""
+
+        return self.extract_sql(llm_response)
+",vanna_llm_sees_data_001,vanna_llm_sees_data_001,vanna-ai/vanna,app_test,vulnerable,mutated,base,real_world_app,draft_requires_second_reviewer
+vanna_llm_sees_data_001:control,vanna_llm_sees_data,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 93-168. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+class VannaBase:
+    def generate_sql(self, question: str, allow_llm_to_see_data=False, **kwargs) -> str:
+        """"""
+        Example:
+        ```python
+        vn.generate_sql(""What are the top 10 customers by sales?"")
+        ```
+
+        Uses the LLM to generate a SQL query that answers a question. It runs the following methods:
+
+        - [`get_similar_question_sql`][vanna.base.base.VannaBase.get_similar_question_sql]
+
+        - [`get_related_ddl`][vanna.base.base.VannaBase.get_related_ddl]
+
+        - [`get_related_documentation`][vanna.base.base.VannaBase.get_related_documentation]
+
+        - [`get_sql_prompt`][vanna.base.base.VannaBase.get_sql_prompt]
+
+        - [`submit_prompt`][vanna.base.base.VannaBase.submit_prompt]
+
+
+        Args:
+            question (str): The question to generate a SQL query for.
+            allow_llm_to_see_data (bool): Whether to allow the LLM to see the data (for the purposes of introspecting the data to generate the final SQL).
+
+        Returns:
+            str: The SQL query that answers the question.
+        """"""
+        if self.config is not None:
+            initial_prompt = self.config.get(""initial_prompt"", None)
+        else:
+            initial_prompt = None
+        question_sql_list = self.get_similar_question_sql(question, **kwargs)
+        ddl_list = self.get_related_ddl(question, **kwargs)
+        doc_list = self.get_related_documentation(question, **kwargs)
+        prompt = self.get_sql_prompt(
+            initial_prompt=initial_prompt,
+            question=question,
+            question_sql_list=question_sql_list,
+            ddl_list=ddl_list,
+            doc_list=doc_list,
+            **kwargs,
+        )
+        self.log(title=""SQL Prompt"", message=prompt)
+        llm_response = self.submit_prompt(prompt, **kwargs)
+        self.log(title=""LLM Response"", message=llm_response)
+
+        if ""intermediate_sql"" in llm_response:
+            if not allow_llm_to_see_data:
+                return ""The LLM is not allowed to see the data in your database. Your question requires database introspection to generate the necessary SQL. Please set allow_llm_to_see_data=True to enable this.""
+
+            if allow_llm_to_see_data:
+                intermediate_sql = self.extract_sql(llm_response)
+
+                try:
+                    self.log(title=""Running Intermediate SQL"", message=intermediate_sql)
+                    df = self.run_sql(intermediate_sql)
+
+                    prompt = self.get_sql_prompt(
+                        initial_prompt=initial_prompt,
+                        question=question,
+                        question_sql_list=question_sql_list,
+                        ddl_list=ddl_list,
+                        doc_list=doc_list
+                        + [
+                            f""The following is a pandas DataFrame with the results of the intermediate SQL query {intermediate_sql}: \n""
+                            + df.to_markdown()
+                        ],
+                        **kwargs,
+                    )
+                    self.log(title=""Final SQL Prompt"", message=prompt)
+                    llm_response = self.submit_prompt(prompt, **kwargs)
+                    self.log(title=""LLM Response"", message=llm_response)
+                except Exception as e:
+                    return f""Error running intermediate SQL: {e}""
+
+        return self.extract_sql(llm_response)
+",vanna_llm_sees_data_001,vanna_llm_sees_data_001,vanna-ai/vanna,app_test,control,original,base,real_world_app,draft_requires_second_reviewer
+vanna_llm_sees_data_002:vulnerable,vanna_llm_sees_data,python,LLM02,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 93-168. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+class VannaBase:
+    def generate_sql(self, question: str, allow_llm_to_see_data=None, **kwargs) -> str:
+        """"""
+        Example:
+        ```python
+        vn.generate_sql(""What are the top 10 customers by sales?"")
+        ```
+
+        Uses the LLM to generate a SQL query that answers a question. It runs the following methods:
+
+        - [`get_similar_question_sql`][vanna.base.base.VannaBase.get_similar_question_sql]
+
+        - [`get_related_ddl`][vanna.base.base.VannaBase.get_related_ddl]
+
+        - [`get_related_documentation`][vanna.base.base.VannaBase.get_related_documentation]
+
+        - [`get_sql_prompt`][vanna.base.base.VannaBase.get_sql_prompt]
+
+        - [`submit_prompt`][vanna.base.base.VannaBase.submit_prompt]
+
+
+        Args:
+            question (str): The question to generate a SQL query for.
+            allow_llm_to_see_data (bool): Whether to allow the LLM to see the data (for the purposes of introspecting the data to generate the final SQL).
+
+        Returns:
+            str: The SQL query that answers the question.
+        """"""
+        if allow_llm_to_see_data is None:
+            allow_llm_to_see_data = (self.config or {}).get(""allow_llm_to_see_data"", True)
+        if self.config is not None:
+            initial_prompt = self.config.get(""initial_prompt"", None)
+        else:
+            initial_prompt = None
+        question_sql_list = self.get_similar_question_sql(question, **kwargs)
+        ddl_list = self.get_related_ddl(question, **kwargs)
+        doc_list = self.get_related_documentation(question, **kwargs)
+        prompt = self.get_sql_prompt(
+            initial_prompt=initial_prompt,
+            question=question,
+            question_sql_list=question_sql_list,
+            ddl_list=ddl_list,
+            doc_list=doc_list,
+            **kwargs,
+        )
+        self.log(title=""SQL Prompt"", message=prompt)
+        llm_response = self.submit_prompt(prompt, **kwargs)
+        self.log(title=""LLM Response"", message=llm_response)
+
+        if ""intermediate_sql"" in llm_response:
+            if not allow_llm_to_see_data:
+                return ""The LLM is not allowed to see the data in your database. Your question requires database introspection to generate the necessary SQL. Please set allow_llm_to_see_data=True to enable this.""
+
+            if allow_llm_to_see_data:
+                intermediate_sql = self.extract_sql(llm_response)
+
+                try:
+                    self.log(title=""Running Intermediate SQL"", message=intermediate_sql)
+                    df = self.run_sql(intermediate_sql)
+
+                    prompt = self.get_sql_prompt(
+                        initial_prompt=initial_prompt,
+                        question=question,
+                        question_sql_list=question_sql_list,
+                        ddl_list=ddl_list,
+                        doc_list=doc_list
+                        + [
+                            f""The following is a pandas DataFrame with the results of the intermediate SQL query {intermediate_sql}: \n""
+                            + df.to_markdown()
+                        ],
+                        **kwargs,
+                    )
+                    self.log(title=""Final SQL Prompt"", message=prompt)
+                    llm_response = self.submit_prompt(prompt, **kwargs)
+                    self.log(title=""LLM Response"", message=llm_response)
+                except Exception as e:
+                    return f""Error running intermediate SQL: {e}""
+
+        return self.extract_sql(llm_response)
+",vanna_llm_sees_data_002,vanna_llm_sees_data_002,vanna-ai/vanna,app_test,vulnerable,mutated,config_default,real_world_app,draft_requires_second_reviewer
+vanna_llm_sees_data_002:control,vanna_llm_sees_data,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 93-168. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+class VannaBase:
+    def generate_sql(self, question: str, allow_llm_to_see_data=None, **kwargs) -> str:
+        """"""
+        Example:
+        ```python
+        vn.generate_sql(""What are the top 10 customers by sales?"")
+        ```
+
+        Uses the LLM to generate a SQL query that answers a question. It runs the following methods:
+
+        - [`get_similar_question_sql`][vanna.base.base.VannaBase.get_similar_question_sql]
+
+        - [`get_related_ddl`][vanna.base.base.VannaBase.get_related_ddl]
+
+        - [`get_related_documentation`][vanna.base.base.VannaBase.get_related_documentation]
+
+        - [`get_sql_prompt`][vanna.base.base.VannaBase.get_sql_prompt]
+
+        - [`submit_prompt`][vanna.base.base.VannaBase.submit_prompt]
+
+
+        Args:
+            question (str): The question to generate a SQL query for.
+            allow_llm_to_see_data (bool): Whether to allow the LLM to see the data (for the purposes of introspecting the data to generate the final SQL).
+
+        Returns:
+            str: The SQL query that answers the question.
+        """"""
+        if allow_llm_to_see_data is None:
+            allow_llm_to_see_data = (self.config or {}).get(""allow_llm_to_see_data"", False)
+        if self.config is not None:
+            initial_prompt = self.config.get(""initial_prompt"", None)
+        else:
+            initial_prompt = None
+        question_sql_list = self.get_similar_question_sql(question, **kwargs)
+        ddl_list = self.get_related_ddl(question, **kwargs)
+        doc_list = self.get_related_documentation(question, **kwargs)
+        prompt = self.get_sql_prompt(
+            initial_prompt=initial_prompt,
+            question=question,
+            question_sql_list=question_sql_list,
+            ddl_list=ddl_list,
+            doc_list=doc_list,
+            **kwargs,
+        )
+        self.log(title=""SQL Prompt"", message=prompt)
+        llm_response = self.submit_prompt(prompt, **kwargs)
+        self.log(title=""LLM Response"", message=llm_response)
+
+        if ""intermediate_sql"" in llm_response:
+            if not allow_llm_to_see_data:
+                return ""The LLM is not allowed to see the data in your database. Your question requires database introspection to generate the necessary SQL. Please set allow_llm_to_see_data=True to enable this.""
+
+            if allow_llm_to_see_data:
+                intermediate_sql = self.extract_sql(llm_response)
+
+                try:
+                    self.log(title=""Running Intermediate SQL"", message=intermediate_sql)
+                    df = self.run_sql(intermediate_sql)
+
+                    prompt = self.get_sql_prompt(
+                        initial_prompt=initial_prompt,
+                        question=question,
+                        question_sql_list=question_sql_list,
+                        ddl_list=ddl_list,
+                        doc_list=doc_list
+                        + [
+                            f""The following is a pandas DataFrame with the results of the intermediate SQL query {intermediate_sql}: \n""
+                            + df.to_markdown()
+                        ],
+                        **kwargs,
+                    )
+                    self.log(title=""Final SQL Prompt"", message=prompt)
+                    llm_response = self.submit_prompt(prompt, **kwargs)
+                    self.log(title=""LLM Response"", message=llm_response)
+                except Exception as e:
+                    return f""Error running intermediate SQL: {e}""
+
+        return self.extract_sql(llm_response)
+",vanna_llm_sees_data_002,vanna_llm_sees_data_002,vanna-ai/vanna,app_test,control,mutated,config_default,real_world_app,draft_requires_second_reviewer
+vanna_llm_sees_data_003:vulnerable,vanna_llm_sees_data,python,LLM02,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 93-168. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+ALLOW_DATA_IN_PROMPT = True
+
+
+class VannaBase:
+    def generate_sql(self, question: str, allow_llm_to_see_data=ALLOW_DATA_IN_PROMPT, **kwargs) -> str:
+        """"""
+        Example:
+        ```python
+        vn.generate_sql(""What are the top 10 customers by sales?"")
+        ```
+
+        Uses the LLM to generate a SQL query that answers a question. It runs the following methods:
+
+        - [`get_similar_question_sql`][vanna.base.base.VannaBase.get_similar_question_sql]
+
+        - [`get_related_ddl`][vanna.base.base.VannaBase.get_related_ddl]
+
+        - [`get_related_documentation`][vanna.base.base.VannaBase.get_related_documentation]
+
+        - [`get_sql_prompt`][vanna.base.base.VannaBase.get_sql_prompt]
+
+        - [`submit_prompt`][vanna.base.base.VannaBase.submit_prompt]
+
+
+        Args:
+            question (str): The question to generate a SQL query for.
+            allow_llm_to_see_data (bool): Whether to allow the LLM to see the data (for the purposes of introspecting the data to generate the final SQL).
+
+        Returns:
+            str: The SQL query that answers the question.
+        """"""
+        if self.config is not None:
+            initial_prompt = self.config.get(""initial_prompt"", None)
+        else:
+            initial_prompt = None
+        question_sql_list = self.get_similar_question_sql(question, **kwargs)
+        ddl_list = self.get_related_ddl(question, **kwargs)
+        doc_list = self.get_related_documentation(question, **kwargs)
+        prompt = self.get_sql_prompt(
+            initial_prompt=initial_prompt,
+            question=question,
+            question_sql_list=question_sql_list,
+            ddl_list=ddl_list,
+            doc_list=doc_list,
+            **kwargs,
+        )
+        self.log(title=""SQL Prompt"", message=prompt)
+        llm_response = self.submit_prompt(prompt, **kwargs)
+        self.log(title=""LLM Response"", message=llm_response)
+
+        if ""intermediate_sql"" in llm_response:
+            if not allow_llm_to_see_data:
+                return ""The LLM is not allowed to see the data in your database. Your question requires database introspection to generate the necessary SQL. Please set allow_llm_to_see_data=True to enable this.""
+
+            if allow_llm_to_see_data:
+                intermediate_sql = self.extract_sql(llm_response)
+
+                try:
+                    self.log(title=""Running Intermediate SQL"", message=intermediate_sql)
+                    df = self.run_sql(intermediate_sql)
+
+                    prompt = self.get_sql_prompt(
+                        initial_prompt=initial_prompt,
+                        question=question,
+                        question_sql_list=question_sql_list,
+                        ddl_list=ddl_list,
+                        doc_list=doc_list
+                        + [
+                            f""The following is a pandas DataFrame with the results of the intermediate SQL query {intermediate_sql}: \n""
+                            + df.to_markdown()
+                        ],
+                        **kwargs,
+                    )
+                    self.log(title=""Final SQL Prompt"", message=prompt)
+                    llm_response = self.submit_prompt(prompt, **kwargs)
+                    self.log(title=""LLM Response"", message=llm_response)
+                except Exception as e:
+                    return f""Error running intermediate SQL: {e}""
+
+        return self.extract_sql(llm_response)
+",vanna_llm_sees_data_003,vanna_llm_sees_data_003,vanna-ai/vanna,app_test,vulnerable,mutated,through_constant,real_world_app,draft_requires_second_reviewer
+vanna_llm_sees_data_003:control,vanna_llm_sees_data,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 93-168. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+ALLOW_DATA_IN_PROMPT = False
+
+
+class VannaBase:
+    def generate_sql(self, question: str, allow_llm_to_see_data=ALLOW_DATA_IN_PROMPT, **kwargs) -> str:
+        """"""
+        Example:
+        ```python
+        vn.generate_sql(""What are the top 10 customers by sales?"")
+        ```
+
+        Uses the LLM to generate a SQL query that answers a question. It runs the following methods:
+
+        - [`get_similar_question_sql`][vanna.base.base.VannaBase.get_similar_question_sql]
+
+        - [`get_related_ddl`][vanna.base.base.VannaBase.get_related_ddl]
+
+        - [`get_related_documentation`][vanna.base.base.VannaBase.get_related_documentation]
+
+        - [`get_sql_prompt`][vanna.base.base.VannaBase.get_sql_prompt]
+
+        - [`submit_prompt`][vanna.base.base.VannaBase.submit_prompt]
+
+
+        Args:
+            question (str): The question to generate a SQL query for.
+            allow_llm_to_see_data (bool): Whether to allow the LLM to see the data (for the purposes of introspecting the data to generate the final SQL).
+
+        Returns:
+            str: The SQL query that answers the question.
+        """"""
+        if self.config is not None:
+            initial_prompt = self.config.get(""initial_prompt"", None)
+        else:
+            initial_prompt = None
+        question_sql_list = self.get_similar_question_sql(question, **kwargs)
+        ddl_list = self.get_related_ddl(question, **kwargs)
+        doc_list = self.get_related_documentation(question, **kwargs)
+        prompt = self.get_sql_prompt(
+            initial_prompt=initial_prompt,
+            question=question,
+            question_sql_list=question_sql_list,
+            ddl_list=ddl_list,
+            doc_list=doc_list,
+            **kwargs,
+        )
+        self.log(title=""SQL Prompt"", message=prompt)
+        llm_response = self.submit_prompt(prompt, **kwargs)
+        self.log(title=""LLM Response"", message=llm_response)
+
+        if ""intermediate_sql"" in llm_response:
+            if not allow_llm_to_see_data:
+                return ""The LLM is not allowed to see the data in your database. Your question requires database introspection to generate the necessary SQL. Please set allow_llm_to_see_data=True to enable this.""
+
+            if allow_llm_to_see_data:
+                intermediate_sql = self.extract_sql(llm_response)
+
+                try:
+                    self.log(title=""Running Intermediate SQL"", message=intermediate_sql)
+                    df = self.run_sql(intermediate_sql)
+
+                    prompt = self.get_sql_prompt(
+                        initial_prompt=initial_prompt,
+                        question=question,
+                        question_sql_list=question_sql_list,
+                        ddl_list=ddl_list,
+                        doc_list=doc_list
+                        + [
+                            f""The following is a pandas DataFrame with the results of the intermediate SQL query {intermediate_sql}: \n""
+                            + df.to_markdown()
+                        ],
+                        **kwargs,
+                    )
+                    self.log(title=""Final SQL Prompt"", message=prompt)
+                    llm_response = self.submit_prompt(prompt, **kwargs)
+                    self.log(title=""LLM Response"", message=llm_response)
+                except Exception as e:
+                    return f""Error running intermediate SQL: {e}""
+
+        return self.extract_sql(llm_response)
+",vanna_llm_sees_data_003,vanna_llm_sees_data_003,vanna-ai/vanna,app_test,control,mutated,through_constant,real_world_app,draft_requires_second_reviewer
+vanna_plotly_exec_001:vulnerable,vanna_plotly_exec,python,LLM05,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 2072-2125. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import pandas as pd
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class VannaBase:
+    def get_plotly_figure(
+        self, plotly_code: str, df: pd.DataFrame, dark_mode: bool = True
+    ) -> plotly.graph_objs.Figure:
+        """"""
+        **Example:**
+        ```python
+        fig = vn.get_plotly_figure(
+            plotly_code=""fig = px.bar(df, x='name', y='salary')"",
+            df=df
+        )
+        fig.show()
+        ```
+        Get a Plotly figure from a dataframe and Plotly code.
+
+        Args:
+            df (pd.DataFrame): The dataframe to use.
+            plotly_code (str): The Plotly code to use.
+
+        Returns:
+            plotly.graph_objs.Figure: The Plotly figure.
+        """"""
+        ldict = {""df"": df, ""px"": px, ""go"": go}
+        try:
+            exec(plotly_code, globals(), ldict)
+
+            fig = ldict.get(""fig"", None)
+        except Exception as e:
+            # Inspect data types
+            numeric_cols = df.select_dtypes(include=[""number""]).columns.tolist()
+            categorical_cols = df.select_dtypes(
+                include=[""object"", ""category""]
+            ).columns.tolist()
+
+            # Decision-making for plot type
+            if len(numeric_cols) >= 2:
+                # Use the first two numeric columns for a scatter plot
+                fig = px.scatter(df, x=numeric_cols[0], y=numeric_cols[1])
+            elif len(numeric_cols) == 1 and len(categorical_cols) >= 1:
+                # Use a bar plot if there's one numeric and one categorical column
+                fig = px.bar(df, x=categorical_cols[0], y=numeric_cols[0])
+            elif len(categorical_cols) >= 1 and df[categorical_cols[0]].nunique() < 10:
+                # Use a pie chart for categorical data with fewer unique values
+                fig = px.pie(df, names=categorical_cols[0])
+            else:
+                # Default to a simple line plot if above conditions are not met
+                fig = px.line(df)
+
+        if fig is None:
+            return None
+
+        if dark_mode:
+            fig.update_layout(template=""plotly_dark"")
+
+        return fig
+",vanna_plotly_exec_001,vanna_plotly_exec_001,vanna-ai/vanna,app_test,vulnerable,original,base,real_world_app,draft_requires_second_reviewer
+vanna_plotly_exec_001:control,vanna_plotly_exec,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 2072-2125. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import pandas as pd
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class VannaBase:
+    def get_plotly_figure(
+        self, plotly_code: str, df: pd.DataFrame, dark_mode: bool = True
+    ) -> plotly.graph_objs.Figure:
+        """"""
+        **Example:**
+        ```python
+        fig = vn.get_plotly_figure(
+            plotly_code=""fig = px.bar(df, x='name', y='salary')"",
+            df=df
+        )
+        fig.show()
+        ```
+        Get a Plotly figure from a dataframe and Plotly code.
+
+        Args:
+            df (pd.DataFrame): The dataframe to use.
+            plotly_code (str): The Plotly code to use.
+
+        Returns:
+            plotly.graph_objs.Figure: The Plotly figure.
+        """"""
+        # Inspect data types
+        numeric_cols = df.select_dtypes(include=[""number""]).columns.tolist()
+        categorical_cols = df.select_dtypes(
+            include=[""object"", ""category""]
+        ).columns.tolist()
+
+        # Decision-making for plot type
+        if len(numeric_cols) >= 2:
+            # Use the first two numeric columns for a scatter plot
+            fig = px.scatter(df, x=numeric_cols[0], y=numeric_cols[1])
+        elif len(numeric_cols) == 1 and len(categorical_cols) >= 1:
+            # Use a bar plot if there's one numeric and one categorical column
+            fig = px.bar(df, x=categorical_cols[0], y=numeric_cols[0])
+        elif len(categorical_cols) >= 1 and df[categorical_cols[0]].nunique() < 10:
+            # Use a pie chart for categorical data with fewer unique values
+            fig = px.pie(df, names=categorical_cols[0])
+        else:
+            # Default to a simple line plot if above conditions are not met
+            fig = px.line(df)
+
+        if fig is None:
+            return None
+
+        if dark_mode:
+            fig.update_layout(template=""plotly_dark"")
+
+        return fig
+",vanna_plotly_exec_001,vanna_plotly_exec_001,vanna-ai/vanna,app_test,control,repaired,base,real_world_app,draft_requires_second_reviewer
+vanna_plotly_exec_002:vulnerable,vanna_plotly_exec,python,LLM05,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 2072-2125. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import pandas as pd
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class VannaBase:
+    def get_plotly_figure(
+        self, plotly_code: str, df: pd.DataFrame, dark_mode: bool = True
+    ) -> plotly.graph_objs.Figure:
+        """"""
+        **Example:**
+        ```python
+        fig = vn.get_plotly_figure(
+            plotly_code=""fig = px.bar(df, x='name', y='salary')"",
+            df=df
+        )
+        fig.show()
+        ```
+        Get a Plotly figure from a dataframe and Plotly code.
+
+        Args:
+            df (pd.DataFrame): The dataframe to use.
+            plotly_code (str): The Plotly code to use.
+
+        Returns:
+            plotly.graph_objs.Figure: The Plotly figure.
+        """"""
+        ldict = {""df"": df, ""px"": px, ""go"": go}
+        try:
+            self._run_chart_code(plotly_code, ldict)
+
+            fig = ldict.get(""fig"", None)
+        except Exception as e:
+            # Inspect data types
+            numeric_cols = df.select_dtypes(include=[""number""]).columns.tolist()
+            categorical_cols = df.select_dtypes(
+                include=[""object"", ""category""]
+            ).columns.tolist()
+
+            # Decision-making for plot type
+            if len(numeric_cols) >= 2:
+                # Use the first two numeric columns for a scatter plot
+                fig = px.scatter(df, x=numeric_cols[0], y=numeric_cols[1])
+            elif len(numeric_cols) == 1 and len(categorical_cols) >= 1:
+                # Use a bar plot if there's one numeric and one categorical column
+                fig = px.bar(df, x=categorical_cols[0], y=numeric_cols[0])
+            elif len(categorical_cols) >= 1 and df[categorical_cols[0]].nunique() < 10:
+                # Use a pie chart for categorical data with fewer unique values
+                fig = px.pie(df, names=categorical_cols[0])
+            else:
+                # Default to a simple line plot if above conditions are not met
+                fig = px.line(df)
+
+        if fig is None:
+            return None
+
+        if dark_mode:
+            fig.update_layout(template=""plotly_dark"")
+
+        return fig
+
+    def _run_chart_code(self, code: str, namespace: dict) -> None:
+        exec(code, globals(), namespace)
+",vanna_plotly_exec_002,vanna_plotly_exec_002,vanna-ai/vanna,app_test,vulnerable,mutated,through_helper,real_world_app,draft_requires_second_reviewer
+vanna_plotly_exec_002:control,vanna_plotly_exec,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 2072-2125. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import pandas as pd
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class VannaBase:
+    def get_plotly_figure(
+        self, plotly_code: str, df: pd.DataFrame, dark_mode: bool = True
+    ) -> plotly.graph_objs.Figure:
+        """"""
+        **Example:**
+        ```python
+        fig = vn.get_plotly_figure(
+            plotly_code=""fig = px.bar(df, x='name', y='salary')"",
+            df=df
+        )
+        fig.show()
+        ```
+        Get a Plotly figure from a dataframe and Plotly code.
+
+        Args:
+            df (pd.DataFrame): The dataframe to use.
+            plotly_code (str): The Plotly code to use.
+
+        Returns:
+            plotly.graph_objs.Figure: The Plotly figure.
+        """"""
+        # Inspect data types
+        numeric_cols = df.select_dtypes(include=[""number""]).columns.tolist()
+        categorical_cols = df.select_dtypes(
+            include=[""object"", ""category""]
+        ).columns.tolist()
+
+        # Decision-making for plot type
+        if len(numeric_cols) >= 2:
+            # Use the first two numeric columns for a scatter plot
+            fig = px.scatter(df, x=numeric_cols[0], y=numeric_cols[1])
+        elif len(numeric_cols) == 1 and len(categorical_cols) >= 1:
+            # Use a bar plot if there's one numeric and one categorical column
+            fig = px.bar(df, x=categorical_cols[0], y=numeric_cols[0])
+        elif len(categorical_cols) >= 1 and df[categorical_cols[0]].nunique() < 10:
+            # Use a pie chart for categorical data with fewer unique values
+            fig = px.pie(df, names=categorical_cols[0])
+        else:
+            # Default to a simple line plot if above conditions are not met
+            fig = px.line(df)
+
+        if fig is None:
+            return None
+
+        if dark_mode:
+            fig.update_layout(template=""plotly_dark"")
+
+        return fig
+
+    def _run_chart_code(self, code: str, namespace: dict) -> None:
+        raise ValueError(""chart code is not executed"")
+",vanna_plotly_exec_002,vanna_plotly_exec_002,vanna-ai/vanna,app_test,control,repaired,through_helper,real_world_app,draft_requires_second_reviewer
+vanna_plotly_exec_003:vulnerable,vanna_plotly_exec,python,LLM05,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 2072-2125. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import pandas as pd
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class VannaBase:
+    def get_plotly_figure(
+        self, plotly_code: str, df: pd.DataFrame, dark_mode: bool = True
+    ) -> plotly.graph_objs.Figure:
+        """"""
+        **Example:**
+        ```python
+        fig = vn.get_plotly_figure(
+            plotly_code=""fig = px.bar(df, x='name', y='salary')"",
+            df=df
+        )
+        fig.show()
+        ```
+        Get a Plotly figure from a dataframe and Plotly code.
+
+        Args:
+            df (pd.DataFrame): The dataframe to use.
+            plotly_code (str): The Plotly code to use.
+
+        Returns:
+            plotly.graph_objs.Figure: The Plotly figure.
+        """"""
+        ldict = {""df"": df, ""px"": px, ""go"": go}
+        try:
+            compiled = compile(plotly_code, ""<chart>"", ""exec"")
+            eval(compiled, globals(), ldict)
+
+            fig = ldict.get(""fig"", None)
+        except Exception as e:
+            # Inspect data types
+            numeric_cols = df.select_dtypes(include=[""number""]).columns.tolist()
+            categorical_cols = df.select_dtypes(
+                include=[""object"", ""category""]
+            ).columns.tolist()
+
+            # Decision-making for plot type
+            if len(numeric_cols) >= 2:
+                # Use the first two numeric columns for a scatter plot
+                fig = px.scatter(df, x=numeric_cols[0], y=numeric_cols[1])
+            elif len(numeric_cols) == 1 and len(categorical_cols) >= 1:
+                # Use a bar plot if there's one numeric and one categorical column
+                fig = px.bar(df, x=categorical_cols[0], y=numeric_cols[0])
+            elif len(categorical_cols) >= 1 and df[categorical_cols[0]].nunique() < 10:
+                # Use a pie chart for categorical data with fewer unique values
+                fig = px.pie(df, names=categorical_cols[0])
+            else:
+                # Default to a simple line plot if above conditions are not met
+                fig = px.line(df)
+
+        if fig is None:
+            return None
+
+        if dark_mode:
+            fig.update_layout(template=""plotly_dark"")
+
+        return fig
+",vanna_plotly_exec_003,vanna_plotly_exec_003,vanna-ai/vanna,app_test,vulnerable,mutated,compile_eval,real_world_app,draft_requires_second_reviewer
+vanna_plotly_exec_003:control,vanna_plotly_exec,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/legacy/base/base.py lines 2072-2125. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+import pandas as pd
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+class VannaBase:
+    def get_plotly_figure(
+        self, plotly_code: str, df: pd.DataFrame, dark_mode: bool = True
+    ) -> plotly.graph_objs.Figure:
+        """"""
+        **Example:**
+        ```python
+        fig = vn.get_plotly_figure(
+            plotly_code=""fig = px.bar(df, x='name', y='salary')"",
+            df=df
+        )
+        fig.show()
+        ```
+        Get a Plotly figure from a dataframe and Plotly code.
+
+        Args:
+            df (pd.DataFrame): The dataframe to use.
+            plotly_code (str): The Plotly code to use.
+
+        Returns:
+            plotly.graph_objs.Figure: The Plotly figure.
+        """"""
+        # Inspect data types
+        numeric_cols = df.select_dtypes(include=[""number""]).columns.tolist()
+        categorical_cols = df.select_dtypes(
+            include=[""object"", ""category""]
+        ).columns.tolist()
+
+        # Decision-making for plot type
+        if len(numeric_cols) >= 2:
+            # Use the first two numeric columns for a scatter plot
+            fig = px.scatter(df, x=numeric_cols[0], y=numeric_cols[1])
+        elif len(numeric_cols) == 1 and len(categorical_cols) >= 1:
+            # Use a bar plot if there's one numeric and one categorical column
+            fig = px.bar(df, x=categorical_cols[0], y=numeric_cols[0])
+        elif len(categorical_cols) >= 1 and df[categorical_cols[0]].nunique() < 10:
+            # Use a pie chart for categorical data with fewer unique values
+            fig = px.pie(df, names=categorical_cols[0])
+        else:
+            # Default to a simple line plot if above conditions are not met
+            fig = px.line(df)
+
+        if fig is None:
+            return None
+
+        if dark_mode:
+            fig.update_layout(template=""plotly_dark"")
+
+        return fig
+",vanna_plotly_exec_003,vanna_plotly_exec_003,vanna-ai/vanna,app_test,control,repaired,compile_eval,real_world_app,draft_requires_second_reviewer
+vanna_sql_write_access_001:vulnerable,vanna_sql_write_access,python,LLM06,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/integrations/sqlite/sql_runner.py lines 1-65. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+""""""SQLite implementation of SqlRunner interface.""""""
+
+import sqlite3
+import pandas as pd
+
+from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
+from vanna.core.tool import ToolContext
+
+
+class SqliteRunner(SqlRunner):
+    """"""SQLite implementation of the SqlRunner interface.""""""
+
+    def __init__(self, database_path: str):
+        """"""Initialize with a SQLite database path.
+
+        Args:
+            database_path: Path to the SQLite database file
+        """"""
+        self.database_path = database_path
+
+    async def run_sql(self, args: RunSqlToolArgs, context: ToolContext) -> pd.DataFrame:
+        """"""Execute SQL query against SQLite database and return results as DataFrame.
+
+        Args:
+            args: SQL query arguments
+            context: Tool execution context
+
+        Returns:
+            DataFrame with query results
+
+        Raises:
+            sqlite3.Error: If query execution fails
+        """"""
+        # Connect to the database
+        conn = sqlite3.connect(self.database_path)
+        conn.row_factory = sqlite3.Row  # Enable column access by name
+        cursor = conn.cursor()
+
+        try:
+            # Execute the query
+            cursor.execute(args.sql)
+
+            # Determine if this is a SELECT query or modification query
+            query_type = args.sql.strip().upper().split()[0]
+
+            if query_type == ""SELECT"":
+                # Fetch results for SELECT queries
+                rows = cursor.fetchall()
+                if not rows:
+                    # Return empty DataFrame
+                    return pd.DataFrame()
+
+                # Convert rows to list of dictionaries
+                results_data = [dict(row) for row in rows]
+                return pd.DataFrame(results_data)
+            else:
+                # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
+                conn.commit()
+                rows_affected = cursor.rowcount
+                # Return a DataFrame indicating rows affected
+                return pd.DataFrame({""rows_affected"": [rows_affected]})
+
+        finally:
+            cursor.close()
+            conn.close()
+",vanna_sql_write_access_001,vanna_sql_write_access_001,vanna-ai/vanna,app_test,vulnerable,original,base,real_world_app,draft_requires_second_reviewer
+vanna_sql_write_access_001:control,vanna_sql_write_access,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/integrations/sqlite/sql_runner.py lines 1-65. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+""""""SQLite implementation of SqlRunner interface.""""""
+
+import sqlite3
+import pandas as pd
+
+from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
+from vanna.core.tool import ToolContext
+
+
+class SqliteRunner(SqlRunner):
+    """"""SQLite implementation of the SqlRunner interface.""""""
+
+    def __init__(self, database_path: str):
+        """"""Initialize with a SQLite database path.
+
+        Args:
+            database_path: Path to the SQLite database file
+        """"""
+        self.database_path = database_path
+
+    async def run_sql(self, args: RunSqlToolArgs, context: ToolContext) -> pd.DataFrame:
+        """"""Execute SQL query against SQLite database and return results as DataFrame.
+
+        Args:
+            args: SQL query arguments
+            context: Tool execution context
+
+        Returns:
+            DataFrame with query results
+
+        Raises:
+            sqlite3.Error: If query execution fails
+        """"""
+        # Connect to the database
+        conn = sqlite3.connect(f""file:{self.database_path}?mode=ro"", uri=True)
+        conn.row_factory = sqlite3.Row  # Enable column access by name
+        cursor = conn.cursor()
+
+        try:
+            # Execute the query
+            cursor.execute(args.sql)
+
+            # Determine if this is a SELECT query or modification query
+            query_type = args.sql.strip().upper().split()[0]
+
+            if query_type == ""SELECT"":
+                # Fetch results for SELECT queries
+                rows = cursor.fetchall()
+                if not rows:
+                    # Return empty DataFrame
+                    return pd.DataFrame()
+
+                # Convert rows to list of dictionaries
+                results_data = [dict(row) for row in rows]
+                return pd.DataFrame(results_data)
+            else:
+                # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
+                conn.commit()
+                rows_affected = cursor.rowcount
+                # Return a DataFrame indicating rows affected
+                return pd.DataFrame({""rows_affected"": [rows_affected]})
+
+        finally:
+            cursor.close()
+            conn.close()
+",vanna_sql_write_access_001,vanna_sql_write_access_001,vanna-ai/vanna,app_test,control,repaired,base,real_world_app,draft_requires_second_reviewer
+vanna_sql_write_access_002:vulnerable,vanna_sql_write_access,python,LLM06,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/integrations/sqlite/sql_runner.py lines 1-65. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+""""""SQLite implementation of SqlRunner interface.""""""
+
+import sqlite3
+import pandas as pd
+
+from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
+from vanna.core.tool import ToolContext
+
+
+class SqliteRunner(SqlRunner):
+    """"""SQLite implementation of the SqlRunner interface.""""""
+
+    def __init__(self, database_path: str):
+        """"""Initialize with a SQLite database path.
+
+        Args:
+            database_path: Path to the SQLite database file
+        """"""
+        self.database_path = database_path
+
+    async def run_sql(self, args: RunSqlToolArgs, context: ToolContext) -> pd.DataFrame:
+        """"""Execute SQL query against SQLite database and return results as DataFrame.
+
+        Args:
+            args: SQL query arguments
+            context: Tool execution context
+
+        Returns:
+            DataFrame with query results
+
+        Raises:
+            sqlite3.Error: If query execution fails
+        """"""
+        # Connect to the database
+        conn = self._connect()
+        conn.row_factory = sqlite3.Row  # Enable column access by name
+        cursor = conn.cursor()
+
+        try:
+            # Execute the query
+            cursor.execute(args.sql)
+
+            # Determine if this is a SELECT query or modification query
+            query_type = args.sql.strip().upper().split()[0]
+
+            if query_type == ""SELECT"":
+                # Fetch results for SELECT queries
+                rows = cursor.fetchall()
+                if not rows:
+                    # Return empty DataFrame
+                    return pd.DataFrame()
+
+                # Convert rows to list of dictionaries
+                results_data = [dict(row) for row in rows]
+                return pd.DataFrame(results_data)
+            else:
+                # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
+                conn.commit()
+                rows_affected = cursor.rowcount
+                # Return a DataFrame indicating rows affected
+                return pd.DataFrame({""rows_affected"": [rows_affected]})
+
+        finally:
+            cursor.close()
+            conn.close()
+
+    def _connect(self):
+        return sqlite3.connect(self.database_path)
+",vanna_sql_write_access_002,vanna_sql_write_access_002,vanna-ai/vanna,app_test,vulnerable,mutated,through_helper,real_world_app,draft_requires_second_reviewer
+vanna_sql_write_access_002:control,vanna_sql_write_access,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/integrations/sqlite/sql_runner.py lines 1-65. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+""""""SQLite implementation of SqlRunner interface.""""""
+
+import sqlite3
+import pandas as pd
+
+from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
+from vanna.core.tool import ToolContext
+
+
+class SqliteRunner(SqlRunner):
+    """"""SQLite implementation of the SqlRunner interface.""""""
+
+    def __init__(self, database_path: str):
+        """"""Initialize with a SQLite database path.
+
+        Args:
+            database_path: Path to the SQLite database file
+        """"""
+        self.database_path = database_path
+
+    async def run_sql(self, args: RunSqlToolArgs, context: ToolContext) -> pd.DataFrame:
+        """"""Execute SQL query against SQLite database and return results as DataFrame.
+
+        Args:
+            args: SQL query arguments
+            context: Tool execution context
+
+        Returns:
+            DataFrame with query results
+
+        Raises:
+            sqlite3.Error: If query execution fails
+        """"""
+        # Connect to the database
+        conn = self._connect()
+        conn.row_factory = sqlite3.Row  # Enable column access by name
+        cursor = conn.cursor()
+
+        try:
+            # Execute the query
+            cursor.execute(args.sql)
+
+            # Determine if this is a SELECT query or modification query
+            query_type = args.sql.strip().upper().split()[0]
+
+            if query_type == ""SELECT"":
+                # Fetch results for SELECT queries
+                rows = cursor.fetchall()
+                if not rows:
+                    # Return empty DataFrame
+                    return pd.DataFrame()
+
+                # Convert rows to list of dictionaries
+                results_data = [dict(row) for row in rows]
+                return pd.DataFrame(results_data)
+            else:
+                # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
+                conn.commit()
+                rows_affected = cursor.rowcount
+                # Return a DataFrame indicating rows affected
+                return pd.DataFrame({""rows_affected"": [rows_affected]})
+
+        finally:
+            cursor.close()
+            conn.close()
+
+    def _connect(self):
+        return sqlite3.connect(f""file:{self.database_path}?mode=ro"", uri=True)
+",vanna_sql_write_access_002,vanna_sql_write_access_002,vanna-ai/vanna,app_test,control,repaired,through_helper,real_world_app,draft_requires_second_reviewer
+vanna_sql_write_access_003:vulnerable,vanna_sql_write_access,python,LLM06,1,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/integrations/sqlite/sql_runner.py lines 1-65. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+""""""SQLite implementation of SqlRunner interface.""""""
+
+import sqlite3
+import pandas as pd
+
+from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
+from vanna.core.tool import ToolContext
+
+
+class SqliteRunner(SqlRunner):
+    """"""SQLite implementation of the SqlRunner interface.""""""
+
+    def __init__(self, database_path: str):
+        """"""Initialize with a SQLite database path.
+
+        Args:
+            database_path: Path to the SQLite database file
+        """"""
+        self.database_path = database_path
+
+    async def run_sql(self, args: RunSqlToolArgs, context: ToolContext) -> pd.DataFrame:
+        """"""Execute SQL query against SQLite database and return results as DataFrame.
+
+        Args:
+            args: SQL query arguments
+            context: Tool execution context
+
+        Returns:
+            DataFrame with query results
+
+        Raises:
+            sqlite3.Error: If query execution fails
+        """"""
+        # Connect to the database
+        conn = sqlite3.connect(self.database_path)
+        conn.row_factory = sqlite3.Row  # Enable column access by name
+        cursor = conn.cursor()
+
+        try:
+            # Execute the query
+            statement = args.sql.strip().upper().split()[0]
+            if statement not in (""SELECT"", ""INSERT"", ""UPDATE"", ""DELETE"", ""DROP"", ""CREATE"", ""ALTER""):
+                raise PermissionError(""Unsupported statement"")
+            cursor.execute(args.sql)
+
+            # Determine if this is a SELECT query or modification query
+            query_type = args.sql.strip().upper().split()[0]
+
+            if query_type == ""SELECT"":
+                # Fetch results for SELECT queries
+                rows = cursor.fetchall()
+                if not rows:
+                    # Return empty DataFrame
+                    return pd.DataFrame()
+
+                # Convert rows to list of dictionaries
+                results_data = [dict(row) for row in rows]
+                return pd.DataFrame(results_data)
+            else:
+                # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
+                conn.commit()
+                rows_affected = cursor.rowcount
+                # Return a DataFrame indicating rows affected
+                return pd.DataFrame({""rows_affected"": [rows_affected]})
+
+        finally:
+            cursor.close()
+            conn.close()
+",vanna_sql_write_access_003,vanna_sql_write_access_003,vanna-ai/vanna,app_test,vulnerable,mutated,statement_allowlist,real_world_app,draft_requires_second_reviewer
+vanna_sql_write_access_003:control,vanna_sql_write_access,python,SAFE,0,"# Adapted from vanna-ai/vanna (commit 365d0617c1a4567ffee1b19b40c27feb4206bfcf),
+# src/vanna/integrations/sqlite/sql_runner.py lines 1-65. MIT License; see LICENSE.upstream.
+# Extracted 2026-11-08 for a controlled pilot case; see case.json.
+""""""SQLite implementation of SqlRunner interface.""""""
+
+import sqlite3
+import pandas as pd
+
+from vanna.capabilities.sql_runner import SqlRunner, RunSqlToolArgs
+from vanna.core.tool import ToolContext
+
+
+class SqliteRunner(SqlRunner):
+    """"""SQLite implementation of the SqlRunner interface.""""""
+
+    def __init__(self, database_path: str):
+        """"""Initialize with a SQLite database path.
+
+        Args:
+            database_path: Path to the SQLite database file
+        """"""
+        self.database_path = database_path
+
+    async def run_sql(self, args: RunSqlToolArgs, context: ToolContext) -> pd.DataFrame:
+        """"""Execute SQL query against SQLite database and return results as DataFrame.
+
+        Args:
+            args: SQL query arguments
+            context: Tool execution context
+
+        Returns:
+            DataFrame with query results
+
+        Raises:
+            sqlite3.Error: If query execution fails
+        """"""
+        # Connect to the database
+        conn = sqlite3.connect(self.database_path)
+        conn.row_factory = sqlite3.Row  # Enable column access by name
+        cursor = conn.cursor()
+
+        try:
+            # Execute the query
+            statement = args.sql.strip().upper().split()[0]
+            if statement not in (""SELECT"",):
+                raise PermissionError(""Unsupported statement"")
+            cursor.execute(args.sql)
+
+            # Determine if this is a SELECT query or modification query
+            query_type = args.sql.strip().upper().split()[0]
+
+            if query_type == ""SELECT"":
+                # Fetch results for SELECT queries
+                rows = cursor.fetchall()
+                if not rows:
+                    # Return empty DataFrame
+                    return pd.DataFrame()
+
+                # Convert rows to list of dictionaries
+                results_data = [dict(row) for row in rows]
+                return pd.DataFrame(results_data)
+            else:
+                # For non-SELECT queries (INSERT, UPDATE, DELETE, etc.)
+                conn.commit()
+                rows_affected = cursor.rowcount
+                # Return a DataFrame indicating rows affected
+                return pd.DataFrame({""rows_affected"": [rows_affected]})
+
+        finally:
+            cursor.close()
+            conn.close()
+",vanna_sql_write_access_003,vanna_sql_write_access_003,vanna-ai/vanna,app_test,control,repaired,statement_allowlist,real_world_app,draft_requires_second_reviewer

@@ -79,3 +79,24 @@ fields, enumerations, exactly one target, valid line ordering, and existence of
 variant/license/script/report files. It does not verify upstream line content,
 scientific label correctness, or successful human review. New cases are found
 automatically under `data/pilot/cases/*/case.json`.
+
+## Split and dataset file (step 2)
+
+`data/pilot/splits.json` assigns each application group to `app_validation` or
+`app_test`. It was fixed before any training or evaluation on application
+cases. A case's `split` field must equal its group's split; all variants and
+both files of a case follow their group. Training uses the Lab 3 synthetic
+data only.
+
+`python data/build_appset.py` writes `data/appset.csv` with two rows per case:
+`vulnerable.py` labelled with the case's OWASP category and `control.py`
+labelled `SAFE` (protected against that case's target vulnerability). The
+columns match the Lab 3 CSVs (`id, template, language, label, vulnerable,
+code`) so the existing pipeline can read it with `pandas.read_csv`, plus
+`case_id`, `pair_id`, `group`, `split`, `variant`, `origin`, `form`, `app_kind`
+and `review_status`. `template` is the case family (base case and its
+variants), so template-aware code keeps variants together.
+
+`python experiments/pilot/check_appset.py` verifies that the CSV is current,
+that no group, family or pair crosses splits, and that each split contains
+LLM02, LLM05, LLM06 and SAFE.

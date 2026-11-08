@@ -98,7 +98,7 @@
       "Patricia Sovan"
     ]
   },
-  "split": "pilot_development_only",
+  "split": "app_validation",
   "excluded_from_training": true,
   "assumptions": [
     "Agent-selected tool argument userId is untrusted.",

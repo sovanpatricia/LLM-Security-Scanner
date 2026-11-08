@@ -66,7 +66,7 @@
     "status": "draft_requires_second_reviewer",
     "reviewers": []
   },
-  "split": "pilot_development_only",
+  "split": "app_validation",
   "excluded_from_training": true,
   "assumptions": [
     "The app answers questions about the sample database and never needs to change it (upstream's own comment and warning say so).",

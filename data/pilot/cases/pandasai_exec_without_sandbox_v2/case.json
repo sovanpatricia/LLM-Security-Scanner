@@ -73,7 +73,7 @@
     "status": "draft_requires_second_reviewer",
     "reviewers": []
   },
-  "split": "pilot_development_only",
+  "split": "app_test",
   "excluded_from_training": true,
   "assumptions": [
     "An attacker can influence the generated code through the question or the data (prompt injection; see CVE-2024-12366 for this product family).",

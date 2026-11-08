@@ -1,0 +1,18 @@
+{
+  "decided": "2026-11-08",
+  "decided_before": "any training, tuning or evaluation on application cases",
+  "unit": "group_id (one application repository); every case of a group, with all its variants and both files, is in the same split",
+  "train": "Lab 3 synthetic data only (data/dataset.csv, data/val_newstyle.csv); application cases are not used for training",
+  "groups": {
+    "ReversecLabs/damn-vulnerable-llm-agent": "app_validation",
+    "langchain-ai/streamlit-agent": "app_validation",
+    "vanna-ai/vanna": "app_test",
+    "sinaptik-ai/pandas-ai": "app_test"
+  },
+  "rationale": [
+    "The test set contains only real_world_app groups; the intentionally vulnerable lab (DVLA) is used for validation only.",
+    "Vanna and PandasAI have the most cases and together cover LLM02, LLM05 and LLM06.",
+    "DVLA and streamlit-agent together also cover all three categories, so model choice and thresholds can be checked on every class before the test.",
+    "The test groups must not be inspected for tuning; results on them are computed once, after the model is chosen."
+  ]
+}

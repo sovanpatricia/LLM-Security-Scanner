@@ -73,7 +73,7 @@
     "status": "draft_requires_second_reviewer",
     "reviewers": []
   },
-  "split": "pilot_development_only",
+  "split": "app_test",
   "excluded_from_training": true,
   "assumptions": [
     "The deployment is a question-answering assistant that only needs to read data, as in upstream's example (\"Basic SQL agent - query databases\").",
