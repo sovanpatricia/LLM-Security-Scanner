@@ -1,0 +1,47 @@
+{
+  "case_id": "pandasai_exec_without_sandbox_001",
+  "scope": "Simulated generated code passed to the extracted Agent.execute_code; no live model call",
+  "model_load_warnings": [],
+  "variants": {
+    "vulnerable": {
+      "sandbox_result": "ran in sandbox",
+      "no_sandbox_refusal": null,
+      "injected_code_executed_in_process": true,
+      "whole_file_model_prediction": "LLM05",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "data/pilot/cases/pandasai_exec_without_sandbox/vulnerable.py",
+          "line": 8,
+          "category": "LLM05",
+          "risk": "Improper output handling",
+          "score": 0.13,
+          "rules_agree": [],
+          "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+          "snippet": "class Agent:"
+        }
+      ]
+    },
+    "control": {
+      "sandbox_result": "ran in sandbox",
+      "no_sandbox_refusal": "Generated code is only executed inside a sandbox.",
+      "injected_code_executed_in_process": false,
+      "whole_file_model_prediction": "LLM05",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "data/pilot/cases/pandasai_exec_without_sandbox/control.py",
+          "line": 8,
+          "category": "LLM05",
+          "risk": "Improper output handling",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+          "snippet": "class Agent:"
+        }
+      ]
+    }
+  }
+}

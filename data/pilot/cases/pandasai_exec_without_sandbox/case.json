@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "case_id": "pandasai_exec_without_sandbox_001",
+  "group_id": "sinaptik-ai/pandas-ai",
+  "source": {
+    "url": "https://github.com/sinaptik-ai/pandas-ai",
+    "commit": "bbbb771d31062d81f6fa19bafb40620d5cbe48f4",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM05",
+    "cwe": "CWE-94"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "original",
+      "description": "Upstream Agent.execute_code unchanged: when no sandbox is configured (the default, sandbox=None), model-generated Python runs in-process through CodeExecutor's exec()."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "repaired",
+      "description": "Repaired by the team: generated code only runs through the configured sandbox; without one, execution is refused. Protected against the tested in-process execution, not certified SAFE (the sandbox's own isolation is out of scope)."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "pandasai/agent/base.py",
+      "start_line": 123,
+      "end_line": 135,
+      "symbol": "Agent.execute_code"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/core/code_execution/code_executor.py",
+      "start_line": 8,
+      "end_line": 50,
+      "symbol": "CodeExecutor"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/agent/base.py",
+      "start_line": 39,
+      "end_line": 49,
+      "symbol": "Agent.__init__"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/agent/base.py",
+      "start_line": 197,
+      "end_line": 206,
+      "symbol": "Agent.execute_with_retries"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "LLM completion: Python code generated from the user's question (simulated in the harness).",
+    "sink": "exec() in CodeExecutor.execute, reached from Agent.execute_code when no sandbox is set."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_pandasai_case.py",
+    "report": "reports/pilot/pandasai_case.json",
+    "live_llm": false,
+    "summary": "The upstream CodeExecutor is loaded from context.json. With a sandbox, both versions hand the code to it. Without one, an injected payload writes a harmless marker file only in the vulnerable version; the control refuses."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "An attacker can influence the generated code through the question or the data (prompt injection; see CVE-2024-12366 for this product family).",
+    "Agents are created without a sandbox by default (sandbox: Sandbox = None)."
+  ],
+  "limitations": [
+    "No live LLM inference is run; the generated code is simulated.",
+    "The repair removes in-process execution, which PandasAI uses by default; users must configure a sandbox (for example the Docker sandbox PandasAI offers).",
+    "The pandasai/ee directory is under a different license and is not used."
+  ]
+}

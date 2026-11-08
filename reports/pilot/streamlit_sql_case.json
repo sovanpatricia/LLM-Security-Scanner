@@ -1,0 +1,31 @@
+{
+  "case_id": "streamlit_agent_sql_readonly_001",
+  "scope": "Simulated model-written SQL through a SQLDatabase stand-in; no live model or agent",
+  "model_load_warnings": [],
+  "variants": {
+    "vulnerable": {
+      "select_rows": [
+        "AC/DC",
+        "Queen"
+      ],
+      "delete_error": null,
+      "rows_after_delete": 0,
+      "whole_file_model_prediction": "LLM06",
+      "whole_file_rules_prediction": "LLM06",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    },
+    "control": {
+      "select_rows": [
+        "AC/DC",
+        "Queen"
+      ],
+      "delete_error": "attempt to write a readonly database",
+      "rows_after_delete": 2,
+      "whole_file_model_prediction": "LLM06",
+      "whole_file_rules_prediction": "LLM06",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    }
+  }
+}
