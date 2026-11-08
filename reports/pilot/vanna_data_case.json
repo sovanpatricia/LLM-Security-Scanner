@@ -1,0 +1,47 @@
+{
+  "case_id": "vanna_llm_sees_data_001",
+  "scope": "Stubbed retrieval, database and model; generate_sql called with its default value",
+  "model_load_warnings": [],
+  "variants": {
+    "vulnerable": {
+      "prompts_sent": 2,
+      "database_row_in_prompt": true,
+      "returned": "SELECT COUNT(*) FROM customers",
+      "whole_file_model_prediction": "LLM05",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "data/pilot/cases/vanna_llm_sees_data/vulnerable.py",
+          "line": 4,
+          "category": "LLM05",
+          "risk": "Improper output handling",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+          "snippet": "class VannaBase:"
+        }
+      ]
+    },
+    "control": {
+      "prompts_sent": 1,
+      "database_row_in_prompt": false,
+      "returned": "The LLM is not allowed to see the data in your database. Your question requires ",
+      "whole_file_model_prediction": "LLM05",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "data/pilot/cases/vanna_llm_sees_data/control.py",
+          "line": 4,
+          "category": "LLM05",
+          "risk": "Improper output handling",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+          "snippet": "class VannaBase:"
+        }
+      ]
+    }
+  }
+}

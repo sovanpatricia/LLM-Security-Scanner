@@ -1,0 +1,21 @@
+{
+  "source_commit": "bbbb771d31062d81f6fa19bafb40620d5cbe48f4",
+  "purpose": "Non-executable excerpts: every dataframe is serialized into the code-generation prompt through this template.",
+  "segments": [
+    {
+      "file": "pandasai/dataframe/base.py",
+      "start_line": 144,
+      "end_line": 152,
+      "code": "    def serialize_dataframe(self) -> str:\n        \"\"\"\n        Serialize DataFrame to string representation.\n\n        Returns:\n            str: Serialized string representation of the DataFrame\n        \"\"\"\n        dialect = self.get_dialect()\n        return DataframeSerializer.serialize(self, dialect)"
+    },
+    {
+      "file": "pandasai/core/prompts/templates/shared/dataframe.tmpl",
+      "start_line": 1,
+      "end_line": 1,
+      "code": "{{ df.serialize_dataframe() }}"
+    }
+  ],
+  "limitations": [
+    "No live model inference is run."
+  ]
+}

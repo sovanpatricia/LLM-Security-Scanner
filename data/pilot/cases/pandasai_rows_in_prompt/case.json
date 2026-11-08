@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "case_id": "pandasai_rows_in_prompt_001",
+  "group_id": "sinaptik-ai/pandas-ai",
+  "source": {
+    "url": "https://github.com/sinaptik-ai/pandas-ai",
+    "commit": "bbbb771d31062d81f6fa19bafb40620d5cbe48f4",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM02",
+    "cwe": "CWE-359"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "original",
+      "description": "Upstream DataframeSerializer unchanged: the first rows of every dataframe (df.head()) are written into the prompt for the LLM. PandasAI v2's enforce_privacy option, which avoided this, was removed in v3 (commit c1429b32)."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "repaired",
+      "description": "Repaired by the team: only the header row is serialized (df.head(0)); table name, column metadata and dimensions are still sent. One line changes. Protected against the tested row disclosure, not certified SAFE."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "pandasai/helpers/dataframe_serializer.py",
+      "start_line": 1,
+      "end_line": 60,
+      "symbol": "DataframeSerializer.serialize"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/dataframe/base.py",
+      "start_line": 144,
+      "end_line": 152,
+      "symbol": "DataFrame.serialize_dataframe"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/core/prompts/templates/shared/dataframe.tmpl",
+      "start_line": 1,
+      "end_line": 1,
+      "symbol": "dataframe prompt template"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "Rows of the user's dataframe (dummy customer records in the harness).",
+    "sink": "Text serialized into the prompt sent to the external LLM provider."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_pandasai_rows_case.py",
+    "report": "reports/pilot/pandasai_rows_case.json",
+    "live_llm": false,
+    "summary": "A dataframe stand-in with schema metadata and dummy personal data. Column names appear in both serializations; the dummy email appears only in the vulnerable one."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "The dataframe contains personal or confidential data.",
+    "The LLM is an external provider."
+  ],
+  "limitations": [
+    "No live LLM inference is run.",
+    "Without sample rows the generated code may be less accurate; this is the trade-off PandasAI v2 offered as enforce_privacy.",
+    "The schema description and column metadata can still contain sensitive text."
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "case_id": "vanna_llm_sees_data_001",
+  "group_id": "vanna-ai/vanna",
+  "source": {
+    "url": "https://github.com/vanna-ai/vanna",
+    "commit": "365d0617c1a4567ffee1b19b40c27feb4206bfcf",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM02",
+    "cwe": "CWE-359"
+  },
+  "variants": {
+    "control": {
+      "file": "control.py",
+      "origin": "original",
+      "description": "Upstream generate_sql unchanged: by default (allow_llm_to_see_data=False) query results are never put into the prompt; the caller must opt in."
+    },
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "mutated",
+      "description": "Controlled mutation of the control: the default becomes allow_llm_to_see_data=True, so any caller that relies on the default sends rows from the database to the LLM provider (and to the log). Only the signature line changes."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 93,
+      "end_line": 168,
+      "symbol": "VannaBase.generate_sql"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/legacy/flask/__init__.py",
+      "start_line": 589,
+      "end_line": 593,
+      "symbol": "fix_sql endpoint (calls generate_sql with the default)"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 84,
+      "end_line": 85,
+      "symbol": "VannaBase.log"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "Rows returned by the model-requested intermediate SQL query (customer data in the harness).",
+    "sink": "Prompt sent to the external LLM provider through submit_prompt (and printed by log)."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_vanna_data_case.py",
+    "report": "reports/pilot/vanna_data_case.json",
+    "live_llm": false,
+    "summary": "Stubbed retrieval, database and model. When the simulated model asks for intermediate SQL, a dummy customer email reaches the second prompt only in the vulnerable version; the control returns upstream's refusal message."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "The database holds personal or confidential data that must not leave the organisation.",
+    "The LLM is an external provider (Vanna's typical setup)."
+  ],
+  "limitations": [
+    "No live LLM inference is run.",
+    "If the owner explicitly opts in, sending data is intended; the label concerns the unsafe default only.",
+    "Retrieval, prompt building and SQL extraction are stubbed."
+  ]
+}

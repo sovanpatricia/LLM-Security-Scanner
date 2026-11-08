@@ -1,0 +1,23 @@
+{
+  "case_id": "pandasai_rows_in_prompt_001",
+  "scope": "Extracted serializer on a dataframe stand-in with dummy personal data; no live model call",
+  "model_load_warnings": [],
+  "variants": {
+    "vulnerable": {
+      "serialized_prompt_part": "<table dialect=\"postgres\" table_name=\"customers\" dimensions=\"2x3\">\nname,email,spend\nAna,dummy.customer@example.com,120\nBob,second@example.com,80\n</table>\n",
+      "personal_data_in_prompt": true,
+      "whole_file_model_prediction": "LLM06",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    },
+    "control": {
+      "serialized_prompt_part": "<table dialect=\"postgres\" table_name=\"customers\" dimensions=\"2x3\">\nname,email,spend\n</table>\n",
+      "personal_data_in_prompt": false,
+      "whole_file_model_prediction": "LLM06",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    }
+  }
+}
