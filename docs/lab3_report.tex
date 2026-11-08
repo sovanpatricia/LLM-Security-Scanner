@@ -758,6 +758,79 @@ The cause is the one found on synthetic data, made stronger by the size of real 
 a bag-of-n-grams model sees the topic of a function, not the one line that removes a
 protection or the path a value takes.
 
+\subsection{Comparison with related work}
+\label{sec:sota}
+
+We compare with the works listed in our Lab 1 document. None of them evaluates
+file-level detection of OWASP LLM categories in real applications, so no published score
+can be placed next to ours on equal terms. Table~\ref{tab:sota} lists what each work
+reports, our closest result, and whether the numbers are comparable.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.6cm}@{}}
+\toprule
+Work & What it reports & Our closest result & Comparable? \\
+\midrule
+LLMSmith\textsuperscript{1} (Liu et al., CCS 2024) &
+Call chains from user-facing APIs to \code{eval}/\code{exec} in 11 LLM frameworks: 20
+vulnerabilities (19 RCE), 13 CVEs; chain extraction with a 13.7\% false-positive rate;
+attacks succeeded on 17 apps. &
+Our LLM05 code-execution cases (Vanna, PandasAI): rules find only the literal
+\code{exec(}; no model finds the helper or \code{compile}/\code{eval} variants. &
+Partly: same weakness, but call chains in frameworks vs.\ labelled file pairs; no recall
+reported. \\
+IRIS\textsuperscript{2} (Li et al., ICLR 2025) &
+Java, 120 known vulnerabilities: CodeQL finds 27, IRIS (CodeQL + GPT-4) finds 55; false
+discovery rate 84.82\%, 5.21 points below CodeQL. &
+Rules: recall 0.13, precision 1.00. Chosen ML model: recall 1.00, precision 0.54. &
+The pattern, not the numbers: Java projects vs.\ Python file pairs. \\
+Prompt-to-SQL\textsuperscript{3} (Pedro et al., ICSE 2025) &
+Prompt injection turned into SQL injection in LangChain apps with 7 LLMs; most attacks
+succeed every time; 4 defenses, among them database permission hardening. &
+Our DVLA SQL case is a P2SQL weakness; our LLM06 controls apply its permission hardening,
+and our tests confirm it blocks the model's \code{DELETE}. &
+No: an attack and defense study, not a detector. \\
+Greshake et al., 2023 &
+Indirect prompt injection through retrieved data. &
+Not covered: the application dataset has no LLM01 case. &
+No. \\
+Promptfoo Code Scanning, Agentic Radar &
+LLM code scanners with partial OWASP coverage. &
+-- &
+No published detection rates. \\
+Fourati et al.\ (KAIS 2026); Wang et al.\ (AAAI 2026) &
+Survey of LLMs for cyber defence; multi-agent coders tricked into shipping malicious
+code. &
+-- &
+Context only, no detection metrics. \\
+\bottomrule
+\end{tabularx}
+\caption{Comparison with the related work of Lab 1.
+\textsuperscript{1}\url{https://arxiv.org/abs/2309.02926}
+\textsuperscript{2}\url{https://arxiv.org/abs/2405.17238}
+\textsuperscript{3}\url{https://arxiv.org/abs/2308.01990}}
+\label{tab:sota}
+\end{table}
+
+What the comparison shows:
+\begin{itemize}
+  \item \textbf{The same trade-off as IRIS.} Static rules are precise but miss most
+        weaknesses (CodeQL: 27 of 120; our rules: 2 of 15). A learned component finds more
+        but raises many false alarms (IRIS: 85\% of its alerts are false; our model: 46\%).
+        This also matches the expectation stated in Lab 1: rules with high precision and
+        low recall.
+  \item \textbf{Why LLMSmith finds what we miss.} It follows calls across functions and
+        files, which is exactly where our model and rules fail (the helper and
+        \code{compile}/\code{eval} variants). It covers one category; we cover three in
+        this evaluation and eight in the synthetic one.
+  \item \textbf{Prompt-to-SQL supports our labels.} Its recommended defense, restricting
+        database permissions, is the repair in our LLM06 controls.
+  \item \textbf{What is new here} is a labelled set of vulnerable and repaired file pairs
+        from real LLM applications, with an executable test per case. It measures what the
+        papers above do not: whether a detector tells the two files of a pair apart.
+\end{itemize}
+
 \subsection{Limitations}
 
 \begin{itemize}
