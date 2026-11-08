@@ -1,0 +1,362 @@
+{
+  "rows": 48,
+  "cases": 24,
+  "apps": 4,
+  "case_families": 8,
+  "rows_per_split_and_class": {
+    "app_test": {
+      "LLM02": 6,
+      "LLM05": 6,
+      "LLM06": 3,
+      "SAFE": 15
+    },
+    "app_validation": {
+      "LLM02": 3,
+      "LLM05": 3,
+      "LLM06": 3,
+      "SAFE": 9
+    }
+  },
+  "cases_per_app_and_class": {
+    "ReversecLabs/damn-vulnerable-llm-agent": {
+      "LLM02": 3,
+      "LLM05": 3,
+      "LLM06": 0
+    },
+    "langchain-ai/streamlit-agent": {
+      "LLM02": 0,
+      "LLM05": 0,
+      "LLM06": 3
+    },
+    "sinaptik-ai/pandas-ai": {
+      "LLM02": 3,
+      "LLM05": 3,
+      "LLM06": 0
+    },
+    "vanna-ai/vanna": {
+      "LLM02": 3,
+      "LLM05": 3,
+      "LLM06": 3
+    }
+  },
+  "app_kind_cases": {
+    "real_world_app": 18,
+    "intentionally_vulnerable_lab": 6
+  },
+  "origin_of_vulnerable_file": {
+    "mutated": 19,
+    "original": 5
+  },
+  "form_cases": {
+    "base": 8,
+    "through_helper": 4,
+    "through_constant": 3,
+    "through_variable": 2,
+    "select_star": 1,
+    "inline_exec": 1,
+    "manual_rows": 1,
+    "engine_url": 1,
+    "config_default": 1,
+    "compile_eval": 1,
+    "statement_allowlist": 1
+  },
+  "review_status_cases": {
+    "draft_requires_second_reviewer": 22,
+    "reviewed": 2
+  },
+  "tokens": {
+    "app": {
+      "count": 48.0,
+      "mean": 301.8,
+      "std": 188.3,
+      "min": 89.0,
+      "25%": 161.0,
+      "50%": 236.5,
+      "75%": 407.5,
+      "max": 718.0
+    },
+    "synthetic_training": {
+      "count": 262.0,
+      "mean": 67.1,
+      "std": 24.1,
+      "min": 19.0,
+      "25%": 49.0,
+      "50%": 64.0,
+      "75%": 84.0,
+      "max": 127.0
+    }
+  },
+  "lines": {
+    "app": {
+      "count": 48.0,
+      "mean": 48.5,
+      "std": 23.2,
+      "min": 18.0,
+      "25%": 26.0,
+      "50%": 48.0,
+      "75%": 68.2,
+      "max": 84.0
+    },
+    "synthetic_training": {
+      "count": 262.0,
+      "mean": 5.2,
+      "std": 1.9,
+      "min": 2.0,
+      "25%": 4.0,
+      "50%": 5.0,
+      "75%": 6.0,
+      "max": 10.0
+    }
+  },
+  "median_tokens_by_class_app": {
+    "LLM02": 409.0,
+    "LLM05": 161.0,
+    "LLM06": 235.0,
+    "SAFE": 242.5
+  },
+  "changed_lines_per_pair": {
+    "count": 24.0,
+    "mean": 7.3,
+    "std": 13.8,
+    "min": 1.0,
+    "25%": 2.0,
+    "50%": 2.0,
+    "75%": 2.2,
+    "max": 44.0
+  },
+  "changed_lines_by_class": {
+    "LLM02": 2.0,
+    "LLM05": 4.0,
+    "LLM06": 2.0
+  },
+  "share_of_app_tokens_unseen_in_synthetic_vocabulary": 0.289,
+  "synthetic_training_classes": [
+    "LLM01",
+    "LLM02",
+    "LLM03",
+    "LLM05",
+    "LLM06",
+    "LLM07",
+    "LLM08",
+    "LLM10",
+    "SAFE"
+  ],
+  "pairs": [
+    {
+      "pair_id": "dvla_sensitive_tool_result_001",
+      "label": "LLM02",
+      "split": "app_validation",
+      "form": "base",
+      "group": "ReversecLabs/damn-vulnerable-llm-agent",
+      "changed_lines": 2,
+      "tokens": 167
+    },
+    {
+      "pair_id": "dvla_sensitive_tool_result_002",
+      "label": "LLM02",
+      "split": "app_validation",
+      "form": "select_star",
+      "group": "ReversecLabs/damn-vulnerable-llm-agent",
+      "changed_lines": 2,
+      "tokens": 162
+    },
+    {
+      "pair_id": "dvla_sensitive_tool_result_003",
+      "label": "LLM02",
+      "split": "app_validation",
+      "form": "through_constant",
+      "group": "ReversecLabs/damn-vulnerable-llm-agent",
+      "changed_lines": 2,
+      "tokens": 177
+    },
+    {
+      "pair_id": "dvla_sql_output_001",
+      "label": "LLM05",
+      "split": "app_validation",
+      "form": "base",
+      "group": "ReversecLabs/damn-vulnerable-llm-agent",
+      "changed_lines": 2,
+      "tokens": 89
+    },
+    {
+      "pair_id": "dvla_sql_output_002",
+      "label": "LLM05",
+      "split": "app_validation",
+      "form": "through_variable",
+      "group": "ReversecLabs/damn-vulnerable-llm-agent",
+      "changed_lines": 4,
+      "tokens": 91
+    },
+    {
+      "pair_id": "dvla_sql_output_003",
+      "label": "LLM05",
+      "split": "app_validation",
+      "form": "through_helper",
+      "group": "ReversecLabs/damn-vulnerable-llm-agent",
+      "changed_lines": 4,
+      "tokens": 108
+    },
+    {
+      "pair_id": "pandasai_exec_without_sandbox_001",
+      "label": "LLM05",
+      "split": "app_test",
+      "form": "base",
+      "group": "sinaptik-ai/pandas-ai",
+      "changed_lines": 2,
+      "tokens": 154
+    },
+    {
+      "pair_id": "pandasai_exec_without_sandbox_002",
+      "label": "LLM05",
+      "split": "app_test",
+      "form": "inline_exec",
+      "group": "sinaptik-ai/pandas-ai",
+      "changed_lines": 3,
+      "tokens": 161
+    },
+    {
+      "pair_id": "pandasai_exec_without_sandbox_003",
+      "label": "LLM05",
+      "split": "app_test",
+      "form": "through_helper",
+      "group": "sinaptik-ai/pandas-ai",
+      "changed_lines": 2,
+      "tokens": 177
+    },
+    {
+      "pair_id": "pandasai_rows_in_prompt_001",
+      "label": "LLM02",
+      "split": "app_test",
+      "form": "base",
+      "group": "sinaptik-ai/pandas-ai",
+      "changed_lines": 2,
+      "tokens": 399
+    },
+    {
+      "pair_id": "pandasai_rows_in_prompt_002",
+      "label": "LLM02",
+      "split": "app_test",
+      "form": "through_constant",
+      "group": "sinaptik-ai/pandas-ai",
+      "changed_lines": 2,
+      "tokens": 409
+    },
+    {
+      "pair_id": "pandasai_rows_in_prompt_003",
+      "label": "LLM02",
+      "split": "app_test",
+      "form": "manual_rows",
+      "group": "sinaptik-ai/pandas-ai",
+      "changed_lines": 1,
+      "tokens": 433
+    },
+    {
+      "pair_id": "streamlit_agent_sql_readonly_001",
+      "label": "LLM06",
+      "split": "app_validation",
+      "form": "base",
+      "group": "langchain-ai/streamlit-agent",
+      "changed_lines": 2,
+      "tokens": 156
+    },
+    {
+      "pair_id": "streamlit_agent_sql_readonly_002",
+      "label": "LLM06",
+      "split": "app_validation",
+      "form": "through_variable",
+      "group": "langchain-ai/streamlit-agent",
+      "changed_lines": 2,
+      "tokens": 174
+    },
+    {
+      "pair_id": "streamlit_agent_sql_readonly_003",
+      "label": "LLM06",
+      "split": "app_validation",
+      "form": "engine_url",
+      "group": "langchain-ai/streamlit-agent",
+      "changed_lines": 2,
+      "tokens": 145
+    },
+    {
+      "pair_id": "vanna_llm_sees_data_001",
+      "label": "LLM02",
+      "split": "app_test",
+      "form": "base",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 2,
+      "tokens": 681
+    },
+    {
+      "pair_id": "vanna_llm_sees_data_002",
+      "label": "LLM02",
+      "split": "app_test",
+      "form": "config_default",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 2,
+      "tokens": 718
+    },
+    {
+      "pair_id": "vanna_llm_sees_data_003",
+      "label": "LLM02",
+      "split": "app_test",
+      "form": "through_constant",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 2,
+      "tokens": 692
+    },
+    {
+      "pair_id": "vanna_plotly_exec_001",
+      "label": "LLM05",
+      "split": "app_test",
+      "form": "base",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 42,
+      "tokens": 410
+    },
+    {
+      "pair_id": "vanna_plotly_exec_002",
+      "label": "LLM05",
+      "split": "app_test",
+      "form": "through_helper",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 44,
+      "tokens": 439
+    },
+    {
+      "pair_id": "vanna_plotly_exec_003",
+      "label": "LLM05",
+      "split": "app_test",
+      "form": "compile_eval",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 43,
+      "tokens": 420
+    },
+    {
+      "pair_id": "vanna_sql_write_access_001",
+      "label": "LLM06",
+      "split": "app_test",
+      "form": "base",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 2,
+      "tokens": 296
+    },
+    {
+      "pair_id": "vanna_sql_write_access_002",
+      "label": "LLM06",
+      "split": "app_test",
+      "form": "through_helper",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 2,
+      "tokens": 310
+    },
+    {
+      "pair_id": "vanna_sql_write_access_003",
+      "label": "LLM06",
+      "split": "app_test",
+      "form": "statement_allowlist",
+      "group": "vanna-ai/vanna",
+      "changed_lines": 2,
+      "tokens": 342
+    }
+  ]
+}
