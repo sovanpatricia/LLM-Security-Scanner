@@ -1,0 +1,36 @@
+{
+  "root_symbol": "get_current_user_tool",
+  "code": "import json\n\nfrom langchain.agents import Tool\n\nclass TransactionDb:\n    def get_user(self, user_id):\n        cursor = self.conn.cursor()\n        cursor.execute(\n            \"SELECT userId,username FROM Users WHERE userId = ?\", (user_id,)\n        )\n        rows = cursor.fetchall()\n\n        # Get column names\n        columns = [column[0] for column in cursor.description]\n\n        # Convert rows to dictionaries with column names as keys\n        users = [dict(zip(columns, row)) for row in rows]\n\n        # Convert to JSON format\n        return json.dumps(users, indent=4)\n\ndef get_current_user(input : str):\n    db = TransactionDb()\n    user = db.get_user(1)\n    db.close()\n    return user\n\nget_current_user_tool = Tool(\n    name='GetCurrentUser',\n    func= get_current_user,\n    description=\"Returns the current user for querying transactions.\"\n)\n",
+  "spans": [
+    {
+      "start_line": 4,
+      "end_line": 4,
+      "kind": "Import"
+    },
+    {
+      "start_line": 5,
+      "end_line": 5,
+      "kind": "ImportFrom"
+    },
+    {
+      "start_line": 7,
+      "end_line": 22,
+      "kind": "ClassDef"
+    },
+    {
+      "start_line": 24,
+      "end_line": 28,
+      "kind": "FunctionDef"
+    },
+    {
+      "start_line": 30,
+      "end_line": 34,
+      "kind": "Assign"
+    }
+  ],
+  "external_imports": [
+    "import json",
+    "from langchain.agents import Tool"
+  ],
+  "policy": "same-file-name-closure-v1"
+}

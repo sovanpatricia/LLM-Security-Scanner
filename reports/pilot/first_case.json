@@ -1,0 +1,31 @@
+{
+  "case_id": "dvla_sql_output_001",
+  "scope": "Simulated agent tool call through upstream wrapper to SQLite; not a live agent attack",
+  "variants": {
+    "vulnerable": {
+      "normal_users": [
+        "1"
+      ],
+      "injected_users": [
+        "1",
+        "2"
+      ],
+      "direct_function_model_prediction": "LLM05",
+      "direct_function_rules_prediction": "SAFE",
+      "function_plus_context_prediction": "LLM06",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    },
+    "control": {
+      "normal_users": [
+        "1"
+      ],
+      "injected_users": [],
+      "direct_function_model_prediction": "LLM02",
+      "direct_function_rules_prediction": "SAFE",
+      "function_plus_context_prediction": "LLM06",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    }
+  }
+}

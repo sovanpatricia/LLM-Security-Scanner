@@ -1,0 +1,47 @@
+{
+  "source_commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+  "purpose": "Non-executable source excerpts establishing model -> registered tool -> database helper",
+  "segments": [
+    {
+      "file": "tools.py",
+      "start_line": 28,
+      "end_line": 37,
+      "code": "def get_transactions(userId : str):\n    \"\"\"Returns the transactions associated to the userId provided by running this query: SELECT * FROM Transactions WHERE userId = ?.\"\"\"\n    try:\n        db = TransactionDb()\n        transactions = db.get_user_transactions(userId)\n        db.close()\n        return transactions\n        \n    except Exception as e:\n        return f\"Error: {e}'\""
+    },
+    {
+      "file": "tools.py",
+      "start_line": 40,
+      "end_line": 44,
+      "code": "get_recent_transactions_tool = Tool(\n    name='GetUserTransactions',\n    func= get_transactions,\n    description=\"Returns the transactions associated to the userId provided by running this query: SELECT * FROM Transactions WHERE userId = provided_userId.\"\n)"
+    },
+    {
+      "file": "main.py",
+      "start_line": 19,
+      "end_line": 19,
+      "code": "tools = [get_current_user_tool, get_recent_transactions_tool]"
+    },
+    {
+      "file": "main.py",
+      "start_line": 67,
+      "end_line": 67,
+      "code": "    tools = tools"
+    },
+    {
+      "file": "main.py",
+      "start_line": 69,
+      "end_line": 69,
+      "code": "    chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools, verbose=True, system_message=system_msg)"
+    },
+    {
+      "file": "main.py",
+      "start_line": 71,
+      "end_line": 79,
+      "code": "    executor = AgentExecutor.from_agent_and_tools(\n        agent=chat_agent,\n        tools=tools,\n        memory=memory,\n        return_intermediate_steps=True,\n        handle_parsing_errors=True,\n        verbose=True,\n        max_iterations=6\n    )"
+    }
+  ],
+  "limitations": [
+    "No live model inference is run.",
+    "The tool-call argument in the harness is simulated.",
+    "Authorization remains a separate unresolved issue in both variants."
+  ]
+}

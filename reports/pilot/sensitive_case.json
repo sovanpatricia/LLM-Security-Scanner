@@ -1,0 +1,138 @@
+{
+  "case_id": "dvla_sensitive_tool_result_001",
+  "scope": "Simulated read-only tool dispatch; actual SQLite and source-derived wrapper; no live model call",
+  "environment": {
+    "python": "3.14.5",
+    "sklearn": "1.9.1"
+  },
+  "model_load_warnings": [],
+  "variants": {
+    "control": {
+      "functional_check_passed": true,
+      "fixed_user_check_passed": true,
+      "dummy_password_in_tool_observation": false,
+      "returned_fields": [
+        "userId",
+        "username"
+      ],
+      "whole_case_model_prediction": "LLM06",
+      "whole_case_rules_prediction": "SAFE",
+      "extracted_context": {
+        "policy": "same-file-name-closure-v1",
+        "root_symbol": "get_current_user_tool",
+        "spans": [
+          {
+            "start_line": 4,
+            "end_line": 4,
+            "kind": "Import"
+          },
+          {
+            "start_line": 5,
+            "end_line": 5,
+            "kind": "ImportFrom"
+          },
+          {
+            "start_line": 7,
+            "end_line": 22,
+            "kind": "ClassDef"
+          },
+          {
+            "start_line": 24,
+            "end_line": 28,
+            "kind": "FunctionDef"
+          },
+          {
+            "start_line": 30,
+            "end_line": 34,
+            "kind": "Assign"
+          }
+        ],
+        "external_imports": [
+          "import json",
+          "from langchain.agents import Tool"
+        ],
+        "lines": 32,
+        "model_prediction": "LLM06",
+        "rules_prediction": "SAFE",
+        "artifact": "reports\\pilot\\contexts\\sensitive_control.json"
+      },
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "C:\\Users\\Lenovo\\School\\LLMSecurity\\data\\pilot\\cases\\dvla_sensitive_tool_result\\control.py",
+          "line": 30,
+          "category": "LLM06",
+          "risk": "Excessive agency",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+          "snippet": "get_current_user_tool = Tool("
+        }
+      ]
+    },
+    "vulnerable": {
+      "functional_check_passed": true,
+      "fixed_user_check_passed": true,
+      "dummy_password_in_tool_observation": true,
+      "returned_fields": [
+        "password",
+        "userId",
+        "username"
+      ],
+      "whole_case_model_prediction": "LLM06",
+      "whole_case_rules_prediction": "SAFE",
+      "extracted_context": {
+        "policy": "same-file-name-closure-v1",
+        "root_symbol": "get_current_user_tool",
+        "spans": [
+          {
+            "start_line": 4,
+            "end_line": 4,
+            "kind": "Import"
+          },
+          {
+            "start_line": 5,
+            "end_line": 5,
+            "kind": "ImportFrom"
+          },
+          {
+            "start_line": 7,
+            "end_line": 22,
+            "kind": "ClassDef"
+          },
+          {
+            "start_line": 24,
+            "end_line": 28,
+            "kind": "FunctionDef"
+          },
+          {
+            "start_line": 30,
+            "end_line": 34,
+            "kind": "Assign"
+          }
+        ],
+        "external_imports": [
+          "import json",
+          "from langchain.agents import Tool"
+        ],
+        "lines": 32,
+        "model_prediction": "LLM06",
+        "rules_prediction": "SAFE",
+        "artifact": "reports\\pilot\\contexts\\sensitive_vulnerable.json"
+      },
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "C:\\Users\\Lenovo\\School\\LLMSecurity\\data\\pilot\\cases\\dvla_sensitive_tool_result\\vulnerable.py",
+          "line": 30,
+          "category": "LLM06",
+          "risk": "Excessive agency",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+          "snippet": "get_current_user_tool = Tool("
+        }
+      ]
+    }
+  }
+}

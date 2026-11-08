@@ -1,0 +1,27 @@
+{
+  "case_id": "dvla_sql_output_001",
+  "group_id": "ReversecLabs/damn-vulnerable-llm-agent",
+  "source_url": "https://github.com/ReversecLabs/damn-vulnerable-llm-agent",
+  "commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+  "source_file": "transaction_db.py",
+  "source_lines": [
+    60,
+    72
+  ],
+  "context_file": "tools.py",
+  "context_symbol": "get_transactions / get_recent_transactions_tool",
+  "target": "LLM05",
+  "review_status": "draft_requires_second_reviewer",
+  "split": "pilot_development_only",
+  "variants": {
+    "vulnerable": "Original unsafe SQL restored from upstream; equivalent to mutation of parameterized control.",
+    "control": "Parameterized SQL; protected against tested SQL injection, NOT globally SAFE."
+  },
+  "assumptions": [
+    "Agent-selected tool argument userId is untrusted.",
+    "Authorization is outside this case; parameterization does not prevent selecting another user by legitimate ID."
+  ],
+  "validation": "In-memory SQLite via extracted original tool wrapper and a simulated tool-call dispatcher; ordinary and crafted model-output arguments. No live LLM attack claim.",
+  "excluded_from_training": true,
+  "context_artifact": "context.json"
+}
