@@ -1,0 +1,202 @@
+{
+  "scope": "Behavioural tests of refactored variants; no live model call",
+  "model_load_warnings": [],
+  "cases": {
+    "dvla_sql_output_002": {
+      "form": "through_variable",
+      "variants": {
+        "vulnerable": {
+          "normal_users": [
+            "1"
+          ],
+          "injected_users": [
+            "1",
+            "2"
+          ],
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "normal_users": [
+            "1"
+          ],
+          "injected_users": [],
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "dvla_sql_output_003": {
+      "form": "through_helper",
+      "variants": {
+        "vulnerable": {
+          "normal_users": [
+            "1"
+          ],
+          "injected_users": [
+            "1",
+            "2"
+          ],
+          "whole_file_model_prediction": "LLM08",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "normal_users": [
+            "1"
+          ],
+          "injected_users": [],
+          "whole_file_model_prediction": "LLM08",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "vanna_plotly_exec_002": {
+      "form": "through_helper",
+      "variants": {
+        "vulnerable": {
+          "normal_chart_type": "bar",
+          "injected_code_executed": true,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "LLM05",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "normal_chart_type": "bar",
+          "injected_code_executed": false,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "vanna_plotly_exec_003": {
+      "form": "compile_eval",
+      "variants": {
+        "vulnerable": {
+          "normal_chart_type": "bar",
+          "injected_code_executed": true,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "normal_chart_type": "bar",
+          "injected_code_executed": false,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "pandasai_exec_without_sandbox_002": {
+      "form": "inline_exec",
+      "variants": {
+        "vulnerable": {
+          "sandbox_result": "ran in sandbox",
+          "injected_code_executed_in_process": true,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "LLM05",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/pandasai_exec_without_sandbox_v2/vulnerable.py",
+              "line": 8,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.13,
+              "rules_agree": [
+                "eval-exec"
+              ],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class Agent:"
+            }
+          ]
+        },
+        "control": {
+          "sandbox_result": "ran in sandbox",
+          "injected_code_executed_in_process": false,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/pandasai_exec_without_sandbox_v2/control.py",
+              "line": 8,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class Agent:"
+            }
+          ]
+        }
+      }
+    },
+    "pandasai_exec_without_sandbox_003": {
+      "form": "through_helper",
+      "variants": {
+        "vulnerable": {
+          "sandbox_result": "ran in sandbox",
+          "injected_code_executed_in_process": true,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/pandasai_exec_without_sandbox_v3/vulnerable.py",
+              "line": 8,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.13,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class Agent:"
+            }
+          ]
+        },
+        "control": {
+          "sandbox_result": "ran in sandbox",
+          "injected_code_executed_in_process": false,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 2,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/pandasai_exec_without_sandbox_v3/control.py",
+              "line": 8,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.13,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class Agent:"
+            },
+            {
+              "file": "data/pilot/cases/pandasai_exec_without_sandbox_v3/control.py",
+              "line": 24,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "def run_locally(code, code_executor):"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

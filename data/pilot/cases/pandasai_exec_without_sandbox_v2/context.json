@@ -1,0 +1,28 @@
+{
+  "source_commit": "bbbb771d31062d81f6fa19bafb40620d5cbe48f4",
+  "purpose": "Non-executable excerpts establishing user question -> LLM-generated Python -> Agent.execute_code -> CodeExecutor exec() when no sandbox is configured",
+  "segments": [
+    {
+      "file": "pandasai/core/code_execution/code_executor.py",
+      "start_line": 8,
+      "end_line": 50,
+      "code": "class CodeExecutor:\n    \"\"\"\n    Handle the logic on how to handle different lines of code\n    \"\"\"\n\n    _environment: dict\n\n    def __init__(self, config: Config) -> None:\n        self._environment = get_environment()\n\n    def add_to_env(self, key: str, value: Any) -> None:\n        \"\"\"\n        Expose extra variables in the code to be used\n        Args:\n            key (str): Name of variable or lib alias\n            value (Any): It can any value int, float, function, class etc.\n        \"\"\"\n        self._environment[key] = value\n\n    def execute(self, code: str) -> dict:\n        try:\n            exec(code, self._environment)\n        except Exception as e:\n            raise CodeExecutionError(\"Code execution failed\") from e\n        return self._environment\n\n    def execute_and_return_result(self, code: str) -> Any:\n        \"\"\"\n        Executes the return updated environment\n        \"\"\"\n        self.execute(code)\n\n        # Get the result\n        if \"result\" not in self._environment:\n            raise NoResultFoundError(\n                \"No result was returned from the code execution. Please return the result in dictionary format, for example: result = {'type': ..., 'value': ...}\"\n            )\n\n        return self._environment.get(\"result\", None)\n\n    @property\n    def environment(self) -> dict:\n        return self._environment"
+    },
+    {
+      "file": "pandasai/agent/base.py",
+      "start_line": 39,
+      "end_line": 49,
+      "code": "    def __init__(\n        self,\n        dfs: Union[\n            Union[DataFrame, VirtualDataFrame], List[Union[DataFrame, VirtualDataFrame]]\n        ],\n        config: Optional[Union[Config, dict]] = None,\n        memory_size: Optional[int] = 10,\n        vectorstore: Optional[VectorStore] = None,\n        description: str = None,\n        sandbox: Sandbox = None,\n    ):"
+    },
+    {
+      "file": "pandasai/agent/base.py",
+      "start_line": 197,
+      "end_line": 206,
+      "code": "    def execute_with_retries(self, code: str) -> Any:\n        \"\"\"Execute the code with retry logic.\"\"\"\n        max_retries = self._state.config.max_retries\n        attempts = 0\n\n        while attempts <= max_retries:\n            try:\n                result = self.execute_code(code)\n                return self._response_parser.parse(result, code)\n            except Exception as e:"
+    }
+  ],
+  "limitations": [
+    "No live model inference is run.",
+    "The generated code is simulated in the harness."
+  ]
+}

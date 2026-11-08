@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "case_id": "vanna_plotly_exec_003",
+  "group_id": "vanna-ai/vanna",
+  "source": {
+    "url": "https://github.com/vanna-ai/vanna",
+    "commit": "365d0617c1a4567ffee1b19b40c27feb4206bfcf",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM05",
+    "cwe": "CWE-94"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "mutated",
+      "description": "exec() replaced by compile() followed by eval() of the compiled code object, which runs the same statements. Still runs model output."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "repaired",
+      "description": "Identical to the base control: the chart is chosen from the data types only."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 2072,
+      "end_line": 2125,
+      "symbol": "VannaBase.get_plotly_figure"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 754,
+      "end_line": 776,
+      "symbol": "VannaBase.generate_plotly_code"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 1767,
+      "end_line": 1774,
+      "symbol": "VannaBase.ask"
+    }
+  ],
+  "context": {
+    "method": "manual_same_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "LLM completion: plotly code generated from a prompt that contains the user's question (simulated in the harness).",
+    "sink": "exec() inside get_plotly_figure."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_variant_cases.py",
+    "report": "reports/pilot/variant_cases.json",
+    "live_llm": false,
+    "summary": "Same behavioural test as the base case, run on this variant: the attack works only on the vulnerable file and normal use works on both."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "An attacker can influence the generated plotly code through the question (prompt injection), as shown for CVE-2024-5565.",
+    "ask() calls get_plotly_figure by default (visualize=True)."
+  ],
+  "limitations": [
+    "No live LLM inference is run; the malicious model output is simulated.",
+    "The repair removes LLM-chosen chart styles; this is a functional trade-off, also made by Vanna 2.x.",
+    "The question is also placed in the system prompt (a separate LLM01 issue), which is not part of this case.",
+    "Vanna 2.x replaced this code; the case uses the legacy module still shipped at this commit.",
+    "Refactored variant of vanna_plotly_exec_001: same application group and same split; it is not an independent sample."
+  ],
+  "variant_of": "vanna_plotly_exec_001",
+  "form": "compile_eval"
+}

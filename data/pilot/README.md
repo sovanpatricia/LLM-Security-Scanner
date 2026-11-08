@@ -27,6 +27,7 @@ Retain upstream attribution/license text and document every adaptation.
 | `review.status`, `review.reviewers` | Review state and reviewer names/identifiers. Preserve existing states; an empty list means no reviewers are recorded. Use `uncertain` for unresolved labels. |
 | `split`, `excluded_from_training` | Intended partition and boolean exclusion flag. Both current cases remain `pilot_development_only` and excluded. |
 | `assumptions`, `limitations` | Lists of conditions required by the label and boundaries of the evidence. |
+| `variant_of`, `form` | Optional. For a refactored variant of another case: the base `case_id` and the vulnerable form (e.g. `through_variable`, `through_helper`, `compile_eval`, `inline_exec`). A variant has the same `group_id` and must stay in the same split as its base. |
 | `expected_observations` | Optional expected output details; retained for the sensitive-tool-result case. |
 
 ## Labeling rules
@@ -40,6 +41,7 @@ Retain upstream attribution/license text and document every adaptation.
 - One target vulnerability per case. Cases with several vulnerabilities or
   unclear labels are marked uncertain or excluded. The first SQL case remains
   a diagnostic with unresolved authorization questions, not a clean SAFE pair.
+- Code files must not reveal their label: no comments such as "repaired" or "vulnerable" and an identical header in both files. Explanations belong in case.json.
 - Keep original/mutated/repaired variants, duplicates, and cases from the same
   application family together when partitioning data. Do not tune on test cases.
 - Preserve annotation facts when restructuring metadata. An empty list states
