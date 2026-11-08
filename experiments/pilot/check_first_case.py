@@ -2,6 +2,7 @@
 import importlib.util
 import ast
 import json
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -41,6 +42,7 @@ def returned_users(module, value, wrapper_code):
         return [row['userId'] for row in json.loads(result)]
 
 def main():
+    os.chdir(ROOT)
     model = joblib.load(ROOT / 'models/scanner_model.joblib')
     context = json.loads((CASE / 'context.json').read_text())
     wrapper_code = next(s['code'] for s in context['segments'] if s['code'].startswith('def get_transactions('))
@@ -50,7 +52,7 @@ def main():
     context_code = '\n\n'.join(s['code'] for s in context['segments'])
     result = {'case_id': 'dvla_sql_output_001', 'scope': 'Simulated agent tool call through upstream wrapper to SQLite; not a live agent attack', 'variants': {}}
     for variant in ('vulnerable', 'control'):
-        path = CASE / f'{variant}.py'
+        path = (CASE / f'{variant}.py').relative_to(ROOT)
         module = load(path)
         normal = returned_users(module, '1', wrapper_code)
         attack = returned_users(module, "1' OR '1'='1", wrapper_code)
@@ -65,7 +67,8 @@ def main():
             'direct_function_rules_prediction': rule_predict(code),
             'function_plus_context_prediction': str(model.predict([context_code + '\n\n' + code])[0]),
             'scanner_eligible_units': len(eligible),
-            'scanner_findings': scan(path),
+            'scanner_findings': [dict(finding, file=Path(finding['file']).as_posix())
+                                 for finding in scan(path)],
         }
     out = ROOT / 'reports/pilot/first_case.json'
     out.parent.mkdir(parents=True, exist_ok=True)

@@ -4,6 +4,7 @@ Run from the repository root. No LangChain installation or live LLM is needed.
 """
 import ast
 import json
+import os
 import platform
 import sqlite3
 import sys
@@ -54,6 +55,7 @@ def tool_observation(path, argument):
         return tool.run(argument)
 
 def main():
+    os.chdir(ROOT)
     with warnings.catch_warnings(record=True) as captured:
         warnings.simplefilter('always')
         model = joblib.load(ROOT / 'models/scanner_model.joblib')
@@ -64,7 +66,7 @@ def main():
         'model_load_warnings': sorted({str(w.message) for w in captured}),
         'variants': {}
     }
-    files = {v: CASE / f'{v}.py' for v in ('control', 'vulnerable')}
+    files = {v: (CASE / f'{v}.py').relative_to(ROOT) for v in ('control', 'vulnerable')}
     assert files['vulnerable'].read_text() == files['control'].read_text().replace(
         'SELECT userId,username FROM Users', 'SELECT userId,username,password FROM Users'
     ), 'Pair must differ only in the selected password field.'
@@ -98,10 +100,11 @@ def main():
                 'lines': len(context.code.splitlines()),
                 'model_prediction': str(model.predict([context.code])[0]),
                 'rules_prediction': rule_predict(context.code),
-                'artifact': str(context_file.relative_to(ROOT)),
+                'artifact': context_file.relative_to(ROOT).as_posix(),
             },
             'scanner_eligible_units': len(list(iter_units(path))),
-            'scanner_findings': scan(path)
+            'scanner_findings': [dict(finding, file=Path(finding['file']).as_posix())
+                                 for finding in scan(path)]
         }
     out = ROOT / 'reports/pilot/sensitive_case.json'
     out.parent.mkdir(parents=True, exist_ok=True)
