@@ -16,6 +16,7 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{tikz}
+\usepackage{graphicx}
 \usetikzlibrary{positioning,arrows.meta,calc}
 \usepackage{amsmath,amssymb}
 \usepackage[hidelinks]{hyperref}
@@ -66,6 +67,10 @@ TF-IDF tokens + Logistic Regression. On a final test set, scored once, it reache
 macro-F1 0.58 and flagged every vulnerable snippet, but it also flagged all 14 safe ones.
 The hand-written rules scored 1.00 on the data they were written from but only 0.28 on
 the test set.
+
+On real application code (Section~\ref{sec:app}), with vulnerable and safe versions of
+the same functions from Vanna and PandasAI, the chosen model fell to macro-F1 0.27: it
+flagged every vulnerable file but also 13 of 15 safe ones, and told apart 1 of 15 pairs.
 
 % =================================================================== 1
 \section{Dataset}
@@ -530,6 +535,247 @@ exactly what the planned LLM reviewer should catch, by reading each flagged func
 dismissing those that are already protected.
 
 % =================================================================== 6
+\section{Evaluation on real application code}
+\label{sec:app}
+
+The models above were trained and tested on short synthetic snippets. Following the
+teacher's suggestion, we built a second dataset from real open-source applications that
+use LLMs, with known vulnerabilities placed or kept under control, and asked whether the
+scanner finds them. The answer is mostly no: on two held-out real applications the chosen
+model reached macro-F1 0.27 and told apart only 1 of 15 vulnerable/safe pairs.
+
+\subsection{Dataset: controlled cases in real applications}
+
+A \emph{case} is a pair of files cut from one application at a fixed commit:
+\code{vulnerable.py} contains one target weakness and \code{control.py} is the same code
+without it. Each case has a \code{case.json} with the source repository, commit, license,
+label, origin of both files, data flow and assumptions. A test script per case runs a
+simulated attack (for example, a model output that writes a marker file, or a
+\code{DELETE} written by the model) and checks that it succeeds only on the vulnerable
+file and that normal use still works on both. No live LLM is called.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{3.1cm} >{\raggedright\arraybackslash}p{1.1cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.6cm}}
+\toprule
+Application (license) & Label & Weakness in the vulnerable file & Origin (vuln.\ / control) \\
+\midrule
+DVLA (Apache-2.0) & LLM05 & Tool argument chosen by the model pasted into SQL & original / repaired \\
+DVLA & LLM02 & Tool result returned to the model includes the password & mutated / repaired \\
+Vanna (MIT) & LLM05 & Chart code written by the model run with \code{exec} (CVE-2024-5565) & original / repaired \\
+Vanna & LLM06 & SQL tool opens the database with write access & original / repaired \\
+Vanna & LLM02 & Query results sent to the model by default & mutated / original \\
+PandasAI (MIT) & LLM05 & Generated code run in-process when no sandbox is set & original / repaired \\
+PandasAI & LLM02 & First rows of the user's data written into every prompt & original / repaired \\
+streamlit-agent (Apache-2.0) & LLM06 & Demo database opened writable instead of read-only & mutated / original \\
+\bottomrule
+\end{tabularx}
+\caption{The 8 base cases. DVLA is an intentionally vulnerable lab; the other three are
+real applications. Source: \code{data/pilot/cases/}.}
+\label{tab:appcases}
+\end{table}
+
+Each base case has two \emph{variants} with the same weakness written differently: through
+a variable, through a helper function, through a constant, or with \code{compile} and
+\code{eval} instead of \code{exec}. This tests whether a model recognises the weakness or
+only one exact line. The result is 24 cases (48 files) in 3 categories: LLM02 and LLM05
+with 9 cases each, LLM06 with 6. Variants are not independent samples; they always stay
+in the same split as their base case.
+
+\subsection{Split}
+
+The split is by application and was fixed in \code{data/pilot/splits.json} before any
+model saw application code. The test set contains only real applications.
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Split & Applications & LLM02 & LLM05 & LLM06 & SAFE \\
+\midrule
+Training & Lab 3 synthetic data (262 snippets) & \multicolumn{4}{c}{all 9 classes} \\
+Validation & DVLA, streamlit-agent & 3 & 3 & 3 & 9 \\
+Test & Vanna, PandasAI & 6 & 6 & 3 & 15 \\
+\bottomrule
+\end{tabular}
+\caption{Files per split. Every control file is labelled SAFE, meaning protected against
+its case's target weakness, not safe in general.}
+\label{tab:appsplit}
+\end{table}
+
+\subsection{Exploratory data analysis}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{../reports/figures/eda_appset.png}
+\caption{Left: files per split and class. Middle: code tokens per file, synthetic training
+data against application files (log scale). Right: lines that differ between the two files
+of a pair. Source: \code{experiments/pilot/eda\_appset.py}.}
+\label{fig:appeda}
+\end{figure}
+
+\begin{itemize}
+  \item \textbf{Real files are much larger.} Median 237 code tokens and 48 lines, against
+        64 tokens and 5 lines for the synthetic training snippets.
+  \item \textbf{29\% of the tokens in application code never occur in the training data.}
+  \item \textbf{The pairs are subtle.} In 17 of 24 pairs the two files differ in 2 lines.
+        The three Vanna \code{exec} pairs differ in 42--44 lines, because removing a
+        \code{try} block re-indents the code; those pairs are easier for reasons unrelated
+        to security.
+  \item \textbf{Origin.} 5 of the 24 vulnerable files are unchanged application code; 19
+        are mutated (including all variants).
+\end{itemize}
+
+\subsection{Methodology}
+
+The protocol is written at the top of \code{experiments/run\_app\_experiments.py}.
+\begin{enumerate}
+  \item \textbf{Synthetic-only.} Every model and every setting of Table~\ref{tab:apphp} is
+        trained on the 262 synthetic snippets and scored on the validation applications.
+        The best setting per model and the best model overall are chosen there.
+  \item \textbf{Combined.} Each model, with its chosen setting, is trained on the
+        synthetic data plus one validation application and scored on the other, both ways.
+        The chosen model would use this regime only if it scored higher than step 1 on the
+        same files. It did not (0.43 against 0.57), so the final model is synthetic-only.
+  \item \textbf{Test.} The chosen model is trained on all synthetic data and scored once
+        on the test applications. Scores of the other models and of the combined regime
+        are reported for transparency; they did not influence the choice.
+\end{enumerate}
+
+\textbf{Metrics.} Macro-F1 over the four classes present in the application data
+(LLM02, LLM05, LLM06, SAFE), so predictions of other classes count as errors;
+detection precision and recall (vulnerable vs.\ SAFE); and \emph{pair accuracy}, the share
+of cases where the vulnerable file gets its exact label and the control file gets SAFE.
+Ties in model choice are broken by pair accuracy, then detection F1.
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.7cm} c c@{}}
+\toprule
+Model & Grid & Chosen setting & Val.\ F1 & Combined \\
+\midrule
+Rules & -- & -- & 0.31 & -- \\
+TF-IDF tokens + LogReg & $C\in\{0.1,1,10,100\}$; 1--1, 1--2, 1--3-grams & $C=1$, 1--3-grams & 0.44 & 0.44 \\
+\textbf{Char n-grams + Linear SVM} & $C\in\{0.1,1,10\}$; 2--4, 3--5, 3--6-grams & $C=1$, 3--5-grams & \textbf{0.57} & 0.43 \\
+TF-IDF tokens + Random Forest & 100, 300, 500 trees; depth none, 10, 30 & 100 trees, no limit & 0.34 & 0.14 \\
+Hybrid (TF-IDF + rules) & $C\in\{1,10,100\}$; rule weight 0.5--4 & $C=1$, weight 0.5 & 0.31 & 0.31 \\
+\bottomrule
+\end{tabularx}
+\caption{Hyperparameters chosen on the validation applications (18 files). ``Val.\ F1'': macro-F1 of
+step 1; ``Combined'': macro-F1 of step 2 on the same files. All models use balanced class
+weights and seed 42 and are deterministic for a fixed seed.}
+\label{tab:apphp}
+\end{table}
+
+\subsection{Results}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}llccccc@{}}
+\toprule
+Model & Training & Macro-F1 & Det.\ precision & Det.\ recall & Pair acc. \\
+\midrule
+\textbf{Char SVM (chosen)} & synthetic & \textbf{0.27} & 0.54 & \textbf{1.00} & 0.07 \\
+Rules & -- & 0.30 & 1.00 & 0.13 & 0.13 \\
+TF-IDF + LogReg & synthetic & 0.22 & 0.52 & 0.73 & 0.07 \\
+Random Forest & synthetic & 0.34 & 0.50 & 0.53 & 0.00 \\
+Hybrid & synthetic & 0.25 & 0.54 & 0.47 & 0.07 \\
+\midrule
+\textcolor{dark}{Char SVM} & \textcolor{dark}{combined} & \textcolor{dark}{0.38} & \textcolor{dark}{0.57} & \textcolor{dark}{0.80} & \textcolor{dark}{0.20} \\
+\textcolor{dark}{Random Forest} & \textcolor{dark}{combined} & \textcolor{dark}{0.39} & \textcolor{dark}{0.75} & \textcolor{dark}{0.40} & \textcolor{dark}{0.27} \\
+\bottomrule
+\end{tabular}
+\caption{Test applications (Vanna, PandasAI; 30 files, 15 pairs). Only the first row is the
+reported result; the others are shown for transparency. Source:
+\code{reports/pilot/app\_results.json}.}
+\label{tab:appresults}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\linewidth]{../reports/figures/confusion_app_test.png}
+\caption{Confusion matrix of the chosen model on the test applications. ``other'' are
+predictions of classes absent from the application data (here LLM01).}
+\label{fig:appconf}
+\end{figure}
+
+\begin{itemize}
+  \item \textbf{The chosen model flags almost everything.} It finds every vulnerable file
+        (recall 1.00) but also flags 13 of 15 safe files, mostly as LLM06. Only one pair
+        is fully correct.
+  \item \textbf{LLM02 is never recognised.} The Vanna data-leak cases become LLM01 and the
+        PandasAI ones LLM06, for both files of each pair.
+  \item \textbf{The rules make the opposite trade-off:} no false alarms (precision 1.00) but
+        only 2 of 15 weaknesses found, both where \code{exec(} is written literally.
+  \item \textbf{Compared with the synthetic test set} (macro-F1 0.58,
+        Section~\ref{sec:results}), the score more than halves on real code.
+  \item \textbf{Training on some real code helps}: the combined models reach 0.38--0.39 and
+        up to 0.27 pair accuracy on test. The protocol did not choose this regime, because
+        on validation it did not win; the two validation applications cover different
+        categories, so training on one teaches little about the other. We report 0.27 as
+        the result and the combined rows as an observation.
+\end{itemize}
+
+\subsection*{Examples predicted correctly}
+
+PandasAI running generated code in-process (variant with a direct \code{exec}), true
+\textbf{LLM05}, predicted \textbf{LLM05}; its control, which refuses to run without a
+sandbox, is predicted \textbf{SAFE}. This is the only pair the model gets fully right:
+\begin{lstlisting}[language=Python]
+if self._sandbox:
+    return self._sandbox.execute(code, code_executor.environment)
+
+environment = code_executor.environment
+exec(code, environment)
+return environment.get("result")
+\end{lstlisting}
+
+The three Vanna write-access files, true \textbf{LLM06}, are predicted \textbf{LLM06}, but
+so are their read-only controls, so these are correct for the wrong reason: the model
+reacts to the SQL-runner topic, not to the missing \code{mode=ro}.
+
+\subsection*{Examples predicted wrongly}
+
+\textbf{Vanna sends query results to the model by default, true LLM02, predicted LLM01.}
+The whole pair differs in one default value; both files are predicted LLM01, because the
+function is full of prompt-building code:
+\begin{lstlisting}[language=Python]
+def generate_sql(self, question: str, allow_llm_to_see_data=True, **kwargs) -> str:
+\end{lstlisting}
+
+\textbf{PandasAI writes the user's rows into the prompt, true LLM02, predicted LLM06.}
+The leak is \code{df.head()} instead of \code{df.head(0)} in a 60-line serializer:
+\begin{lstlisting}[language=Python]
+df_truncated = cls._truncate_dataframe(df.head())
+dataframe_info += f"\n{df_truncated.to_csv(index=False)}"
+\end{lstlisting}
+
+\textbf{Vanna runs chart code from the model, true LLM05, predicted LLM06.} The
+\code{exec} call is one line among more than 50 lines of plotting code, and the variant
+with \code{compile} and \code{eval} is missed in the same way.
+
+The cause is the one found on synthetic data, made stronger by the size of real files:
+a bag-of-n-grams model sees the topic of a function, not the one line that removes a
+protection or the path a value takes.
+
+\subsection{Limitations}
+
+\begin{itemize}
+  \item \textbf{Small sample.} 15 test pairs from 2 applications; LLM06 has 3 test pairs, so
+        one file changes its F1 a lot. The validation set has 9 pairs, which makes model
+        choice noisy.
+  \item \textbf{Mostly controlled mutations.} 19 of 24 vulnerable files were changed by us;
+        they show that the scanner misses realistic weaknesses, not how often real
+        projects contain them.
+  \item \textbf{Simulated attacks.} The tests replace the LLM with fixed outputs; they prove
+        that the code path is exploitable, not that a given model would be manipulated.
+  \item \textbf{Labels are per case.} SAFE means ``protected against this case's target
+        weakness''; other weaknesses in the same file are not labelled.
+  \item \textbf{Review.} At the time of these results, 2 of 24 cases had a completed
+        second review.
+\end{itemize}
+
+% =================================================================== 7
 \section{Code, app and how to reproduce}
 
 Everything above is reproducible from the repository
