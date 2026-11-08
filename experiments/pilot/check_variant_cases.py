@@ -1,7 +1,7 @@
 """Run the base cases' behavioural tests on their refactored variants (_v2, _v3).
 
 Run from the repository root. Each variant keeps the base case's attack and
-functional checks: the attack must work only on vulnerable.py, and normal use
+functional checks: the attack or leak must happen only with vulnerable.py, and normal use
 must work on both files. Reuses helpers from the base check scripts.
 """
 import importlib.util
@@ -69,10 +69,82 @@ def check_pandasai_exec(path):
     return {'sandbox_result': with_sandbox['value'], 'injected_code_executed_in_process': executed}, executed
 
 
+def check_vanna_sql_write(path):
+    base = script('check_vanna_sql_case')
+    Runner = base.load_runner(path)
+    with tempfile.TemporaryDirectory() as tmp:
+        db = base.make_db(tmp)
+        runner = Runner(database_path=str(db))
+        names = base.run(runner, base.SELECT)['name'].tolist()
+        assert names == ['ana', 'bob'], 'SELECT must work'
+        try:
+            base.run(runner, base.DELETE)
+        except Exception:
+            pass
+        remaining = base.count_rows(db)
+    return {'select_rows': names, 'rows_after_delete': remaining}, remaining == 0
+
+
+def check_streamlit_sql(path):
+    base = script('check_streamlit_sql_case')
+    with tempfile.TemporaryDirectory() as tmp:
+        db_file = base.make_db(tmp)
+        configure_db, localdb = base.load_configure_db(path, Path(tmp) / 'chat_with_sql_db.py')
+        db = configure_db(localdb)
+        names = [row[0] for row in db.run(base.SELECT)]
+        assert names == ['AC/DC', 'Queen'], 'SELECT must work'
+        try:
+            db.run(base.DELETE)
+        except Exception:
+            pass
+        remaining = base.count_rows(db_file)
+        db._engine.dispose()
+    return {'select_rows': names, 'rows_after_delete': remaining}, remaining == 0
+
+
+def check_dvla_sensitive(path):
+    base = script('check_sensitive_case')
+    observation = base.tool_observation(path, '')
+    records = json.loads(observation)
+    assert [{k: r[k] for k in ('userId', 'username')} for r in records] == [{'userId': 1, 'username': 'alice'}], 'tool must still work'
+    exposed = base.DUMMY_PASSWORD in observation
+    return {'returned_fields': sorted(records[0]), 'dummy_password_in_tool_observation': exposed}, exposed
+
+
+def check_vanna_data(path):
+    base = script('check_vanna_data_case')
+    vn = base.make_vanna(path)
+    vn.generate_sql(question='How many customers do we have?')
+    leaked = any(base.SECRET in prompt for prompt in vn.prompts)
+    return {'prompts_sent': len(vn.prompts), 'database_row_in_prompt': leaked}, leaked
+
+
+def check_pandasai_rows(path):
+    base = script('check_pandasai_rows_case')
+    module = script_path(path)
+    data = pd.DataFrame({'name': ['Ana', 'Bob'], 'email': [base.SECRET, 'second@example.com'], 'spend': [120, 80]})
+    text = module.DataframeSerializer.serialize(base.DataFrameStandIn(data), dialect='postgres')
+    assert 'name,email,spend' in text and 'dimensions="2x3"' in text, 'schema must still be sent'
+    leaked = base.SECRET in text
+    return {'personal_data_in_prompt': leaked}, leaked
+
+
+def script_path(path):
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 FAMILIES = {
     'dvla_sql_output': check_dvla_sql,
     'vanna_plotly_exec': check_vanna_plotly,
     'pandasai_exec_without_sandbox': check_pandasai_exec,
+    'vanna_sql_write_access': check_vanna_sql_write,
+    'streamlit_agent_sql_readonly': check_streamlit_sql,
+    'dvla_sensitive_tool_result': check_dvla_sensitive,
+    'vanna_llm_sees_data': check_vanna_data,
+    'pandasai_rows_in_prompt': check_pandasai_rows,
 }
 
 

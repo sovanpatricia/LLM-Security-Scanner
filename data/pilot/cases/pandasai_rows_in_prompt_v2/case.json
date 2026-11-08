@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "case_id": "pandasai_rows_in_prompt_002",
+  "group_id": "sinaptik-ai/pandas-ai",
+  "source": {
+    "url": "https://github.com/sinaptik-ai/pandas-ai",
+    "commit": "bbbb771d31062d81f6fa19bafb40620d5cbe48f4",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM02",
+    "cwe": "CWE-359"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "mutated",
+      "description": "The number of sample rows comes from a class constant set to 5."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "repaired",
+      "description": "The class constant is 0, so only the header is sent."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "pandasai/helpers/dataframe_serializer.py",
+      "start_line": 1,
+      "end_line": 60,
+      "symbol": "DataframeSerializer.serialize"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/dataframe/base.py",
+      "start_line": 144,
+      "end_line": 152,
+      "symbol": "DataFrame.serialize_dataframe"
+    },
+    {
+      "role": "context",
+      "file": "pandasai/core/prompts/templates/shared/dataframe.tmpl",
+      "start_line": 1,
+      "end_line": 1,
+      "symbol": "dataframe prompt template"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "Rows of the user's dataframe (dummy customer records in the harness).",
+    "sink": "Text serialized into the prompt sent to the external LLM provider."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_variant_cases.py",
+    "report": "reports/pilot/variant_cases.json",
+    "live_llm": false,
+    "summary": "Same behavioural test as the base case, run on this variant: the attack or leak happens only with the vulnerable file and normal use works with both."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "The dataframe contains personal or confidential data.",
+    "The LLM is an external provider."
+  ],
+  "limitations": [
+    "No live LLM inference is run.",
+    "Without sample rows the generated code may be less accurate; this is the trade-off PandasAI v2 offered as enforce_privacy.",
+    "The schema description and column metadata can still contain sensitive text.",
+    "Refactored variant of pandasai_rows_in_prompt_001: same application group and same split; it is not an independent sample."
+  ],
+  "variant_of": "pandasai_rows_in_prompt_001",
+  "form": "through_constant"
+}

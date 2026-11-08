@@ -197,6 +197,382 @@
           ]
         }
       }
+    },
+    "vanna_sql_write_access_002": {
+      "form": "through_helper",
+      "variants": {
+        "vulnerable": {
+          "select_rows": [
+            "ana",
+            "bob"
+          ],
+          "rows_after_delete": 0,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_sql_write_access_v2/vulnerable.py",
+              "line": 13,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "class SqliteRunner(SqlRunner):"
+            }
+          ]
+        },
+        "control": {
+          "select_rows": [
+            "ana",
+            "bob"
+          ],
+          "rows_after_delete": 2,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_sql_write_access_v2/control.py",
+              "line": 13,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "class SqliteRunner(SqlRunner):"
+            }
+          ]
+        }
+      }
+    },
+    "vanna_sql_write_access_003": {
+      "form": "statement_allowlist",
+      "variants": {
+        "vulnerable": {
+          "select_rows": [
+            "ana",
+            "bob"
+          ],
+          "rows_after_delete": 0,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_sql_write_access_v3/vulnerable.py",
+              "line": 13,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "class SqliteRunner(SqlRunner):"
+            }
+          ]
+        },
+        "control": {
+          "select_rows": [
+            "ana",
+            "bob"
+          ],
+          "rows_after_delete": 2,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_sql_write_access_v3/control.py",
+              "line": 13,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "class SqliteRunner(SqlRunner):"
+            }
+          ]
+        }
+      }
+    },
+    "streamlit_agent_sql_readonly_002": {
+      "form": "through_variable",
+      "variants": {
+        "vulnerable": {
+          "select_rows": [
+            "AC/DC",
+            "Queen"
+          ],
+          "rows_after_delete": 0,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "LLM06",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "select_rows": [
+            "AC/DC",
+            "Queen"
+          ],
+          "rows_after_delete": 2,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "LLM06",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "streamlit_agent_sql_readonly_003": {
+      "form": "engine_url",
+      "variants": {
+        "vulnerable": {
+          "select_rows": [
+            "AC/DC",
+            "Queen"
+          ],
+          "rows_after_delete": 0,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "LLM06",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "select_rows": [
+            "AC/DC",
+            "Queen"
+          ],
+          "rows_after_delete": 2,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "LLM06",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "dvla_sensitive_tool_result_002": {
+      "form": "select_star",
+      "variants": {
+        "vulnerable": {
+          "returned_fields": [
+            "password",
+            "userId",
+            "username"
+          ],
+          "dummy_password_in_tool_observation": true,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/dvla_sensitive_tool_result_v2/vulnerable.py",
+              "line": 30,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "get_current_user_tool = Tool("
+            }
+          ]
+        },
+        "control": {
+          "returned_fields": [
+            "userId",
+            "username"
+          ],
+          "dummy_password_in_tool_observation": false,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/dvla_sensitive_tool_result_v2/control.py",
+              "line": 30,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "get_current_user_tool = Tool("
+            }
+          ]
+        }
+      }
+    },
+    "dvla_sensitive_tool_result_003": {
+      "form": "through_constant",
+      "variants": {
+        "vulnerable": {
+          "returned_fields": [
+            "password",
+            "userId",
+            "username"
+          ],
+          "dummy_password_in_tool_observation": true,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/dvla_sensitive_tool_result_v3/vulnerable.py",
+              "line": 32,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "get_current_user_tool = Tool("
+            }
+          ]
+        },
+        "control": {
+          "returned_fields": [
+            "userId",
+            "username"
+          ],
+          "dummy_password_in_tool_observation": false,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/dvla_sensitive_tool_result_v3/control.py",
+              "line": 32,
+              "category": "LLM06",
+              "risk": "Excessive agency",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+              "snippet": "get_current_user_tool = Tool("
+            }
+          ]
+        }
+      }
+    },
+    "vanna_llm_sees_data_002": {
+      "form": "config_default",
+      "variants": {
+        "vulnerable": {
+          "prompts_sent": 2,
+          "database_row_in_prompt": true,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_llm_sees_data_v2/vulnerable.py",
+              "line": 4,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class VannaBase:"
+            }
+          ]
+        },
+        "control": {
+          "prompts_sent": 1,
+          "database_row_in_prompt": false,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_llm_sees_data_v2/control.py",
+              "line": 4,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class VannaBase:"
+            }
+          ]
+        }
+      }
+    },
+    "vanna_llm_sees_data_003": {
+      "form": "through_constant",
+      "variants": {
+        "vulnerable": {
+          "prompts_sent": 2,
+          "database_row_in_prompt": true,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_llm_sees_data_v3/vulnerable.py",
+              "line": 7,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class VannaBase:"
+            }
+          ]
+        },
+        "control": {
+          "prompts_sent": 1,
+          "database_row_in_prompt": false,
+          "whole_file_model_prediction": "LLM05",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 1,
+          "scanner_findings": [
+            {
+              "file": "data/pilot/cases/vanna_llm_sees_data_v3/control.py",
+              "line": 7,
+              "category": "LLM05",
+              "risk": "Improper output handling",
+              "score": 0.12,
+              "rules_agree": [],
+              "fix": "Treat model output as untrusted: no eval/exec/shell, parameterised SQL, escape HTML.",
+              "snippet": "class VannaBase:"
+            }
+          ]
+        }
+      }
+    },
+    "pandasai_rows_in_prompt_002": {
+      "form": "through_constant",
+      "variants": {
+        "vulnerable": {
+          "personal_data_in_prompt": true,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "personal_data_in_prompt": false,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
+    },
+    "pandasai_rows_in_prompt_003": {
+      "form": "manual_rows",
+      "variants": {
+        "vulnerable": {
+          "personal_data_in_prompt": true,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        },
+        "control": {
+          "personal_data_in_prompt": false,
+          "whole_file_model_prediction": "LLM06",
+          "whole_file_rules_prediction": "SAFE",
+          "scanner_eligible_units": 0,
+          "scanner_findings": []
+        }
+      }
     }
   }
 }

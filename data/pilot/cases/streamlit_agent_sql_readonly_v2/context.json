@@ -1,0 +1,30 @@
+{
+  "source_commit": "634e1cecf23d7ca3a4c5e708944673e057765b2a",
+  "purpose": "Non-executable excerpts establishing user question -> SQL agent (LLM writes SQL) -> SQLDatabase executes inside engine.begin(), which commits",
+  "segments": [
+    {
+      "file": "streamlit_agent/chat_with_sql_db.py",
+      "start_line": 61,
+      "end_line": 70,
+      "code": "db = configure_db(db_uri)\n\ntoolkit = SQLDatabaseToolkit(db=db, llm=llm)\n\nagent = create_sql_agent(\n    llm=llm,\n    toolkit=toolkit,\n    verbose=True,\n    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,\n)"
+    },
+    {
+      "file": "streamlit_agent/chat_with_sql_db.py",
+      "start_line": 80,
+      "end_line": 86,
+      "code": "if user_query:\n    st.session_state.messages.append({\"role\": \"user\", \"content\": user_query})\n    st.chat_message(\"user\").write(user_query)\n\n    with st.chat_message(\"assistant\"):\n        st_cb = StreamlitCallbackHandler(st.container())\n        response = agent.run(user_query, callbacks=[st_cb])"
+    },
+    {
+      "file": "langchain-community: libs/community/langchain_community/utilities/sql_database.py",
+      "start_line": 475,
+      "end_line": 490,
+      "code": "    def _execute(\n        self,\n        command: Union[str, Executable],\n        fetch: Literal[\"all\", \"one\", \"cursor\"] = \"all\",\n        *,\n        parameters: Optional[Dict[str, Any]] = None,\n        execution_options: Optional[Dict[str, Any]] = None,\n    ) -> Union[Sequence[Dict[str, Any]], Result]:\n        \"\"\"\n        Executes SQL command through underlying engine.\n\n        If the statement returns no rows, an empty list is returned.\n        \"\"\"\n        parameters = parameters or {}\n        execution_options = execution_options or {}\n        with self._engine.begin() as connection:  # type: Connection  # type: ignore[name-defined]",
+      "source_commit": "f425a3ed1933173fb3694b81359d1519c4f82d36"
+    }
+  ],
+  "limitations": [
+    "No live model inference is run.",
+    "The SQL written by the model is simulated in the harness.",
+    "The library excerpt is from a newer langchain-community commit than the app pins; both execute inside engine.begin()."
+  ]
+}

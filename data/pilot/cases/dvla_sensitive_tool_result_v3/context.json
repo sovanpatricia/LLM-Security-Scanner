@@ -1,0 +1,8 @@
+{
+  "source_commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+  "purpose": "The whole extracted file is the target; see the base case for the automatically extracted context.",
+  "segments": [],
+  "limitations": [
+    "No live model inference is run."
+  ]
+}

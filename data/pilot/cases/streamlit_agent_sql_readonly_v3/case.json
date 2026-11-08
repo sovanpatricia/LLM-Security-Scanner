@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "case_id": "streamlit_agent_sql_readonly_003",
+  "group_id": "langchain-ai/streamlit-agent",
+  "source": {
+    "url": "https://github.com/langchain-ai/streamlit-agent",
+    "commit": "634e1cecf23d7ca3a4c5e708944673e057765b2a",
+    "license": "Apache-2.0",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM06",
+    "cwe": "CWE-250"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "mutated",
+      "description": "The engine is created from a plain SQLite URL (no creator), which opens the file read-write."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "mutated",
+      "description": "The engine URL carries mode=ro&uri=true, so SQLite opens the file read-only."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "streamlit_agent/chat_with_sql_db.py",
+      "start_line": 50,
+      "end_line": 58,
+      "symbol": "configure_db"
+    },
+    {
+      "role": "context",
+      "file": "streamlit_agent/chat_with_sql_db.py",
+      "start_line": 61,
+      "end_line": 70,
+      "symbol": "db, toolkit, agent"
+    },
+    {
+      "role": "context",
+      "file": "streamlit_agent/chat_with_sql_db.py",
+      "start_line": 80,
+      "end_line": 86,
+      "symbol": "agent.run(user_query)"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "LLM-written SQL from the LangChain SQL agent's sql_db_query tool (simulated in the harness).",
+    "sink": "SQLDatabase execution inside engine.begin(), which commits on success."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_variant_cases.py",
+    "report": "reports/pilot/variant_cases.json",
+    "live_llm": false,
+    "summary": "Same behavioural test as the base case, run on this variant: the attack or leak happens only with the vulnerable file and normal use works with both."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "The app answers questions about the sample database and never needs to change it (upstream's own comment and warning say so).",
+    "A prompt-injected or mistaken model can put a destructive statement into the SQL tool input."
+  ],
+  "limitations": [
+    "No live LLM or real LangChain agent is run; SQLDatabase is replaced by a stand-in that mirrors its begin()/commit behaviour.",
+    "The user-supplied database URI branch is out of scope.",
+    "streamlit and langchain imports are replaced by stubs in the harness.",
+    "Refactored variant of streamlit_agent_sql_readonly_001: same application group and same split; it is not an independent sample."
+  ],
+  "variant_of": "streamlit_agent_sql_readonly_001",
+  "form": "engine_url"
+}

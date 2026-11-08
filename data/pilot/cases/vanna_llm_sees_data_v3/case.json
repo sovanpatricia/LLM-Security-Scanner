@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "case_id": "vanna_llm_sees_data_003",
+  "group_id": "vanna-ai/vanna",
+  "source": {
+    "url": "https://github.com/vanna-ai/vanna",
+    "commit": "365d0617c1a4567ffee1b19b40c27feb4206bfcf",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM02",
+    "cwe": "CWE-359"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "mutated",
+      "description": "The default comes from a module-level constant set to True."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "mutated",
+      "description": "The constant is False."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 93,
+      "end_line": 168,
+      "symbol": "VannaBase.generate_sql"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/legacy/flask/__init__.py",
+      "start_line": 589,
+      "end_line": 593,
+      "symbol": "fix_sql endpoint (calls generate_sql with the default)"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 84,
+      "end_line": 85,
+      "symbol": "VannaBase.log"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "Rows returned by the model-requested intermediate SQL query (customer data in the harness).",
+    "sink": "Prompt sent to the external LLM provider through submit_prompt (and printed by log)."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_variant_cases.py",
+    "report": "reports/pilot/variant_cases.json",
+    "live_llm": false,
+    "summary": "Same behavioural test as the base case, run on this variant: the attack or leak happens only with the vulnerable file and normal use works with both."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "The database holds personal or confidential data that must not leave the organisation.",
+    "The LLM is an external provider (Vanna's typical setup)."
+  ],
+  "limitations": [
+    "No live LLM inference is run.",
+    "If the owner explicitly opts in, sending data is intended; the label concerns the unsafe default only.",
+    "Retrieval, prompt building and SQL extraction are stubbed.",
+    "Refactored variant of vanna_llm_sees_data_001: same application group and same split; it is not an independent sample."
+  ],
+  "variant_of": "vanna_llm_sees_data_001",
+  "form": "through_constant"
+}

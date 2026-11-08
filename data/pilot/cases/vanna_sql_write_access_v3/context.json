@@ -1,0 +1,28 @@
+{
+  "source_commit": "365d0617c1a4567ffee1b19b40c27feb4206bfcf",
+  "purpose": "Non-executable source excerpts establishing agent -> run_sql tool (LLM-written SQL) -> SqliteRunner.run_sql",
+  "segments": [
+    {
+      "file": "src/vanna/capabilities/sql_runner/models.py",
+      "start_line": 10,
+      "end_line": 13,
+      "code": "class RunSqlToolArgs(BaseModel):\n    \"\"\"Arguments for run_sql tool.\"\"\"\n\n    sql: str = Field(description=\"SQL query to execute\")"
+    },
+    {
+      "file": "src/vanna/tools/run_sql.py",
+      "start_line": 56,
+      "end_line": 60,
+      "code": "    async def execute(self, context: ToolContext, args: RunSqlToolArgs) -> ToolResult:\n        \"\"\"Execute a SQL query using the injected SqlRunner.\"\"\"\n        try:\n            # Use the injected SqlRunner to execute the query\n            df = await self.sql_runner.run_sql(args, context)"
+    },
+    {
+      "file": "src/vanna/examples/minimal_example.py",
+      "start_line": 43,
+      "end_line": 49,
+      "code": "    # 1. Basic SQL agent - query databases\n    tools.register(\n        RunSqlTool(\n            sql_runner=SqliteRunner(database_path=str(_DB)),\n            file_system=file_system,\n        )\n    )"
+    }
+  ],
+  "limitations": [
+    "No live model inference is run.",
+    "The SQL written by the model is simulated in the harness."
+  ]
+}

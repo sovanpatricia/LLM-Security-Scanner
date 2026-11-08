@@ -1,0 +1,22 @@
+{
+  "source_commit": "365d0617c1a4567ffee1b19b40c27feb4206bfcf",
+  "purpose": "Non-executable excerpts: the legacy Flask app calls generate_sql with the default value, so the default decides whether query results are sent to the LLM provider.",
+  "segments": [
+    {
+      "file": "src/vanna/legacy/flask/__init__.py",
+      "start_line": 589,
+      "end_line": 593,
+      "code": "\n            question = f\"I have an error: {error}\\n\\nHere is the SQL I tried to run: {sql}\\n\\nThis is the question I was trying to answer: {question}\\n\\nCan you rewrite the SQL to fix the error?\"\n\n            fixed_sql = vn.generate_sql(question=question)\n"
+    },
+    {
+      "file": "src/vanna/legacy/base/base.py",
+      "start_line": 84,
+      "end_line": 85,
+      "code": "    def log(self, message: str, title: str = \"Info\"):\n        print(f\"{title}: {message}\")"
+    }
+  ],
+  "limitations": [
+    "No live model inference is run.",
+    "The model replies and the database rows are simulated in the harness."
+  ]
+}
