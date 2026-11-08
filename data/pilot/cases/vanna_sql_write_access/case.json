@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "case_id": "vanna_sql_write_access_001",
+  "group_id": "vanna-ai/vanna",
+  "source": {
+    "url": "https://github.com/vanna-ai/vanna",
+    "commit": "365d0617c1a4567ffee1b19b40c27feb4206bfcf",
+    "license": "MIT",
+    "license_file": "LICENSE.upstream",
+    "app_kind": "real_world_app"
+  },
+  "label": {
+    "owasp": "LLM06",
+    "cwe": "CWE-250"
+  },
+  "variants": {
+    "vulnerable": {
+      "file": "vulnerable.py",
+      "origin": "original",
+      "description": "Upstream SqliteRunner unchanged: the connection can write, and any non-SELECT statement the model writes (INSERT, UPDATE, DELETE, DROP) is executed and committed."
+    },
+    "control": {
+      "file": "control.py",
+      "origin": "repaired",
+      "description": "Repaired by the team: the database is opened read-only (SQLite URI mode=ro), so model-written statements cannot change data. SELECT queries are unaffected. Protected against the tested write, not certified SAFE."
+    }
+  },
+  "excerpts": [
+    {
+      "role": "target",
+      "file": "src/vanna/integrations/sqlite/sql_runner.py",
+      "start_line": 1,
+      "end_line": 65,
+      "symbol": "SqliteRunner.run_sql"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/capabilities/sql_runner/models.py",
+      "start_line": 10,
+      "end_line": 13,
+      "symbol": "RunSqlToolArgs"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/tools/run_sql.py",
+      "start_line": 56,
+      "end_line": 60,
+      "symbol": "RunSqlTool.execute"
+    },
+    {
+      "role": "context",
+      "file": "src/vanna/examples/minimal_example.py",
+      "start_line": 43,
+      "end_line": 49,
+      "symbol": "create_demo_agent"
+    }
+  ],
+  "context": {
+    "method": "manual_cross_file",
+    "artifact": "context.json"
+  },
+  "data_flow": {
+    "source": "LLM tool argument: the sql field of the run_sql tool, written entirely by the model (simulated in the harness).",
+    "sink": "sqlite3 cursor.execute followed by conn.commit() on a writable connection."
+  },
+  "validation": {
+    "script": "experiments/pilot/check_vanna_sql_case.py",
+    "report": "reports/pilot/vanna_sql_case.json",
+    "live_llm": false,
+    "summary": "Temporary SQLite database. A model-written SELECT works in both versions; a model-written DELETE removes rows only in the vulnerable version and is rejected as a write in the control."
+  },
+  "review": {
+    "status": "draft_requires_second_reviewer",
+    "reviewers": []
+  },
+  "split": "pilot_development_only",
+  "excluded_from_training": true,
+  "assumptions": [
+    "The deployment is a question-answering assistant that only needs to read data, as in upstream's example (\"Basic SQL agent - query databases\").",
+    "A prompt-injected or mistaken model can write a destructive statement into the sql argument."
+  ],
+  "limitations": [
+    "No live LLM inference is run; the model-written SQL is simulated.",
+    "If a deployment intentionally lets the assistant change data, write access is a feature and this label does not apply.",
+    "Read-only mode does not limit which rows the model may read (no row-level authorization).",
+    "The file: URI is built with an f-string; paths containing ? or # would need escaping."
+  ]
+}

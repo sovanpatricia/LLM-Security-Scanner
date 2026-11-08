@@ -1,0 +1,53 @@
+{
+  "case_id": "vanna_sql_write_access_001",
+  "scope": "Simulated model-written SQL passed to the extracted SqliteRunner; no live model call",
+  "model_load_warnings": [],
+  "variants": {
+    "vulnerable": {
+      "select_rows": [
+        "ana",
+        "bob"
+      ],
+      "delete_error": null,
+      "rows_after_delete": 0,
+      "whole_file_model_prediction": "LLM06",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "data/pilot/cases/vanna_sql_write_access/vulnerable.py",
+          "line": 13,
+          "category": "LLM06",
+          "risk": "Excessive agency",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+          "snippet": "class SqliteRunner(SqlRunner):"
+        }
+      ]
+    },
+    "control": {
+      "select_rows": [
+        "ana",
+        "bob"
+      ],
+      "delete_error": "attempt to write a readonly database",
+      "rows_after_delete": 2,
+      "whole_file_model_prediction": "LLM06",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 1,
+      "scanner_findings": [
+        {
+          "file": "data/pilot/cases/vanna_sql_write_access/control.py",
+          "line": 13,
+          "category": "LLM06",
+          "risk": "Excessive agency",
+          "score": 0.12,
+          "rules_agree": [],
+          "fix": "Give agents read-only, narrowly scoped tools and require human approval for actions.",
+          "snippet": "class SqliteRunner(SqlRunner):"
+        }
+      ]
+    }
+  }
+}
