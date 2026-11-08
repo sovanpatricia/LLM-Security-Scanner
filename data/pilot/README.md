@@ -18,9 +18,9 @@ Retain upstream attribution/license text and document every adaptation.
 | `variants.vulnerable`, `variants.control` | Each has `file` (case-relative), `origin`, and an evidence-based `description`. |
 | `origin` | `original`: upstream target behavior retained; `mutated`: intentionally introduced weakness; `repaired`: protection added to upstream-derived code. Extraction/setup adaptations still belong in descriptions. |
 | `excerpts` | Upstream locations: `role`, `file`, inclusive one-based `start_line`/`end_line`, and `symbol`. Exactly one `target`; all other excerpts are `context`. These paths refer to upstream source, not necessarily local files. |
-| `context.method` | `auto_same_file` or `manual_cross_file`. |
+| `context.method` | `auto_same_file`, `manual_same_file` or `manual_cross_file`. `manual_same_file` is for context in the same file that the automatic extractor cannot take, e.g. methods of a very large class. |
 | `context` for `auto_same_file` | Include `extractor: "same-file-name-closure-v1"`, `root_symbol`, and `artifact`. Generated artifact paths are repo-relative; `{variant}` expands to `control` or `vulnerable`. |
-| `context` for `manual_cross_file` | Include `artifact`, relative to the case folder (currently `context.json`). Extra provenance fields may preserve previous annotations. |
+| `context` for `manual_same_file` or `manual_cross_file` | Include `artifact`, relative to the case folder (currently `context.json`). Extra provenance fields may preserve previous annotations. |
 | `data_flow.source`, `data_flow.sink` | Plain-language trust/data path, either model-controlled output to an operation or confidential data to the model. State simulations explicitly. |
 | `validation.script`, `validation.report` | Existing files relative to the repository root. Run validation before the schema check to generate reports when needed. |
 | `validation.live_llm`, `validation.summary` | Boolean indicating live inference and a description of what was actually demonstrated. Simulated dispatch does not prove live attack success. |

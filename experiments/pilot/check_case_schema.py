@@ -9,7 +9,7 @@ CASES = ROOT / 'data/pilot/cases'
 ORIGINS = {'original', 'mutated', 'repaired'}
 ROLES = {'target', 'context'}
 APP_KINDS = {'intentionally_vulnerable_lab', 'real_world_app'}
-METHODS = {'auto_same_file', 'manual_cross_file'}
+METHODS = {'auto_same_file', 'manual_same_file', 'manual_cross_file'}
 REQUIRED = {
     'schema_version', 'case_id', 'group_id', 'source', 'label', 'variants',
     'excerpts', 'context', 'data_flow', 'validation', 'review', 'split',

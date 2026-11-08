@@ -1,0 +1,29 @@
+{
+  "case_id": "vanna_plotly_exec_001",
+  "scope": "Simulated model output passed to the extracted get_plotly_figure; no live model call",
+  "model_load_warnings": [
+    "Trying to unpickle estimator FunctionTransformer from version 1",
+    "Trying to unpickle estimator LogisticRegression from version 1",
+    "Trying to unpickle estimator Pipeline from version 1",
+    "Trying to unpickle estimator TfidfTransformer from version 1",
+    "Trying to unpickle estimator TfidfVectorizer from version 1"
+  ],
+  "variants": {
+    "vulnerable": {
+      "normal_chart_type": "bar",
+      "injected_code_executed": true,
+      "whole_file_model_prediction": "LLM05",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    },
+    "control": {
+      "normal_chart_type": "bar",
+      "injected_code_executed": false,
+      "whole_file_model_prediction": "LLM05",
+      "whole_file_rules_prediction": "SAFE",
+      "scanner_eligible_units": 0,
+      "scanner_findings": []
+    }
+  }
+}
