@@ -93,8 +93,10 @@
     "summary": "In-memory SQLite via extracted original tool wrapper and a simulated tool-call dispatcher; ordinary and crafted model-output arguments. No live LLM attack claim."
   },
   "review": {
-    "status": "draft_requires_second_reviewer",
-    "reviewers": []
+    "status": "reviewed",
+    "reviewers": [
+      "Patricia Sovan"
+    ]
   },
   "split": "pilot_development_only",
   "excluded_from_training": true,
