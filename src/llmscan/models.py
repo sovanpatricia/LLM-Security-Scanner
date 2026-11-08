@@ -10,6 +10,7 @@ from .features import RuleHits, code_tokens, strip_comments
 
 SEED = 42
 
+#Raw code → remove comments → convert code into numbers → classifier
 
 def _strip(X):
     return [strip_comments(c) for c in X]

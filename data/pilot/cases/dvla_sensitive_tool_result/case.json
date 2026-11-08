@@ -1,0 +1,54 @@
+{
+  "case_id": "dvla_sensitive_tool_result_001",
+  "group_id": "ReversecLabs/damn-vulnerable-llm-agent",
+  "source_url": "https://github.com/ReversecLabs/damn-vulnerable-llm-agent",
+  "commit": "c0cf9a14adad76e9d6a53c41741f625334bd9971",
+  "source_excerpts": [
+    {
+      "file": "transaction_db.py",
+      "start_line": 74,
+      "end_line": 88
+    },
+    {
+      "file": "tools.py",
+      "start_line": 16,
+      "end_line": 20
+    },
+    {
+      "file": "tools.py",
+      "start_line": 22,
+      "end_line": 26
+    }
+  ],
+  "target": "LLM02",
+  "review_status": "draft_requires_second_reviewer",
+  "split": "pilot_development_only",
+  "variants": {
+    "control": "Source-derived minimal field projection; SQL parameterized in both versions. Protected against tested credential disclosure only.",
+    "vulnerable": "Controlled mutation adds password to the selected columns; all other code is identical."
+  },
+  "expected_observations": {
+    "control_fields": [
+      "userId",
+      "username"
+    ],
+    "vulnerable_fields": [
+      "userId",
+      "username",
+      "password"
+    ]
+  },
+  "assumptions": [
+    "Read-only GetCurrentUser tool response is exposed to the agent as a tool observation.",
+    "Current user is fixed at 1 by the original wrapper; tool argument is ignored.",
+    "Password is confidential and unnecessary for transaction assistance.",
+    "TestDb replaces connection lifecycle only; real SQLite query, serialization, wrapper and registration execute."
+  ],
+  "limitations": [
+    "No live LLM inference or public leakage is demonstrated.",
+    "Authentication and storage security are outside this reduced case.",
+    "This fixture does not certify the original application safe.",
+    "Both variants remain in the same application group as the first pilot case."
+  ],
+  "excluded_from_training": true
+}
