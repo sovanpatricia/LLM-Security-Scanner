@@ -1,0 +1,1151 @@
+{
+  "protocol": "(settings chosen in parts 1-3, on validation only):\n  step3_svm     step-3 model: char 3-5-gram SVM, C=1, whole file, synthetic data\n  svm_v2        char 2-4-gram SVM, C=0.03, balanced classes, function level,\n                real examples weighted 5\n  logreg_v2     token TF-IDF + Logistic Regression, L2, C=1, function level,\n                real examples weighted 5\n  mlp_v2        token TF-IDF + MLP (128 hidden units, Adam, alpha=1e-4, early\n                stopping), function level, real examples weighted 1\n\nCriteria:\n  1. performance   validation metrics (leave-one-app-out for real data)\n  2. size, speed   trained on synthetic data + both validation apps: number of\n                   features and parameters, saved file size, training time,\n                   prediction time per function\n  3. explainability  LIME on each validation vulnerable function: share of\n                   explanations whose top 5 words (pushing towards the true\n                   class) include a word from the lines that make the code\n                   vulnerable; plus whether the model is directly readable\nChoice rule (fixed before the test): highest validation macro-F1; a candidate\nwithin 0.05 of it is preferred if it is smaller, faster and more explainable.\nThe chosen model is then scored once on the test applications; the other\ncandidates' test scores are reported for transparency only.",
+  "candidates": {
+    "step3_svm": {
+      "level": "file",
+      "real_weight": null,
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5555555555555556,
+        "macro_f1": 0.5666666666666667,
+        "detect_precision": 0.5454545454545454,
+        "detect_recall": 0.6666666666666666,
+        "detect_f1": 0.6,
+        "pair_accuracy": 0.1111111111111111,
+        "pairs_separated": 0.1111111111111111,
+        "pairs_with_different_predictions": 0.2222222222222222
+      },
+      "train_seconds": 0.09,
+      "model_kb": 1412.3,
+      "features": 16019,
+      "parameters": 144180,
+      "ms_per_function": 0.366,
+      "lime_hit_rate": 1.0,
+      "lime_examples": [
+        {
+          "pair_id": "dvla_sensitive_tool_result_001",
+          "label": "LLM02",
+          "top_words": [
+            "rows",
+            "SELECT",
+            "fetchall",
+            "dict",
+            "username"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "password",
+            "userId",
+            "user_id",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_002",
+          "label": "LLM02",
+          "top_words": [
+            "rows",
+            "fetchall",
+            "SELECT",
+            "user_id",
+            "row"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_003",
+          "label": "LLM02",
+          "top_words": [
+            "rows",
+            "SELECT",
+            "fetchall",
+            "USER_COLUMNS",
+            "username"
+          ],
+          "words_on_changed_lines": [
+            "USER_COLUMNS",
+            "password",
+            "userId",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_001",
+          "label": "LLM05",
+          "top_words": [
+            "cursor",
+            "fetchall",
+            "execute",
+            "f"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "f",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_002",
+          "label": "LLM05",
+          "top_words": [
+            "cursor",
+            "fetchall",
+            "execute",
+            "query"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "query",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_003",
+          "label": "LLM05",
+          "top_words": [
+            "build_transactions_query",
+            "Transactions",
+            "def",
+            "return"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "build_transactions_query",
+            "cursor",
+            "execute",
+            "return",
+            "s",
+            "str",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_001",
+          "label": "LLM06",
+          "top_words": [
+            "SQLDatabase",
+            "from_uri",
+            "db_filepath",
+            "creator",
+            "connect"
+          ],
+          "words_on_changed_lines": [
+            "connect",
+            "creator",
+            "db_filepath",
+            "lambda",
+            "sqlite3"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_002",
+          "label": "LLM06",
+          "top_words": [
+            "SQLDatabase",
+            "from_uri",
+            "db_filepath",
+            "creator",
+            "file"
+          ],
+          "words_on_changed_lines": [
+            "db_filepath",
+            "db_uri_ro",
+            "f",
+            "file"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_003",
+          "label": "LLM06",
+          "top_words": [
+            "SQLDatabase",
+            "from_uri",
+            "db_filepath",
+            "Path",
+            "cache_resource"
+          ],
+          "words_on_changed_lines": [
+            "SQLDatabase",
+            "create_engine",
+            "db_filepath",
+            "f",
+            "return",
+            "sqlite"
+          ],
+          "hit": true
+        }
+      ],
+      "directly_readable": "linear: one weight per feature and class",
+      "test": {
+        "n_rows": 30,
+        "accuracy": 0.26666666666666666,
+        "macro_f1": 0.2701871657754011,
+        "detect_precision": 0.5357142857142857,
+        "detect_recall": 1.0,
+        "detect_f1": 0.6976744186046512,
+        "pair_accuracy": 0.06666666666666667,
+        "pairs_separated": 0.13333333333333333,
+        "pairs_with_different_predictions": 0.13333333333333333
+      }
+    },
+    "svm_v2": {
+      "level": "unit",
+      "real_weight": 5,
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.6111111111111112,
+        "macro_f1": 0.6362179487179487,
+        "detect_precision": 0.5714285714285714,
+        "detect_recall": 0.8888888888888888,
+        "detect_f1": 0.6956521739130435,
+        "pair_accuracy": 0.2222222222222222,
+        "pairs_separated": 0.2222222222222222,
+        "pairs_with_different_predictions": 0.2222222222222222
+      },
+      "train_seconds": 0.09,
+      "model_kb": 976.5,
+      "features": 11161,
+      "parameters": 100458,
+      "ms_per_function": 0.523,
+      "lime_hit_rate": 1.0,
+      "lime_examples": [
+        {
+          "pair_id": "dvla_sensitive_tool_result_001",
+          "label": "LLM02",
+          "top_words": [
+            "password",
+            "user_id",
+            "rows",
+            "username",
+            "fetchall"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "password",
+            "userId",
+            "user_id",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_002",
+          "label": "LLM02",
+          "top_words": [
+            "user_id",
+            "users",
+            "rows",
+            "fetchall",
+            "SELECT"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_003",
+          "label": "LLM02",
+          "top_words": [
+            "password",
+            "user_id",
+            "rows",
+            "username",
+            "USER_COLUMNS"
+          ],
+          "words_on_changed_lines": [
+            "USER_COLUMNS",
+            "password",
+            "userId",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_001",
+          "label": "LLM05",
+          "top_words": [
+            "transactions",
+            "get_user_transactions",
+            "Transactions",
+            "userId",
+            "cursor"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "f",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_002",
+          "label": "LLM05",
+          "top_words": [
+            "transactions",
+            "get_user_transactions",
+            "Transactions",
+            "cursor",
+            "query"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "query",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_003",
+          "label": "LLM05",
+          "top_words": [
+            "build_transactions_query",
+            "Transactions",
+            "s",
+            "userId",
+            "SELECT"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "build_transactions_query",
+            "cursor",
+            "execute",
+            "return",
+            "s",
+            "str",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_001",
+          "label": "LLM06",
+          "top_words": [
+            "SQLDatabase",
+            "db_uri",
+            "db_filepath",
+            "database_uri",
+            "cache_resource"
+          ],
+          "words_on_changed_lines": [
+            "connect",
+            "creator",
+            "db_filepath",
+            "lambda",
+            "sqlite3"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_002",
+          "label": "LLM06",
+          "top_words": [
+            "SQLDatabase",
+            "db_uri",
+            "db_filepath",
+            "database_uri",
+            "cache_resource"
+          ],
+          "words_on_changed_lines": [
+            "db_filepath",
+            "db_uri_ro",
+            "f",
+            "file"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_003",
+          "label": "LLM06",
+          "top_words": [
+            "SQLDatabase",
+            "db_uri",
+            "db_filepath",
+            "database_uri",
+            "from_uri"
+          ],
+          "words_on_changed_lines": [
+            "SQLDatabase",
+            "create_engine",
+            "db_filepath",
+            "f",
+            "return",
+            "sqlite"
+          ],
+          "hit": true
+        }
+      ],
+      "directly_readable": "linear: one weight per feature and class",
+      "test": {
+        "n_rows": 30,
+        "accuracy": 0.5,
+        "macro_f1": 0.45833333333333326,
+        "detect_precision": 0.6666666666666666,
+        "detect_recall": 0.8,
+        "detect_f1": 0.7272727272727273,
+        "pair_accuracy": 0.4,
+        "pairs_separated": 0.4,
+        "pairs_with_different_predictions": 0.4
+      }
+    },
+    "logreg_v2": {
+      "level": "unit",
+      "real_weight": 5,
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5555555555555556,
+        "macro_f1": 0.5059523809523809,
+        "detect_precision": 0.5454545454545454,
+        "detect_recall": 0.6666666666666666,
+        "detect_f1": 0.6,
+        "pair_accuracy": 0.1111111111111111,
+        "pairs_separated": 0.1111111111111111,
+        "pairs_with_different_predictions": 0.2222222222222222
+      },
+      "train_seconds": 3.84,
+      "model_kb": 334.4,
+      "features": 3586,
+      "parameters": 32283,
+      "ms_per_function": 0.156,
+      "lime_hit_rate": 1.0,
+      "lime_examples": [
+        {
+          "pair_id": "dvla_sensitive_tool_result_001",
+          "label": "LLM02",
+          "top_words": [
+            "user_id",
+            "users",
+            "get_user",
+            "rows",
+            "cursor"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "password",
+            "userId",
+            "user_id",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_002",
+          "label": "LLM02",
+          "top_words": [
+            "user_id",
+            "users",
+            "get_user",
+            "cursor",
+            "Users"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_003",
+          "label": "LLM02",
+          "top_words": [
+            "user_id",
+            "USER_COLUMNS",
+            "users",
+            "cursor",
+            "rows"
+          ],
+          "words_on_changed_lines": [
+            "USER_COLUMNS",
+            "password",
+            "userId",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_001",
+          "label": "LLM05",
+          "top_words": [
+            "userId",
+            "transactions",
+            "get_user_transactions",
+            "Transactions",
+            "FROM"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "f",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_002",
+          "label": "LLM05",
+          "top_words": [
+            "userId",
+            "transactions",
+            "get_user_transactions",
+            "Transactions",
+            "query"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "query",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_003",
+          "label": "LLM05",
+          "top_words": [
+            "build_transactions_query",
+            "Transactions",
+            "s",
+            "SELECT",
+            "userId"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "build_transactions_query",
+            "cursor",
+            "execute",
+            "return",
+            "s",
+            "str",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_001",
+          "label": "LLM06",
+          "top_words": [
+            "db_filepath",
+            "from_uri",
+            "db_uri",
+            "SQLDatabase",
+            "Path"
+          ],
+          "words_on_changed_lines": [
+            "connect",
+            "creator",
+            "db_filepath",
+            "lambda",
+            "sqlite3"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_002",
+          "label": "LLM06",
+          "top_words": [
+            "from_uri",
+            "db_uri",
+            "db_filepath",
+            "SQLDatabase",
+            "Path"
+          ],
+          "words_on_changed_lines": [
+            "db_filepath",
+            "db_uri_ro",
+            "f",
+            "file"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_003",
+          "label": "LLM06",
+          "top_words": [
+            "from_uri",
+            "db_uri",
+            "db_filepath",
+            "SQLDatabase",
+            "Path"
+          ],
+          "words_on_changed_lines": [
+            "SQLDatabase",
+            "create_engine",
+            "db_filepath",
+            "f",
+            "return",
+            "sqlite"
+          ],
+          "hit": true
+        }
+      ],
+      "directly_readable": "linear: one weight per feature and class",
+      "test": {
+        "n_rows": 30,
+        "accuracy": 0.23333333333333334,
+        "macro_f1": 0.15714285714285714,
+        "detect_precision": 0.5,
+        "detect_recall": 1.0,
+        "detect_f1": 0.6666666666666666,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.06666666666666667
+      }
+    },
+    "mlp_v2": {
+      "level": "unit",
+      "real_weight": 1,
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5555555555555556,
+        "macro_f1": 0.4722222222222222,
+        "detect_precision": 0.5555555555555556,
+        "detect_recall": 0.5555555555555556,
+        "detect_f1": 0.5555555555555556,
+        "pair_accuracy": 0.1111111111111111,
+        "pairs_separated": 0.1111111111111111,
+        "pairs_with_different_predictions": 0.1111111111111111
+      },
+      "train_seconds": 0.69,
+      "model_kb": 10878.2,
+      "features": 3586,
+      "parameters": 460297,
+      "ms_per_function": 0.221,
+      "lime_hit_rate": 0.89,
+      "lime_examples": [
+        {
+          "pair_id": "dvla_sensitive_tool_result_001",
+          "label": "LLM02",
+          "top_words": [
+            "password",
+            "rows",
+            "users",
+            "FROM",
+            "Users"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "password",
+            "userId",
+            "user_id",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_002",
+          "label": "LLM02",
+          "top_words": [
+            "users",
+            "rows",
+            "Users",
+            "get_user",
+            "dict"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Users",
+            "WHERE",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sensitive_tool_result_003",
+          "label": "LLM02",
+          "top_words": [
+            "users",
+            "rows",
+            "password",
+            "dict",
+            "get_user"
+          ],
+          "words_on_changed_lines": [
+            "USER_COLUMNS",
+            "password",
+            "userId",
+            "username"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_001",
+          "label": "LLM05",
+          "top_words": [
+            "userId",
+            "get_user_transactions",
+            "transactions",
+            "str",
+            "execute"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "f",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_002",
+          "label": "LLM05",
+          "top_words": [
+            "userId",
+            "get_user_transactions",
+            "cursor",
+            "transactions",
+            "query"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "cursor",
+            "execute",
+            "query",
+            "str",
+            "userId"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "dvla_sql_output_003",
+          "label": "LLM05",
+          "top_words": [
+            "build_transactions_query",
+            "Transactions",
+            "WHERE",
+            "userId",
+            "s"
+          ],
+          "words_on_changed_lines": [
+            "FROM",
+            "SELECT",
+            "Transactions",
+            "WHERE",
+            "build_transactions_query",
+            "cursor",
+            "execute",
+            "return",
+            "s",
+            "str",
+            "userId",
+            "user_id"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_001",
+          "label": "LLM06",
+          "top_words": [
+            "from_uri",
+            "db_filepath",
+            "Path",
+            "create_engine",
+            "SQLDatabase"
+          ],
+          "words_on_changed_lines": [
+            "connect",
+            "creator",
+            "db_filepath",
+            "lambda",
+            "sqlite3"
+          ],
+          "hit": true
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_002",
+          "label": "LLM06",
+          "top_words": [
+            "from_uri",
+            "SQLDatabase",
+            "Path",
+            "db_uri",
+            "cache_resource"
+          ],
+          "words_on_changed_lines": [
+            "db_filepath",
+            "db_uri_ro",
+            "f",
+            "file"
+          ],
+          "hit": false
+        },
+        {
+          "pair_id": "streamlit_agent_sql_readonly_003",
+          "label": "LLM06",
+          "top_words": [
+            "from_uri",
+            "Path",
+            "create_engine",
+            "SQLDatabase",
+            "db_filepath"
+          ],
+          "words_on_changed_lines": [
+            "SQLDatabase",
+            "create_engine",
+            "db_filepath",
+            "f",
+            "return",
+            "sqlite"
+          ],
+          "hit": true
+        }
+      ],
+      "directly_readable": "no: hidden layer weights have no direct meaning",
+      "test": {
+        "n_rows": 30,
+        "accuracy": 0.5333333333333333,
+        "macro_f1": 0.31129032258064515,
+        "detect_precision": 0.6428571428571429,
+        "detect_recall": 0.6,
+        "detect_f1": 0.6206896551724138,
+        "pair_accuracy": 0.26666666666666666,
+        "pairs_separated": 0.26666666666666666,
+        "pairs_with_different_predictions": 0.26666666666666666
+      }
+    }
+  },
+  "chosen": "svm_v2",
+  "within_005_of_best": [
+    "svm_v2"
+  ],
+  "test_predictions": [
+    {
+      "id": "pandasai_exec_without_sandbox_001:vulnerable",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "base",
+      "label": "LLM05",
+      "pred": "LLM05"
+    },
+    {
+      "id": "pandasai_exec_without_sandbox_001:control",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "base",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_exec_without_sandbox_002:vulnerable",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "inline_exec",
+      "label": "LLM05",
+      "pred": "LLM05"
+    },
+    {
+      "id": "pandasai_exec_without_sandbox_002:control",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "inline_exec",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_exec_without_sandbox_003:vulnerable",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "through_helper",
+      "label": "LLM05",
+      "pred": "LLM05"
+    },
+    {
+      "id": "pandasai_exec_without_sandbox_003:control",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "through_helper",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_rows_in_prompt_001:vulnerable",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "base",
+      "label": "LLM02",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_rows_in_prompt_001:control",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "base",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_rows_in_prompt_002:vulnerable",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "through_constant",
+      "label": "LLM02",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_rows_in_prompt_002:control",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "through_constant",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_rows_in_prompt_003:vulnerable",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "manual_rows",
+      "label": "LLM02",
+      "pred": "SAFE"
+    },
+    {
+      "id": "pandasai_rows_in_prompt_003:control",
+      "group": "sinaptik-ai/pandas-ai",
+      "form": "manual_rows",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "vanna_llm_sees_data_001:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "base",
+      "label": "LLM02",
+      "pred": "LLM07"
+    },
+    {
+      "id": "vanna_llm_sees_data_001:control",
+      "group": "vanna-ai/vanna",
+      "form": "base",
+      "label": "SAFE",
+      "pred": "LLM07"
+    },
+    {
+      "id": "vanna_llm_sees_data_002:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "config_default",
+      "label": "LLM02",
+      "pred": "LLM07"
+    },
+    {
+      "id": "vanna_llm_sees_data_002:control",
+      "group": "vanna-ai/vanna",
+      "form": "config_default",
+      "label": "SAFE",
+      "pred": "LLM07"
+    },
+    {
+      "id": "vanna_llm_sees_data_003:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "through_constant",
+      "label": "LLM02",
+      "pred": "LLM07"
+    },
+    {
+      "id": "vanna_llm_sees_data_003:control",
+      "group": "vanna-ai/vanna",
+      "form": "through_constant",
+      "label": "SAFE",
+      "pred": "LLM07"
+    },
+    {
+      "id": "vanna_plotly_exec_001:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "base",
+      "label": "LLM05",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_plotly_exec_001:control",
+      "group": "vanna-ai/vanna",
+      "form": "base",
+      "label": "SAFE",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_plotly_exec_002:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "through_helper",
+      "label": "LLM05",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_plotly_exec_002:control",
+      "group": "vanna-ai/vanna",
+      "form": "through_helper",
+      "label": "SAFE",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_plotly_exec_003:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "compile_eval",
+      "label": "LLM05",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_plotly_exec_003:control",
+      "group": "vanna-ai/vanna",
+      "form": "compile_eval",
+      "label": "SAFE",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_sql_write_access_001:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "base",
+      "label": "LLM06",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_sql_write_access_001:control",
+      "group": "vanna-ai/vanna",
+      "form": "base",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "vanna_sql_write_access_002:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "through_helper",
+      "label": "LLM06",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_sql_write_access_002:control",
+      "group": "vanna-ai/vanna",
+      "form": "through_helper",
+      "label": "SAFE",
+      "pred": "SAFE"
+    },
+    {
+      "id": "vanna_sql_write_access_003:vulnerable",
+      "group": "vanna-ai/vanna",
+      "form": "statement_allowlist",
+      "label": "LLM06",
+      "pred": "LLM06"
+    },
+    {
+      "id": "vanna_sql_write_access_003:control",
+      "group": "vanna-ai/vanna",
+      "form": "statement_allowlist",
+      "label": "SAFE",
+      "pred": "SAFE"
+    }
+  ],
+  "per_class_test": {
+    "LLM02": {
+      "LLM05": 0,
+      "LLM06": 0,
+      "LLM07": 3,
+      "SAFE": 3
+    },
+    "LLM05": {
+      "LLM05": 3,
+      "LLM06": 3,
+      "LLM07": 0,
+      "SAFE": 0
+    },
+    "LLM06": {
+      "LLM05": 0,
+      "LLM06": 3,
+      "LLM07": 0,
+      "SAFE": 0
+    },
+    "SAFE": {
+      "LLM05": 0,
+      "LLM06": 3,
+      "LLM07": 3,
+      "SAFE": 9
+    }
+  },
+  "final_test": {
+    "n_rows": 30,
+    "accuracy": 0.5,
+    "macro_f1": 0.45833333333333326,
+    "detect_precision": 0.6666666666666666,
+    "detect_recall": 0.8,
+    "detect_f1": 0.7272727272727273,
+    "pair_accuracy": 0.4,
+    "pairs_separated": 0.4,
+    "pairs_with_different_predictions": 0.4
+  }
+}
