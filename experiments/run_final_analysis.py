@@ -22,10 +22,24 @@ Criteria:
                    explanations whose top 5 words (pushing towards the true
                    class) include a word from the lines that make the code
                    vulnerable; plus whether the model is directly readable
-Choice rule (fixed before the test): highest validation macro-F1; a candidate
-within 0.05 of it is preferred if it is smaller, faster and more explainable.
-The chosen model is then scored once on the test applications; the other
-candidates' test scores are reported for transparency only.
+Training data and evaluation: the app split in data/pilot/splits.json is
+unchanged, and the test apps (Vanna, PandasAI) are never used for training or
+for any choice. Unlike step 3, the function-level candidates are also trained
+on functions from the validation apps (DVLA, streamlit-agent), weighted as
+above. Validation scores therefore come from leave-one-app-out: to score one
+validation app, the model is trained on the synthetic data plus the other
+validation app only, so the app being scored is never seen in training. The
+final models are trained on the synthetic data plus both validation apps.
+
+Choice rule: highest validation macro-F1; a candidate within 0.05 of it is
+preferred if it is more explainable, smaller and faster. The choice uses
+validation results only and is fixed before any test prediction is made.
+
+Test: one run, after the choice. In that run all candidates are scored on the
+test apps: the chosen model's score is the final evaluation, and the other
+candidates' scores are reported for transparency only and must not be used
+to change the choice. (The step-3 model's test score was already reported in
+step 3.)
 """
 import io
 import json
@@ -167,7 +181,8 @@ def main():
     res['within_005_of_best'] = sorted(close)
     print('CHOSEN ON VALIDATION:', chosen, 'candidates within 0.05:', sorted(close))
 
-    # test, once for the chosen model; others for transparency
+    # test: one run, after the choice above. All candidates are scored; only the
+    # chosen model's score is the final evaluation, the others are for transparency.
     for name, spec in CANDIDATES.items():
         cand = res['candidates'][name]
         final = cand.pop('_final')
