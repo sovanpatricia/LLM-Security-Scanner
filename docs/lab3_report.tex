@@ -72,6 +72,11 @@ On real application code (Section~\ref{sec:app}), with vulnerable and safe versi
 the same functions from Vanna and PandasAI, the chosen model fell to macro-F1 0.27: it
 flagged every vulnerable file but also 13 of 15 safe ones, and told apart 1 of 15 pairs.
 
+After the improvements of step 4 (Section~\ref{sec:improve}): scoring single functions,
+adding real code to training and a stronger regularization, the chosen model (char SVM)
+reaches macro-F1 0.46 and pair accuracy 0.40 on the same test applications, with fewer
+false alarms (6 of 15 safe files instead of 13) but 3 missed data leaks.
+
 % =================================================================== 1
 \section{Dataset}
 
@@ -849,6 +854,274 @@ What the comparison shows:
 \end{itemize}
 
 % =================================================================== 7
+\section{Improving the algorithm (step 4)}
+\label{sec:improve}
+
+Step 4 starts from the step-3 result on real code (Section~\ref{sec:app}): macro-F1 0.27
+and pair accuracy 0.07 on the test applications, because the model reads a whole file and
+reacts to its topic, not to the line that removes a protection. We tried five
+improvements, compared the best candidates on three criteria (performance, size and
+speed, explainability), chose one model on validation only and scored it once on the
+test applications.
+
+\subsection{Data split and training procedure}
+
+The application split of Section~\ref{sec:app} (\code{data/pilot/splits.json}) is
+unchanged: DVLA and LangChain's streamlit-agent are the validation applications
+(9 pairs, 18 files), Vanna and PandasAI the test applications (15 pairs, 30 files).
+The test applications are never used for training or for any choice.
+
+The training procedure, however, changes. In step 3 the models were trained only on the
+262 synthetic snippets and the applications were used only for evaluation. In step 4,
+functions from the validation applications are also used for training, with a higher
+weight per example. Validation scores therefore come from a
+\emph{leave-one-app-out} evaluation: to score DVLA, the model is trained on the synthetic
+data plus the streamlit-agent functions, and the other way round, so the application being
+scored is never seen in training. The final model is trained on the synthetic data plus
+both validation applications.
+
+This validation underestimates the effect of real data: DVLA contains only LLM02 and
+LLM05 cases and streamlit-agent only LLM06, so in each round the model has seen no real
+function of the category it is scored on.
+
+\textbf{Metrics} are the same as in Section~\ref{sec:app}: macro-F1 over LLM02, LLM05,
+LLM06 and SAFE; detection precision and recall; and pair accuracy (vulnerable file gets
+its exact label \emph{and} its control gets SAFE). Model choice uses macro-F1, then pair
+accuracy, then detection F1.
+
+\subsection{Improvements}
+
+\begin{enumerate}
+  \item \textbf{Function-level input (architecture of the input).} A file is split into
+        top-level functions, methods and assignments (\code{src/llmscan/units.py}). The model
+        scores the functions that contain the lines where the vulnerable and the control
+        version differ; if the changed line is an assignment, the functions that use it are
+        scored with the assignment prepended. A file is SAFE if all its scored functions
+        are SAFE, otherwise it gets the non-SAFE label with the highest confidence. On
+        validation, a scored function has a median of 13 lines, against 27 for a whole
+        file. This also fixes two flaws of the step-3 scanner: a whole class was one unit,
+        and units without LLM-related words were skipped.
+  \item \textbf{Real examples in training.} Validation functions are added to the
+        synthetic data with weight 1, 5 or 20 (leave-one-app-out, as above). We used real
+        examples instead of artificial augmentation (SMOTE, random token edits), which
+        would create code that does not run and would not teach how real projects are
+        written. The vulnerable and safe \emph{variants} of each case (v2, v3) are already
+        a realistic form of augmentation: the same weakness written in a different way.
+  \item \textbf{Ensembles.} Soft voting (Logistic Regression, SVM and Random Forest),
+        bagging (25 Logistic Regressions), boosting (Gradient Boosting, 150 trees of
+        depth 3), and two combinations of rules and model: the model's alarm is kept only
+        if a rule also fires or the alarm is among the most confident ones (top 25--100\%).
+  \item \textbf{Hyperparameters and regularization.} A wider grid for the char SVM
+        (regularization strength $C$, n-gram range, class weights) and for Logistic
+        Regression (L2 or L1 penalty, $C$). Because the best SVM had $C$ at the edge of the
+        grid (0.03), we extended it down to 0.001.
+  \item \textbf{A small neural network.} A multilayer perceptron on token TF-IDF, trained
+        with Adam or with SGD with momentum, L2 penalty $\alpha$ and early stopping on 15\%
+        of the training data.
+\end{enumerate}
+
+\begin{table}[H]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.6cm}@{}}
+\toprule
+Model & Grid & Chosen setting \\
+\midrule
+Char n-grams + Linear SVM & $C\in\{0.001,0.003,0.01,0.03,0.1,0.3,1,3\}$; 2--4 or 3--5-grams; balanced or no class weights; real weight 1 or 5 & $C=0.03$, 2--4-grams, balanced, real weight 5 \\
+Tokens + LogReg (saga) & L2 or L1; $C\in\{0.3,1,3,10\}$; real weight 1 or 5 & L2, $C=1$, real weight 5 \\
+Tokens + MLP & hidden (64), (128), (128,64); Adam (lr 0.001) or SGD + momentum 0.9 (lr 0.01); $\alpha\in\{10^{-4},10^{-3},10^{-2}\}$; early stopping; max 300 epochs; real weight 1 or 5 & (128), Adam, $\alpha=10^{-4}$, real weight 1 \\
+Ensembles & see list above; real weights from improvement 2 & none chosen \\
+\bottomrule
+\end{tabularx}
+\caption{Step-4 hyperparameter search on the validation applications. All models use seed
+42. Sources: \code{reports/pilot/improvements\_part1.json} to \code{part3b.json}.}
+\label{tab:improvehp}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Improvement & Best setting on validation & Macro-F1 & Pair acc. \\
+\midrule
+Step 3 (baseline) & char SVM, whole files, synthetic & 0.57 & 0.11 \\
+1.\ Function-level input & char SVM & 0.58 & 0.11 \\
+2.\ + real examples & char SVM (weight 1); LogReg (weight 5) & 0.58; 0.56 & 0.11; 0.22 \\
+3.\ Ensembles & bagging 0.51, soft vote 0.47, boosting 0.15 & $\le$0.51 & $\le$0.22 \\
+4.\ Wider grid + regularization & \textbf{char SVM, $C=0.03$, 2--4, weight 5} & \textbf{0.64} & \textbf{0.22} \\
+5.\ MLP & (128), Adam, weight 1 & 0.47 & 0.11 \\
+\bottomrule
+\end{tabular}
+\caption{Effect of each improvement on validation (leave-one-app-out where real data is
+used; 18 files, 9 pairs).}
+\label{tab:improvesteps}
+\end{table}
+
+\begin{itemize}
+  \item \textbf{Function-level input and real data help a little each}; together with a
+        stronger regularization of the SVM (smaller $C$) they give the best validation
+        score, 0.64.
+  \item \textbf{The rules never fire on the validation functions}, so the rule-and-model
+        combinations reduce to the model alone. Bagging and soft voting did not beat a
+        single SVM, and boosting overfit the 262 snippets (0.15).
+  \item \textbf{Regularization.} L1 Logistic Regression set almost all weights to zero
+        and scored at most 0.15, against 0.51 for L2. For the SVM, $C\le0.01$ makes it
+        predict SAFE almost everywhere (0.17--0.31). For the MLP, $\alpha$ made no
+        difference and Adam was clearly better than SGD (0.47 against 0.17).
+  \item \textbf{The validation differences are small.} The SVM with $C=1$ scores 0.61 and
+        with $C=0.03$ 0.64; with 18 files this is about one prediction. The choice is
+        therefore checked on the other criteria and on the test set.
+\end{itemize}
+
+\subsection{Comparison on three criteria}
+
+The four final candidates are the step-3 model and the best setting of each family. For
+size and speed, each one is trained on the synthetic data plus both validation applications
+and timed on a CPU in a cloud container (prediction time is the average over all validation and test
+functions, 5 runs). For explainability, we used LIME on the vulnerable function of each of
+the 9 validation pairs: a \emph{hit} means that one of the 5 words that push the prediction
+most towards the true class appears on a line that makes the code vulnerable.
+
+\begin{table}[H]
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+& \multicolumn{2}{c}{Performance (val.)} & \multicolumn{4}{c}{Size and speed} & \multicolumn{2}{c}{Explainability} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-7}\cmidrule(lr){8-9}
+Candidate & F1 & Pair & Features & Size & Train & ms/function & LIME hit & Readable \\
+\midrule
+Step-3 char SVM (files) & 0.57 & 0.11 & 16\,019 & 1.4 MB & 0.09 s & 0.37 & 9/9 & yes \\
+\textbf{Char SVM v2} & \textbf{0.64} & \textbf{0.22} & 11\,161 & 1.0 MB & 0.09 s & 0.52 & 9/9 & yes \\
+LogReg v2 & 0.51 & 0.11 & 3\,586 & 0.3 MB & 3.8 s & 0.16 & 9/9 & yes \\
+MLP v2 & 0.47 & 0.11 & 3\,586 & 10.9 MB & 0.7 s & 0.22 & 8/9 & no \\
+\bottomrule
+\end{tabular}
+\caption{Final candidates. ``Readable'': the model has one weight per feature and class, so
+its decision can be read directly; the MLP's hidden-layer weights have no direct meaning.
+Source: \code{reports/pilot/final\_analysis.json}.}
+\label{tab:criteria}
+\end{table}
+
+\begin{itemize}
+  \item \textbf{Size and speed are not a problem for any candidate}: all predict a function
+        in under a millisecond, so scanning a project of a few thousand functions takes
+        seconds. The MLP is ten times larger than the others with a lower score.
+  \item \textbf{LIME separates the models less than expected.} Almost all explanations
+        ``hit'', but the top words mostly name the topic of the function, not the
+        protection. For the DVLA data leak, the SVM's top words are \code{password},
+        \code{user\_id}, \code{rows}, \code{username}, \code{fetchall}: the leaked columns, a
+        good sign. For the streamlit-agent write access they are \code{SQLDatabase},
+        \code{db\_uri}, \code{db\_filepath}: the database connection, but not the read-only
+        flag that makes the control safe. The criterion is therefore generous, and the
+        explanations confirm the weakness seen in the errors below.
+\end{itemize}
+
+\textbf{Choice rule}, fixed before any test prediction: highest validation macro-F1; a
+candidate within 0.05 of it would be preferred if it were more explainable, smaller and
+faster. Only the char SVM v2 is within 0.05 of the best, so it is chosen. It is also a
+linear, directly readable model, small and fast enough for an editor extension.
+
+\subsection{Results on the test applications}
+
+The test run was done once, after the choice. In that run all candidates were scored: the
+chosen model's score is the final result; the others are reported for transparency and
+did not influence the choice. The step-3 model reproduces its step-3 score exactly (0.27),
+which confirms that the evaluation is the same. The test applications had already been
+seen once, in step 3; the step-4 improvements were motivated by the validation analysis.
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Model & Macro-F1 & Det.\ precision & Det.\ recall & Pair acc. \\
+\midrule
+Step-3 char SVM (files, synthetic) & 0.27 & 0.54 & 1.00 & 0.07 \\
+\textbf{Char SVM v2 (chosen)} & \textbf{0.46} & \textbf{0.67} & 0.80 & \textbf{0.40} \\
+\textcolor{dark}{LogReg v2} & \textcolor{dark}{0.16} & \textcolor{dark}{0.50} & \textcolor{dark}{1.00} & \textcolor{dark}{0.00} \\
+\textcolor{dark}{MLP v2} & \textcolor{dark}{0.31} & \textcolor{dark}{0.64} & \textcolor{dark}{0.60} & \textcolor{dark}{0.27} \\
+\bottomrule
+\end{tabular}
+\caption{Test applications (Vanna, PandasAI; 30 files, 15 pairs). The grey rows are shown
+for transparency only.}
+\label{tab:improvetest}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{../reports/figures/confusion_app_test_step4.png}
+\caption{Confusion matrices on the test applications, step 3 (left) and step 4 (right).
+``other'' are predictions of classes absent from the application data (LLM01, LLM07).}
+\label{fig:improveconf}
+\end{figure}
+
+\begin{itemize}
+  \item \textbf{Compared with step 3}, macro-F1 rises from 0.27 to 0.46 and pair accuracy
+        from 0.07 to 0.40: 6 of 15 pairs are now fully correct instead of 1. False alarms
+        on safe files fall from 13 of 15 to 6 of 15.
+  \item \textbf{The price is recall}: 3 of 15 vulnerable files are now missed (0.80 instead
+        of 1.00), all of them LLM02.
+  \item \textbf{LLM02 is still never recognised}, and LLM05 only in PandasAI.
+  \item \textbf{The validation-to-test gap} (0.64 to 0.46) is expected: the setting was the
+        best of more than 100 tried on only 18 files.
+\end{itemize}
+
+\subsection*{Examples predicted correctly}
+
+\textbf{Vanna's SQL runner, write access, true LLM06, predicted LLM06; control predicted
+SAFE.} In step 3 both files were LLM06 (correct for the wrong reason). Scored at function
+level and with real database code in training, the model now separates the pair, which
+differs in one line:
+\begin{lstlisting}[language=Python]
+conn = sqlite3.connect(self.database_path)                              # vulnerable
+conn = sqlite3.connect(f"file:{self.database_path}?mode=ro", uri=True)  # control
+\end{lstlisting}
+All three Vanna write-access variants are correct, and so are the three PandasAI
+\code{exec} variants (LLM05 / SAFE), including the one where the call goes through a
+helper function.
+
+\subsection*{Examples predicted wrongly}
+
+\textbf{PandasAI writes the user's rows into the prompt, true LLM02, predicted SAFE.} In one
+variant the leak is a class constant:
+\begin{lstlisting}[language=Python]
+SAMPLE_ROWS = 5   # vulnerable: 5 real rows are sent to the LLM
+SAMPLE_ROWS = 0   # control: only the column names
+\end{lstlisting}
+The scored function contains the constant, but a single digit changes almost no
+character n-gram, so both files get the same, safe-looking score.
+
+\textbf{Vanna runs chart code from the model, true LLM05, predicted LLM06, control also
+LLM06.} The vulnerable function wraps \code{exec(plotly\_code, \ldots)} in a
+\code{try} block around 20 lines of plotting code; the control keeps only the plotting
+code. Both look like ``a tool acting on data'' to the model.
+
+\textbf{Vanna sends query results to the model by default, true LLM02, predicted LLM07}
+(system-prompt leakage), for both files of each pair: the function is full of
+prompt-building code and the pair differs only in the default value of
+\code{allow\_llm\_to\_see\_data}.
+
+\subsection{Limitations of step 4}
+
+\begin{itemize}
+  \item \textbf{Small validation set.} 9 pairs; the best setting was chosen among many, so
+        its validation score is optimistic (0.64 against 0.46 on test).
+  \item \textbf{Categories split between validation applications}, so leave-one-app-out
+        never trains on real examples of the category it scores.
+  \item \textbf{The test set was seen before}, in step 3. A new, untouched application would
+        give a cleaner final estimate.
+  \item \textbf{The rules never fired} on the validation functions, so the rule-and-model
+        ensembles could not be judged fairly.
+  \item \textbf{LIME's hit criterion is generous}: words on the changed lines are often
+        topic words, not the protection itself.
+\end{itemize}
+
+\textbf{Model for step 5.} The chosen model is saved as
+\code{models/scanner\_model\_v2.joblib} by \code{experiments/save\_final\_model.py}
+(the same model as in the analysis, built with \code{llmscan.models.build} so that the
+file depends only on the \code{llmscan} package). The analysis itself is in
+\code{experiments/run\_final\_analysis.py}, the figure in
+\code{experiments/plot\_step4.py}.
+
+% =================================================================== 8
 \section{Code, app and how to reproduce}
 
 Everything above is reproducible from the repository
