@@ -1,0 +1,225 @@
+{
+  "protocol": "Step 4 (part 3b): extend the SVM C grid below 0.03, the edge of the part-3 grid.\n\nRun from the repository root:  python experiments/run_c_check.py\nOutput: reports/pilot/improvements_part3b.json\n\nSame model, data, regimes and selection rule as run_tuning.py (validation\napplications only); only C changes: {0.001, 0.003, 0.01, 0.03, 0.1}.",
+  "per_C": {
+    "synthetic_only/C=0.001": {
+      "best_hp": {
+        "C": 0.001,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": null
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.16666666666666666,
+        "detect_precision": 0.0,
+        "detect_recall": 0.0,
+        "detect_f1": 0.0,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.0
+      }
+    },
+    "synthetic_only/C=0.003": {
+      "best_hp": {
+        "C": 0.003,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": null
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.16666666666666666,
+        "detect_precision": 0.0,
+        "detect_recall": 0.0,
+        "detect_f1": 0.0,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.0
+      }
+    },
+    "synthetic_only/C=0.01": {
+      "best_hp": {
+        "C": 0.01,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": null
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.30952380952380953,
+        "detect_precision": 0.5,
+        "detect_recall": 0.3333333333333333,
+        "detect_f1": 0.4,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.0
+      }
+    },
+    "synthetic_only/C=0.03": {
+      "best_hp": {
+        "C": 0.03,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": null
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5555555555555556,
+        "macro_f1": 0.4722222222222222,
+        "detect_precision": 0.5555555555555556,
+        "detect_recall": 0.5555555555555556,
+        "detect_f1": 0.5555555555555556,
+        "pair_accuracy": 0.1111111111111111,
+        "pairs_separated": 0.1111111111111111,
+        "pairs_with_different_predictions": 0.1111111111111111
+      }
+    },
+    "synthetic_only/C=0.1": {
+      "best_hp": {
+        "C": 0.1,
+        "ngram": [
+          3,
+          5
+        ],
+        "class_weight": "balanced",
+        "real_weight": null
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.49999999999999994,
+        "detect_precision": 0.5333333333333333,
+        "detect_recall": 0.8888888888888888,
+        "detect_f1": 0.6666666666666666,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.1111111111111111,
+        "pairs_with_different_predictions": 0.1111111111111111
+      }
+    },
+    "with_real/C=0.001": {
+      "best_hp": {
+        "C": 0.001,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": 1
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.16666666666666666,
+        "detect_precision": 0.0,
+        "detect_recall": 0.0,
+        "detect_f1": 0.0,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.0
+      }
+    },
+    "with_real/C=0.003": {
+      "best_hp": {
+        "C": 0.003,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": 1
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.16666666666666666,
+        "detect_precision": 0.0,
+        "detect_recall": 0.0,
+        "detect_f1": 0.0,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.0
+      }
+    },
+    "with_real/C=0.01": {
+      "best_hp": {
+        "C": 0.01,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": 1
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.30952380952380953,
+        "detect_precision": 0.5,
+        "detect_recall": 0.3333333333333333,
+        "detect_f1": 0.4,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.0
+      }
+    },
+    "with_real/C=0.03": {
+      "best_hp": {
+        "C": 0.03,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": 5
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.6111111111111112,
+        "macro_f1": 0.6362179487179487,
+        "detect_precision": 0.5714285714285714,
+        "detect_recall": 0.8888888888888888,
+        "detect_f1": 0.6956521739130435,
+        "pair_accuracy": 0.2222222222222222,
+        "pairs_separated": 0.2222222222222222,
+        "pairs_with_different_predictions": 0.2222222222222222
+      }
+    },
+    "with_real/C=0.1": {
+      "best_hp": {
+        "C": 0.1,
+        "ngram": [
+          2,
+          4
+        ],
+        "class_weight": "balanced",
+        "real_weight": 5
+      },
+      "val": {
+        "n_rows": 18,
+        "accuracy": 0.5,
+        "macro_f1": 0.5041666666666667,
+        "detect_precision": 0.5,
+        "detect_recall": 1.0,
+        "detect_f1": 0.6666666666666666,
+        "pair_accuracy": 0.0,
+        "pairs_separated": 0.0,
+        "pairs_with_different_predictions": 0.1111111111111111
+      }
+    }
+  }
+}
