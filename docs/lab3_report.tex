@@ -53,10 +53,10 @@
 \newcommand{\code}[1]{\texttt{#1}}
 
 % ------------------------------------------------------------------ title
-\title{\textbf{LLM Security Scanner --- Lab 3}\\[4pt]
-       \large Intelligent Algorithm on Small Data}
+\title{\textbf{LLM Security Scanner}\\[4pt]
+       \large Intelligent Algorithm, Evaluation on Real Code and Improvements}
 \author{MIRPR 2026--2027}   % add the team members' names here
-\date{October 2026}
+\date{November 2026}
 
 \begin{document}
 \maketitle
@@ -957,8 +957,10 @@ used; 18 files, 9 pairs).}
 \end{table}
 
 \begin{itemize}
-  \item \textbf{Function-level input and real data help a little each}; together with a
-        stronger regularization of the SVM (smaller $C$) they give the best validation
+  \item \textbf{Function-level input helps a little} (0.57 to 0.58). \textbf{Real
+        examples help Logistic Regression} (0.45 to 0.56) \textbf{but not the SVM on their
+        own} (0.58 at weight 1). The SVM improves only when real examples (weight 5) are
+        combined with a stronger regularization ($C=0.03$), which gives the best validation
         score, 0.64.
   \item \textbf{The rules never fire on the validation functions}, so the rule-and-model
         combinations reduce to the model alone. Bagging and soft voting did not beat a
@@ -1139,12 +1141,22 @@ Path & Content \\
 \code{src/llmscan/features.py}, \code{models.py} & Comment stripping, code tokenizer, the four models and their grids \\
 \code{experiments/run\_experiments.py} & EDA, tuning and model choice on validation, one final test, cross-validation, figures \\
 \code{reports/} & \code{eda.json}, \code{results.json}, class-balance and confusion-matrix figures \\
-\code{models/scanner\_model.joblib} & Logistic Regression (the chosen model) trained on development + validation \\
+\code{models/scanner\_model.joblib} & Logistic Regression (the chosen model) trained on development + validation; used by the app \\
 \code{src/llmscan/scan.py} & The app: a CLI that scans a file or folder \\
+\code{experiments/run\_app\_experiments.py} & Evaluation on real application code (Section~\ref{sec:app}) \\
+\code{src/llmscan/units.py}, \code{experiments/run\_improvements.py}, \code{run\_ensembles.py}, \code{run\_tuning.py}, \code{run\_c\_check.py}, \code{run\_final\_analysis.py} & Step 4: function-level units, improvements, three-criteria comparison and the single test run (Section~\ref{sec:improve}) \\
+\code{models/scanner\_model\_v2.joblib} & Char SVM chosen in step 4, saved by \code{experiments/save\_final\_model.py}; not yet used by the app \\
 \bottomrule
 \end{tabularx}
 \caption{Repository layout.}
 \end{table}
+
+\textbf{Note: the app still uses the first model (Section~\ref{sec:algo}).} The scanner described below uses
+\code{models/scanner\_model.joblib} (Logistic Regression), keeps only units that mention
+an LLM, and treats a whole class as one unit. Step 4 showed that the last two choices can
+hide vulnerable functions (Section~\ref{sec:improve}) and chose a different model,
+\code{models/scanner\_model\_v2.joblib}. Using the step-4 unit splitting and model in the
+scanner is the next step (step 5).
 
 \textbf{The app.} The scanner splits each Python file into top-level functions and
 assignments (with \code{ast}), and each TypeScript file into top-level declarations. It
