@@ -58,6 +58,7 @@ examples/
   vulnerable_app.py       small deliberately vulnerable app for the demo
 docs/
   lab3_report.tex, lab3_report.pdf
+  meetings/               meeting minutes
 ```
 
 ## Run
